@@ -3,10 +3,27 @@ extern int rk;
 
 void attackLeft(void);
 void attackRight(void);
-void moveForward(void);
-void moveLeft(void);
-void moveRight(void);
-void moveBack(void);
+
+void moveForward(double time);
+void moveLeft(double time);
+void moveRight(double time);
+void moveBack(double time);
+void moveForwardLeft(double time);
+void moveForwardRight(double time);
+void moveBackLeft(double time);
+void moveBackRight(double time);
+void moveSneakForward(double time);
+void moveSneakLeft(double time);
+void moveSneakRight(double time);
+void moveSneakBack(double time);
+void moveSneakForwardLeft(double time);
+void moveSneakForwardRight(double time);
+void moveSneakBackLeft(double time);
+void moveSneakBackRight(double time);
+void moveSneak(double time);
+void moveJump(int times);
+void moveDash(double time);
+void moveJumpDash(int times);
 
 
 void init(void);

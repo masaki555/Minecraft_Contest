@@ -144,10 +144,26 @@ int main(int argc, char *argv[]){
 | int detectZombie2(void)     | 画像処理の結果を取得する．戻り値はint型で，15bitの2進数結果を10進数に変換した0から4924までの値が返って来る．詳細は後述．                                                                                                          |
 | void attackLeft(void)       | 左クリック．0.01秒間入力されるが，実際にはもう少し遅い．                                                                                                                                      |
 | void attackRight(void)      | 右クリック．1.50秒間入力される．                                                                                                                                                            |
-| void moveForward(void)      | 前進する．間隔は0.135間隔で動く．                                                                                                                                                           |
-| void moveLeft(void)         | 左に動く．間隔は0.135間隔で動く．                                                                                                                                                           |
-| void moveRight(void)        | 右に動く．間隔は0.135間隔で動く．                                                                                                                                                           |
-| void moveBack(void)         | 後進する．間隔は0.135間隔で動く．                                                                                                                                                           |
+| void moveForward(double time)      | 前進する．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
+| void moveLeft(double time)         | 左に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
+| void moveRight(double time)        | 右に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                          |
+| void moveBack(double time)         | 後進する．timeで指定した時間（単位は秒）動く．
+| void moveForwardLeft(double time)      | 左斜め前に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
+| void moveForwardRight(double time)         | 右斜め前に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
+| void moveBackLeft(double time)        | 左斜め後ろに動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                          |
+| void moveBackRight(double time)         | 右斜め後ろに動く．timeで指定した時間（単位は秒）動く．
+| void moveSneakForward(double time)      | スニーク状態で前進する．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
+| void moveSneakLeft(double time)         | スニーク状態で左に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
+| void moveSneakRight(double time)        | スニーク状態で右に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                          |
+| void moveSneakBack(double time)         | スニーク状態で後進する．timeで指定した時間（単位は秒）動く．
+| void moveSneakForwardLeft(double time)      | スニーク状態で左斜め前に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
+| void moveSneakForwardRight(double time)         | スニーク状態で右斜め前に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
+| void moveSneakBackLeft(double time)        | スニーク状態で左斜め後ろに動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                          |
+| void moveSneakBackRight(double time)         | スニーク状態で右斜め後ろに動く．timeで指定した時間（単位は秒）動く．
+| void moveSneak(double time)         | スニーク状態になる．timeで指定した時間（単位は秒）動く．
+| void movejump(int times)         | ジャンプする．timesで指定した回数分，連続でジャンプし続ける．  
+| void moveDash(double time)         | 前に走る．timeで指定した時間（単位は秒）動く．
+| void moveJumpDash(int times);         | 前に走りながらジャンプする．timesで指定した回数分のジャンプが終わるまで動き続ける．                                                                                                                                                         |
 | void cameraDown(void)       | カメラを下10度に動かす．                                                                                                                                                                   |
 | void cameraLeft(void)       | カメラを左10度に動かす．                                                                                                                                                                   |
 | void cameraRight(void)      | カメラを右10度に動かす．                                                                                                                                                                   |
