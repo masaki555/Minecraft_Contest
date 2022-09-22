@@ -2,12 +2,12 @@ import pydirectinput
 import sys
 import time
 
-def moveCharacterLeft():
+def moveCharacterFoward():
     args = sys.argv
     sleep_time = float(args[1])
-    pydirectinput.keyDown('a')
+    pydirectinput.keyDown('w')
     time.sleep(sleep_time)
-    pydirectinput.keyUp('a')
+    pydirectinput.keyUp('w')
 
 if __name__ == '__main__':
-    moveCharacterLeft()
+    moveCharacterFoward()

@@ -29,35 +29,224 @@ void attackRight(void){
         exit(1);
     }
 }
-void moveForward(void){
-    char com[128] = "python/python.exe python/minecraft/moveCharacterFowerd.py";
+
+
+void moveForward(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterFoward.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
         printf("error:moveForward\n");
         exit(1);
     }
 }
-void moveLeft(void){
-    char com[128] = "python/python.exe python/minecraft/moveCharacterLeft.py";
+
+void moveLeft(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterLeft.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
         printf("error:moveLeft\n");
         exit(1);
     }
 }
-void moveRight(void){
-    char com[128] = "python/python.exe python/minecraft/moveCharacterRight.py";
+
+void moveRight(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterRight.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
         printf("error:moveRight\n");
         exit(1);
     }
 }
-void moveBack(void){
-    char com[128] = "python/python.exe python/minecraft/moveCharacterBack.py";
+
+void moveBack(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterBack.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
         printf("error:moveBack\n");
+        exit(1);
+    }
+}
+
+void moveForwardLeft(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterForwardLeft.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveForwardLeft\n");
+        exit(1);
+    }
+}
+
+void moveForwardRight(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterForwardRight.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveForwardRight\n");
+        exit(1);
+    }
+}
+
+void moveBackLeft(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterBackLeft.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveBackLeft\n");
+        exit(1);
+    }
+}
+
+void moveBackRight(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterBackRight.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveBackRight\n");
+        exit(1);
+    }
+}
+
+void moveSneakForward(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakForward.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveSneakForward\n");
+        exit(1);
+    }
+}
+
+void moveSneakLeft(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakLeft.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveSneakLeft\n");
+        exit(1);
+    }
+}
+
+void moveSneakRight(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakRight.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveSneakRight\n");
+        exit(1);
+    }
+}
+
+void moveSneakBack(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakBack.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveSneakBack\n");
+        exit(1);
+    }
+}
+
+void moveSneakForwardLeft(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakForwardLeft.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveSneakForwardLeft\n");
+        exit(1);
+    }
+}
+
+void moveSneakForwardRight(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakForwardRight.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveSneakForwardRight\n");
+        exit(1);
+    }
+}
+
+void moveSneakBackLeft(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakBackLeft.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveSneakBackLeft\n");
+        exit(1);
+    }
+}
+
+void moveSneakBackRight(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakBackRight.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveSneakBackRight\n");
+        exit(1);
+    }
+}
+
+void moveSneak(double time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterSneak.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveSneak\n");
+        exit(1);
+    }
+}
+
+void moveJump(int times){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterJump.py";
+    char com[256];
+    sprintf(com, "%s %d", str, times);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveJump\n");
+        exit(1);
+    }
+}
+
+void moveDash(double sleep_time){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterDash.py";
+    char com[256];
+    sprintf(com, "%s %lf", str, sleep_time);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveDash\n");
+        exit(1);
+    }
+}
+
+void moveJumpDash(int times){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterJumpDash.py";
+    char com[256];
+    sprintf(com, "%s %d", str, times);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveJumpDash\n");
         exit(1);
     }
 }

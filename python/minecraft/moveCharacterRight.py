@@ -1,12 +1,10 @@
 import pydirectinput
-
+import sys
 import time
 
-################################
-sleep_time = 0.135
-################################
-
 def moveCharacterRight():
+    args = sys.argv
+    sleep_time = float(args[1])
     pydirectinput.keyDown('d')
     time.sleep(sleep_time)
     pydirectinput.keyUp('d')
