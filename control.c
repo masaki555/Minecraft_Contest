@@ -11,6 +11,7 @@
 
 pid_t Ppid;
 pid_t Kpid;
+pid_t Mpid;
 int rk=1;
 
 void attackLeft(void){
@@ -414,12 +415,114 @@ int detectZombie2(void){
     return ibuf;
 }
 
+int detectMobsDetail(int mode, int ibuf[]) {
+    FILE	*fp; 
+    char	*fname;
+    int     i;
+
+    if(mode == 1) {
+	    fname = "t_creeper.txt";
+    }else if(mode == 2){
+	    fname = "t_zombie.txt";
+    }else {
+        printf("error:detectMobs\n");
+        printf("Non accepted mode value\n");
+		exit(1);
+    }
+
+    if ( (fp=fopen(fname,"r")) == NULL) {
+		printf("error:detectMobs\n");
+		exit(1);
+	}
+
+	char buf[256];
+	fgets(buf, sizeof(buf), fp);
+	(void) fclose(fp);
+    int bufLength = strlen(buf);
+
+    for(i=0; i<256; i++){
+        ibuf[i] = 0;
+    }
+
+    for(i=0;i<bufLength;i++){
+        ibuf[i] = buf[i] - '0';
+    }
+
+    return bufLength;
+}
+
+int detectMobsAbout(int mode, int ibuf[]) {
+    FILE	*fp; 
+    char	*fname;
+    int     i;
+
+    if(mode == 1) {
+	    fname = "t_creeper.txt";
+    }else if(mode == 2){
+	    fname = "t_zombie.txt";
+    }else {
+        printf("error:detectMobs\n");
+        printf("Non accepted mode value\n");
+		exit(1);
+    }
+
+    if ( (fp=fopen(fname,"r")) == NULL) {
+		printf("error:detectMobs\n");
+		exit(1);
+	}
+
+	char buf[256];
+	fgets(buf, sizeof(buf), fp);
+	(void) fclose(fp);
+    int bufLength = strlen(buf);
+
+    for(i=0; i<256; i++){
+        ibuf[i] = 0;
+    }
+
+    for(i=0;i<bufLength;i++){
+        ibuf[i] = buf[i] - '0';
+    }
+
+    return bufLength;
+}
+
+long detectMobsSimple(int mode) {
+    FILE	*fp;
+	char	fname[] = "t_simple.txt";
+    int i, t=1;
+    // クリーパーの情報
+    long cbuf=0;
+    // ゾンビの情報
+    long zbuf=0;
+
+	if ( (fp=fopen(fname,"r")) ==NULL) {
+		printf("error:detectMobs\n");
+		exit(1);
+	}
+	char buf[256];
+	fgets(buf, sizeof(buf), fp);
+	(void) fclose(fp);
+    
+    for(i=0;i<10;i++){
+        cbuf = cbuf + ((buf[10 - i] - '0') * t);
+        zbuf = zbuf + ((buf[21 - i] - '0') * t);
+        t = t * 10;
+    }
+
+    if(mode == 1){
+        return cbuf;
+    }else {
+        return zbuf;
+    }
+}
 
 void killPython(void){
-    int ret1,ret2;
-    ret1 = kill(Ppid, SIGKILL);
-    ret2 = kill(Kpid, SIGKILL);
-    if (ret1 == -1 || ret2 == -1) {
+    int ret1,ret2,ret3;
+    // ret1 = kill(Ppid, SIGKILL);
+    // ret2 = kill(Kpid, SIGKILL);
+    ret3 = kill(Mpid, SIGKILL);
+    if (ret1 == -1 || ret2 == -1 || ret3 == -1) {
         perror("error:kill");
         exit(1);
     }
@@ -434,6 +537,17 @@ void *exeDetectZombie(void *args){
         exit(1);
     }
 }
+
+void *exeDetectMobs(){
+    char com[128] = "python/python.exe python/minecraft/detectMobs.py";
+
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:detectMobs\n");
+        exit(1);
+    }
+}
+
 
 void *isInterrupt(void *args){
     while(rk){
@@ -453,29 +567,43 @@ void exePython(void){
     pthread_t key;
     int ret;
 
-    Ppid = fork ();
-    if (-1 == Ppid){
+    Mpid = fork ();
+    if (-1 == Mpid){
         err (EXIT_FAILURE, "can not fork");
         exit(-1);
-    }else if (0 == Ppid){
-        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectZombie.py" , NULL);
+    }else if (0 == Mpid){
+        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectMobs.py" , NULL);
         if(f != 0 && WEXITSTATUS(f) != 0 ){
             printf("error:exePython\n");
             exit(1);
         }
     }
     Sleep(100);
-    Kpid = fork ();
-    if (-1 == Kpid){
-        err (EXIT_FAILURE, "can not fork");
-        exit(-1);
-    }else if (0 == Kpid){
-        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectZombie2.py" , NULL);
-        if(f != 0 && WEXITSTATUS(f) != 0 ){
-            printf("error:exePython\n");
-            exit(1);
-        }
-    }
+    // Ppid = fork ();
+    // if (-1 == Ppid){
+    //     err (EXIT_FAILURE, "can not fork");
+    //     exit(-1);
+    // }else if (0 == Ppid){
+    //     int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectZombie.py" , NULL);
+    //     if(f != 0 && WEXITSTATUS(f) != 0 ){
+    //         printf("error:exePython\n");
+    //         exit(1);
+    //     }
+    // }
+    // Sleep(100);
+    // Kpid = fork ();
+    // if (-1 == Kpid){
+    //     err (EXIT_FAILURE, "can not fork");
+    //     exit(-1);
+    // }else if (0 == Kpid){
+    //     int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectZombie2.py" , NULL);
+    //     if(f != 0 && WEXITSTATUS(f) != 0 ){
+    //         printf("error:exePython\n");
+    //         exit(1);
+    //     }
+    // }
+
+    
    
     if ((ret = pthread_create(&key, NULL, &isInterrupt , NULL)) != 0) {
         fprintf(stderr, "スレッド作成失敗");

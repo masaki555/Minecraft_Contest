@@ -42,8 +42,12 @@ void pushKey(char* key);
 int kbhit(void);
 void *isInterrupt(void *args);
 void *exeDetectZombie(void *args);
+void *exeDetectMobs();
 void killPython(void);
 
 int detectZombie(void);
 int detectZombie2(void);
+int detectMobsDetail(int mode, int ibuf[]);
+int detectMobsAbout(int mode, int ibuf[]);
+long detectMobsSimple(int mode);
 void exePython(void);
