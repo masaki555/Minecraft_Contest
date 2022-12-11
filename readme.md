@@ -364,7 +364,8 @@ detectZombie2関数を呼び出すと0～4924までの値が戻り値として�
 3. YOLOに学習させる  
    1. c1-byodで適当なディレクトリ(`yolo`とか)を作成し、cdで移動します。  
    2. ```git clone https://github.com/ultralytics/yolov5```と打ち、yolov5をダウンロードします。  
-   3. mkdirコマンド等を使用して、以下のようなディレクトリ構成にします。  
+   3. ```pip install -r requirements.txt```と打ち、必要なPythonライブラリをインストールします。  
+   4. mkdirコマンド等を使用して、以下のようなディレクトリ構成にします。  
 
       ```txt
         yolov5
@@ -376,9 +377,9 @@ detectZombie2関数を呼び出すと0～4924までの値が戻り値として�
                 ┗ images  ← 作る
       ```
 
-   4. data/train/imagesディレクトリに学習させる画像を、labelsディレクトリにlabelImgで作ったアノテーションファイル(`Change Save Dir`で指定したフォルダに入ってる)を入れます。  
-   5. data/valid/imagesには学習結果をテストする画像(train/imagesと同じでいい)を入れます。  
-   6. dataディレクトリ内に```data.yaml```ファイルを作成し、以下の内容を記述します。  
+   5. data/train/imagesディレクトリに学習させる画像を、labelsディレクトリにlabelImgで作ったアノテーションファイル(`Change Save Dir`で指定したフォルダに入ってる)を入れます。  
+   6. data/valid/imagesには学習結果をテストする画像(train/imagesと同じでいい)を入れます。  
+   7. dataディレクトリ内に```data.yaml```ファイルを作成し、以下の内容を記述します。  
 
       ```yaml
       train: data/train/images # 学習の画像のパス
@@ -388,14 +389,18 @@ detectZombie2関数を呼び出すと0～4924までの値が戻り値として�
       names: [ "zombie" ] # (例)学習対象のMOB名
       ```
 
-   7. 以下のコマンドを実行して学習を開始します。  
+   8. 以下のコマンドを実行して学習を開始します。  
       ただし、CPUだけだとめっちゃ時間かかります。枚数とかスペックにもよるけど数時間はかかります。  
 
       ```sh
       python train.py --data data/data.yaml --cfg yolov5s.yaml --weights '' --batch-size 8 --epochs 300
       ```
 
-   8. 学習が完了すると、```runs/train/exp/weights```ディレクトリに```best.pt```ファイルが生成されます。  
+   9. 学習が完了すると、```runs/train/exp/weights```ディレクトリに```best.pt```ファイルが生成されます。  
       このbest.ptファイルを```Minecraft_Contest/python/YOLO/best.pt```ファイルと差し替えるとAIに使用される学習データが差し替えられます。  
+
+   (補足)上記の方法だとCPUしか使わないので遅いです(数時間かかる)。  
+   学習を早くするにはGPUを使うのが手っ取り早いですが、ローカルだと環境構築が大変です。  
+   Google Colabとか使えば環境構築なしでGPUを使えるようになるのでオススメです(別途制限あり)。  
 
 </details>
