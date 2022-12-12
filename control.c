@@ -415,6 +415,7 @@ int detectZombie2(void){
     return ibuf;
 }
 
+/*
 int detectMobsDetail(int mode, int ibuf[]) {
     FILE	*fp; 
     char	*fname;
@@ -427,11 +428,13 @@ int detectMobsDetail(int mode, int ibuf[]) {
     }else {
         printf("error:detectMobs\n");
         printf("Non accepted mode value\n");
+        killPython();
 		exit(1);
     }
 
     if ( (fp=fopen(fname,"r")) == NULL) {
-		printf("error:detectMobs\n");
+		printf("error:detectMobsAbout\n");
+        killPython();
 		exit(1);
 	}
 
@@ -461,13 +464,14 @@ int detectMobsAbout(int mode, int ibuf[]) {
     }else if(mode == 2){
 	    fname = "t_zombie.txt";
     }else {
-        printf("error:detectMobs\n");
+        printf("error:detectMobsAbout\n");
         printf("Non accepted mode value\n");
+        killPython();
 		exit(1);
     }
 
     if ( (fp=fopen(fname,"r")) == NULL) {
-		printf("error:detectMobs\n");
+		printf("error:detectMobsAbout\n");
 		exit(1);
 	}
 
@@ -486,8 +490,9 @@ int detectMobsAbout(int mode, int ibuf[]) {
 
     return bufLength;
 }
+*/
 
-long detectMobsSimple(int mode) {
+int detectMobsSimple(int mode) {
     FILE	*fp;
 	char	fname[] = "t_simple.txt";
     int i, t=1;
@@ -497,7 +502,8 @@ long detectMobsSimple(int mode) {
     long zbuf=0;
 
 	if ( (fp=fopen(fname,"r")) ==NULL) {
-		printf("error:detectMobs\n");
+		printf("error:detectMobsSimple\n");
+        killPython();
 		exit(1);
 	}
 	char buf[256];

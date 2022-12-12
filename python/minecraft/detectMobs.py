@@ -2,7 +2,7 @@ import sys
 sys.path.append('.')
 sys.path.append('./python/')
 
-from PIL import ImageGrab
+from PIL import ImageGrab, Image
 import win32gui, time, os, logging
 
 sys.path.append('.')
@@ -12,7 +12,6 @@ import detect
 # 画面内のmob情報を格納するクラス
 class mob:
     def __init__(self):
-        #type 1:クリーパー, 2:ゾンビ　（嘘ついてるかも）
         self.type = 1
         self.x = 0
         self.y = 0
@@ -36,44 +35,49 @@ class mob:
         print(self.width)
         print(self.height)
          
-    # txtに書き込む
+
+    # 配列出力用
     # フォーマット：種類(1,2) X Y width height 距離
     # 種類以外0埋め三桁表示
-    def outputDataDetail(self):
-        i_x = (int)(self.x * 1000)
-        i_y = (int)(self.y * 1000)
-        i_width = (int)(self.width * 1000)
-        i_height = (int)(self.height * 1000)
+    # def outputDataDetail(self):
+    #     i_x = (int)(self.x * 1000)
+    #     i_y = (int)(self.y * 1000)
+    #     i_width = (int)(self.width * 1000)
+    #     i_height = (int)(self.height * 1000)
 
-        # txtに書き込む内容
-        txt = "{x:03.0f}{y:03.0f}{w:03.0f}{h:03.0f}{dist:03d}".format(x=i_x,y=i_y,w=i_width,h=i_height,dist=self.distance)
+    #     # txtに書き込む内容
+    #     txt = "{x:03.0f}{y:03.0f}{w:03.0f}{h:03.0f}{dist:03d}".format(x=i_x,y=i_y,w=i_width,h=i_height,dist=self.distance)
 
-        writeTxt(txt, self.type)
+    #     writeTxt(txt, self.type)
 
-    # フォーマット：種類(1,2) X軸位置 Y軸位置 距離
-    # 全て１桁
-    def outputDataAbout(self):
-        x_pos = calcPosition(self.x)
-        y_pos = calcPosition(self.y)
+    # # フォーマット：種類(1,2) X軸位置 Y軸位置 距離
+    # # 全て１桁
+    # def outputDataAbout(self):
+    #     x_pos = calcPosition(self.x)
+    #     y_pos = calcPosition(self.y)
 
-        # txtに書き込む内容
-        txt = "{x:01d}{y:01d}{dist:01d}".format(x=x_pos,y=y_pos,dist=self.distance)
+    #     # txtに書き込む内容
+    #     txt = "{x:01d}{y:01d}{dist:01d}".format(x=x_pos,y=y_pos,dist=self.distance)
 
-        if(self.type == 1):
-            txtName = "t_zombie.txt"
-        else:
-            txtName = "t_creeper.txt"
-        writeTxt(txt, txtName)
+    #     if(self.type == 1):
+    #         txtName = "t_zombie.txt"
+    #     else:
+    #         txtName = "t_creeper.txt"
+    #     writeTxt(txt, txtName)
         
 
 # スクショ用関数
 def captureMC(winHundle, windowSize):
+    path = "./python/YOLO/capture.png"
+    
     if winHundle:
         image = ImageGrab.grab(windowSize)
         # 保存先
-        image.save("./python/YOLO/capture.png")
+        image.save(path)
     else:
-        print("error!!")
+        print("error: capture window")
+        
+    return path
 
 # 大体の距離を計算
 def calcDistance(width):
@@ -89,13 +93,6 @@ def calcDistance(width):
 
 # 大体の位置計算
 def calcPosition(posVal):
-    # if posVal < 0.1:
-    #     position = 0
-    # elif posVal < 0.2:
-    #     position = 1
-    # else:
-    #     position = 2
-        
     # 画面を大体１０等分して計算
     for i in range(10):
         if(i < posVal*10):
@@ -120,12 +117,12 @@ def makeSimpleTxt(simpleCreeperPos, simpleZombiePos):
 # 結果の出力用
 # txt初期化
 def initTxt():
-        f = open('t_zombie.txt', 'w', encoding='UTF-8')
-        f.write("1")
-        f.close()
-        f = open('t_creeper.txt', 'w', encoding='UTF-8')
-        f.write("2")
-        f.close()
+        # f = open('t_zombie.txt', 'w', encoding='UTF-8')
+        # f.write("1")
+        # f.close()
+        # f = open('t_creeper.txt', 'w', encoding='UTF-8')
+        # f.write("2")
+        # f.close()
         f = open('t_simple.txt', 'w', encoding='UTF-8')
         f.write("1")
         f.close()
@@ -149,23 +146,30 @@ def main():
     # スクショ➡検出のループ
     while True:
         #スクショ
-        captureMC(winHundle, windowSize)
+        path = captureMC(winHundle, windowSize)
 
         # 検出
-        result = detect.run()
+        # 画像が読み込めるかチェック
+        # 読み込めなければ諦める
+        if Image.open(path):
+            result = detect.run()
+        else:
+            continue
+        
         initTxt()
         mobData = []
-        simpleZombiePos = ["0"] * 10
-        simpleCreeperPos = ["0"] * 10
+        zombiePos = ["0"] * 10
+        creeperPos = ["0"] * 10
         for j in range(len(result)):
             mobData.append(mob())
             mobData[j].setData(result=result[j])
             if(mobData[j].type == 1):
-                check(simpleCreeperPos, mobData[j].x)
+                check(creeperPos, mobData[j].x)
             else: 
-                check(simpleZombiePos, mobData[j].x)
-            mobData[j].outputDataAbout()
-        makeSimpleTxt(simpleZombiePos, simpleCreeperPos)
+                check(zombiePos, mobData[j].x)
+            # 配列出力用
+            # mobData[j].outputDataAbout()
+        makeSimpleTxt(zombiePos, creeperPos)
 
 if __name__ == '__main__':
     main()
