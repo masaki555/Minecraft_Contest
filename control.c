@@ -1,4 +1,4 @@
-#include <stdio.h>
+  #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -31,192 +31,105 @@ void attackRight(void){
     }
 }
 
+void moveDataToFile(char* key, int sleep_time){
+    FILE *fp;
 
-void moveForward(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterFoward.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
+    if((fp=fopen("python/movedata/share_MoveData.txt", "w"))==NULL){
+        printf("error：moveDataToFile\nshare_MoveData.txtを開けませんでした．\n");
+        exit(1);
+    }else{
+        fprintf(fp, "%s\n", key);
+        fprintf(fp,"%d\n", sleep_time);
+    }
+
+    fclose(fp);
+}
+
+void initMoveDataFile(void){
+    FILE *fp;
+
+    if((fp=fopen("python/movedata/share_MoveData.txt", "w"))==NULL){
+        printf("error：initMoveDataFile\n");
+        printf("       share_MoveData.txtを開けませんでした．\n");
+        exit(1);
+    }else{
+    fprintf(fp,"Wait\n");
+    fprintf(fp,"0\n");
+    }
+  
+    fclose(fp);
+}
+
+void MonitorMoveData(void){
+    initMoveDataFile();
+    FILE *fp;
+    char com[128] = "python/python.exe python/minecraft/monitorPlayerMove.py";
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveForward\n");
+        printf("error:MonitorMoveData\n");
         exit(1);
     }
+}
+
+void finishMonitor(void){
+    printf("プレイヤの移動の監視を終了します．\n");
+    moveDataToFile("Finish",0);
+}
+
+void moveForward(int sleep_time){
+    char key[32]  ="F";
+    moveDataToFile(key ,sleep_time);
+    sleep(sleep_time);
+    initMoveDataFile();    
 }
 
 void moveLeft(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterLeft.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveLeft\n");
-        exit(1);
-    }
+    char key[32]  ="L";
+    moveDataToFile(key ,sleep_time);
+    sleep(sleep_time);
+    initMoveDataFile();  
 }
 
 void moveRight(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterRight.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveRight\n");
-        exit(1);
-    }
+    char key[32]  ="R";
+    moveDataToFile(key ,sleep_time);
+    sleep(sleep_time);
+    initMoveDataFile();   
 }
 
 void moveBack(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterBack.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveBack\n");
-        exit(1);
-    }
+    char key[32]  ="B";
+    moveDataToFile(key ,sleep_time);
+    sleep(sleep_time);
+    initMoveDataFile(); 
 }
 
 void moveForwardLeft(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterForwardLeft.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveForwardLeft\n");
-        exit(1);
-    }
+    char key[32]  ="FL";
+    moveDataToFile(key ,sleep_time);
+    sleep(sleep_time);
+    initMoveDataFile();
 }
 
 void moveForwardRight(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterForwardRight.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveForwardRight\n");
-        exit(1);
-    }
+    char key[32]  ="FR";
+    moveDataToFile(key ,sleep_time);
+    sleep(sleep_time);
+    initMoveDataFile();
 }
 
 void moveBackLeft(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterBackLeft.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveBackLeft\n");
-        exit(1);
-    }
+    char key[32]  ="BL";
+    moveDataToFile(key,sleep_time);
+    sleep(sleep_time);
+    initMoveDataFile();
 }
 
 void moveBackRight(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterBackRight.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveBackRight\n");
-        exit(1);
-    }
-}
-
-void moveSneakForward(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakForward.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveSneakForward\n");
-        exit(1);
-    }
-}
-
-void moveSneakLeft(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakLeft.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveSneakLeft\n");
-        exit(1);
-    }
-}
-
-void moveSneakRight(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakRight.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveSneakRight\n");
-        exit(1);
-    }
-}
-
-void moveSneakBack(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakBack.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveSneakBack\n");
-        exit(1);
-    }
-}
-
-void moveSneakForwardLeft(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakForwardLeft.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveSneakForwardLeft\n");
-        exit(1);
-    }
-}
-
-void moveSneakForwardRight(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakForwardRight.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveSneakForwardRight\n");
-        exit(1);
-    }
-}
-
-void moveSneakBackLeft(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakBackLeft.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveSneakBackLeft\n");
-        exit(1);
-    }
-}
-
-void moveSneakBackRight(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterSneakBackRight.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveSneakBackRight\n");
-        exit(1);
-    }
-}
-
-void moveSneak(double time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterSneak.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveSneak\n");
-        exit(1);
-    }
+    char key[32]  ="BR";
+    moveDataToFile(key ,sleep_time);
+    sleep(sleep_time);
+    initMoveDataFile();
 }
 
 void moveJump(int times){
