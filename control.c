@@ -516,6 +516,10 @@ int detectMobsSimple(int mode) {
         t = t * 10;
     }
 
+    if(cbuf < 0 || zbuf < 0) {
+        return 0;
+    }
+
     if(mode == 1){
         return cbuf;
     }else {

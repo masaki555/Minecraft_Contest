@@ -4,27 +4,28 @@
 #include <time.h>
 #include "control.h"
 
-int main(int argc, char *argv){
+int main(int argc, char *argv)
+{
     int ibuf[256];
     int cbuf, zbuf;
     int bufLen;
-    
-    int flag=0;
-    init();
-    setTime();
-    exePython();
-    setSurvival();
-    // init();
-    // exePython();
 
-    while(rk){
+    int flag = 0;
+    init();
+    exePython();
+    // setTime();
+    // setSurvival();
+
+    while (rk)
+    {
         cbuf = detectMobsSimple(1);
         zbuf = detectMobsSimple(2);
 
         printf("\n");
         printf("%010d\n", zbuf);
         printf("%010d\n", cbuf);
-        for(int i=0; i < bufLen; i++) {
+        for (int i = 0; i < bufLen; i++)
+        {
             printf("%d", ibuf[i]);
         }
         printf("\n");

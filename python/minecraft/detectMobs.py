@@ -2,14 +2,19 @@ import sys
 sys.path.append('.')
 sys.path.append('./python/')
 
+from pathlib import Path
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[0]
+
 from PIL import ImageGrab, Image
-import win32gui, time, os, logging
+import win32gui, time, os, logging, argparse
 
 sys.path.append('.')
-sys.path.append('./python/YOLO')
+sys.path.append('./python/yolov5-master')
 import detect
 
 # 画面内のmob情報を格納するクラス
+# type 0:ゾンビ 1:クリーパー
 class mob:
     def __init__(self):
         self.type = 1
@@ -68,11 +73,11 @@ class mob:
 
 # スクショ用関数
 def captureMC(winHundle, windowSize):
-    path = "./python/YOLO/capture.png"
+    # 保存先
+    path = "./python/minecraft/yoloFiles/capture.png"
     
     if winHundle:
         image = ImageGrab.grab(windowSize)
-        # 保存先
         image.save(path)
     else:
         print("error: capture window")
@@ -101,6 +106,9 @@ def calcPosition(posVal):
     return position
 
 def check(simplePos, pos):
+    for i in range(len(simplePos)):
+        simplePos[i] = "0"
+    
     simplePos[calcPosition(pos)] = "1"
     
 def makeSimpleTxt(simpleCreeperPos, simpleZombiePos):
@@ -114,28 +122,70 @@ def makeSimpleTxt(simpleCreeperPos, simpleZombiePos):
     
     writeTxt(line, txtName)
     
+    
+def init():
+    initTxt()
+    
+    logging.config.dictConfig({
+        "version": 1,
+        "disable_existing_loggers": True,
+    })
+
+def setopt():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'yoloFiles/best.pt', help='model path or triton URL')
+    parser.add_argument('--source', type=str, default=ROOT / 'yoloFiles/capture.png')
+    parser.add_argument('--save-txt', action='store_true', default=True)
+    parser.add_argument('--data', type=str, default=ROOT / 'yoloFiles/mobs.yaml', help='(optional) dataset.yaml path')
+    parser.add_argument('--nosave', action='store_true', default=True)
+    parser.add_argument('--exist-ok', action='store_true', default=True)
+    parser.add_argument('--project', default=ROOT / 'yoloFiles', help='save results to project/name')
+    parser.add_argument('--name', default='', help='save results to project/name')
+    
+    opt = parser.parse_args()
+    return opt
+    
+def readResult():
+    result = ""
+    txtPath = 'python/minecraft/yoloFiles/labels/capture.txt'
+    if os.path.isfile(txtPath):
+        f = open(txtPath, 'r')
+        result = f.readlines()
+        f.close()
+    
+    return result
+    
+
 # 結果の出力用
 # txt初期化
 def initTxt():
-        # f = open('t_zombie.txt', 'w', encoding='UTF-8')
-        # f.write("1")
-        # f.close()
-        # f = open('t_creeper.txt', 'w', encoding='UTF-8')
-        # f.write("2")
-        # f.close()
-        f = open('t_simple.txt', 'w', encoding='UTF-8')
-        f.write("1")
-        f.close()
-
+    # f = open('t_zombie.txt', 'w', encoding='UTF-8')
+    # f.write("1")
+    # f.close()
+    # f = open('t_creeper.txt', 'w', encoding='UTF-8')
+    # f.write("2")
+    # f.close()
+    f = open('t_simple.txt', 'w', encoding='UTF-8')
+    f.write("1")
+    f.close()
+    
+def resetDetection():
+    path = 'python/minecraft/yoloFiles/labels/capture.txt'
+    f = open(path, 'w', encoding='UTF-8')
+    f.write("")
+    f.close
+        
 # txt書き込み
 def writeTxt(line, txtName):
     f = open(txtName, 'a', encoding='UTF-8')
     f.write(line)
     f.close()
+    print(line)
 
 def main():
-    # txt初期化
-    initTxt()
+    # 初期化
+    init()
+    opt = setopt()
 
     # Minecraftのウィンドウ取得
     winHundle = win32gui.FindWindow(None, "Minecraft: Education Edition")
@@ -145,6 +195,7 @@ def main():
 
     # スクショ➡検出のループ
     while True:
+        resetDetection()
         #スクショ
         path = captureMC(winHundle, windowSize)
 
@@ -152,7 +203,8 @@ def main():
         # 画像が読み込めるかチェック
         # 読み込めなければ諦める
         if Image.open(path):
-            result = detect.run()
+            detect.run(**vars(opt))
+            result = readResult()
         else:
             continue
         
@@ -169,6 +221,10 @@ def main():
                 check(zombiePos, mobData[j].x)
             # 配列出力用
             # mobData[j].outputDataAbout()
+            # mobData[j].outputDataDetail()
+            
+            # MOB情報を出力
+            # mobData[j].printData()
         makeSimpleTxt(zombiePos, creeperPos)
 
 if __name__ == '__main__':

@@ -13,3 +13,16 @@ echo "import sys; sys.path.append('')" >> setting.pth
 ./python.exe -m pip install update
 
 ./python.exe -m pip install -r ../requirements.txt
+
+curl -o YOLO.zip -LJO https://github.com/ultralytics/yolov5/archive/refs/heads/master.zip
+unzip YOLO.zip
+rm -f YOLO.zip
+
+# unzip yolov5.zip -d YOLO
+# rm -f yolov5.zip
+# chmod -R 705 YOLO
+
+# cd yolov5
+# mv -f -u ./yolov5-master ../
+# cd ../
+# rm -f -d yolov5
