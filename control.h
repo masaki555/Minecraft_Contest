@@ -6,7 +6,7 @@ void attackRight(void);
 
 void moveDataToFile(char* key, int sleep_time);
 void initMoveDataFile(void);
-void MonitorMoveData(void);
+void* monitorMoveData(void *arg);
 void finishMonitor(void);
 void moveForward(int time);
 void moveLeft(double time);
@@ -17,9 +17,9 @@ void moveForwardRight(double time);
 void moveBackLeft(double time);
 void moveBackRight(double time);
 void moveJump(int times);
-void moveDash(double time);
-void moveJumpDash(int times);
-
+void setDashFlag(int flag);
+void setDash(void);
+void resetDash(void);
 
 void init(void);
 void setTime(void);

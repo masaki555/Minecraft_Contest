@@ -134,7 +134,7 @@ int main(int argc, char *argv[]){
 
 |戻値 関数名(引数)             |説明
 |:----------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| void init(void)             | Botプログラム初期設定関数．Minecraftのウィンドウ位置，サイズを強制的にx20，y20の横幅920，縦幅1080のする．また，マウスの初期位置を記憶する．                                                         |
+| void init(void)             | Botプログラム初期設定関数．Minecraftのウィンドウ位置，サイズを強制的にx20，y20の横幅920，縦幅1080のする．また，マウスの初期位置を記憶する．またプレイヤーの移動を監視するプログラムを起動する．                                                         |
 | void exePython(void)        | Botプログラム初期設定関数．画像処理プログラムが実行される．                                                                                                                                   |
 | void setTime(void)          | Minecraftの時間を夜に設定してくれる．                                                                                                                                                       |
 |void setMorning(void)        | Minecraftの時間を朝に設定してくれる．                                                                                                                                                       |
@@ -152,18 +152,9 @@ int main(int argc, char *argv[]){
 | void moveForwardRight(double time)         | 右斜め前に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
 | void moveBackLeft(double time)        | 左斜め後ろに動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                          |
 | void moveBackRight(double time)         | 右斜め後ろに動く．timeで指定した時間（単位は秒）動く．
-| void moveSneakForward(double time)      | スニーク状態で前進する．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
-| void moveSneakLeft(double time)         | スニーク状態で左に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
-| void moveSneakRight(double time)        | スニーク状態で右に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                          |
-| void moveSneakBack(double time)         | スニーク状態で後進する．timeで指定した時間（単位は秒）動く．
-| void moveSneakForwardLeft(double time)      | スニーク状態で左斜め前に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
-| void moveSneakForwardRight(double time)         | スニーク状態で右斜め前に動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                           |
-| void moveSneakBackLeft(double time)        | スニーク状態で左斜め後ろに動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                          |
-| void moveSneakBackRight(double time)         | スニーク状態で右斜め後ろに動く．timeで指定した時間（単位は秒）動く．
-| void moveSneak(double time)         | スニーク状態になる．timeで指定した時間（単位は秒）動く．
-| void movejump(int times)         | ジャンプする．timesで指定した回数分，連続でジャンプし続ける．  
-| void moveDash(double time)         | 前に走る．timeで指定した時間（単位は秒）動く．
-| void moveJumpDash(int times);         | 前に走りながらジャンプする．timesで指定した回数分のジャンプが終わるまで動き続ける．                                                                                                                                                         |
+| void movejump(int times)         | ジャンプする．timesで指定した回数分，連続でジャンプし続ける．                                                                                                                                                         |
+| void setDash(void)        | resetDash関数を呼び出すまでctrlキーを押し続ける．ほかのmove系の関数と合わせることでダッシュする．                                                                           |
+| void resetDash(void)        | ctrlキーをはなす．                                                                           |
 | void cameraDown(void)       | カメラを下10度に動かす．                                                                                                                                                                   |
 | void cameraLeft(void)       | カメラを左10度に動かす．                                                                                                                                                                   |
 | void cameraRight(void)      | カメラを右10度に動かす．                                                                                                                                                                   |

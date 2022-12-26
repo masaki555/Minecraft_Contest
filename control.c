@@ -1,4 +1,4 @@
-  #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -9,10 +9,15 @@
 #include "control.h"
 #include <pthread.h>
 
+#define PRINT_HERE \
+   fprintf(stderr, "File:%s Line:%d\t", __FILE__, __LINE__)
+
 pid_t Ppid;
 pid_t Kpid;
 pid_t Mpid;
 int rk=1;
+pthread_t A_thread;
+
 
 void attackLeft(void){
     char com[128] = "python/python.exe python/minecraft/clickLeft.py";
@@ -33,54 +38,80 @@ void attackRight(void){
 
 void moveDataToFile(char* key, int sleep_time){
     FILE *fp;
+    char pass[64] = "python/tmp/Share_Move_Data.txt";
+    char buf[32]="";
+    const char* const sep = ",";
+    char *data;
+    
+    // Share_Move_Data.txtの内容をbufに保存する
 
-    if((fp=fopen("python/movedata/share_MoveData.txt", "w"))==NULL){
-        printf("error：moveDataToFile\nshare_MoveData.txtを開けませんでした．\n");
+    if((fp=fopen(pass, "r"))==NULL){
+        printf("error：moveDataToFile\nShare_Move_Data.txtをrモードで開けませんでした．\n");
         exit(1);
     }else{
-        fprintf(fp, "%s\n", key);
-        fprintf(fp,"%d\n", sleep_time);
+        fgets(buf, 31, fp);
     }
+    fclose(fp);
 
+    // bufの内容に変更を加えてShare_Move_Data.txtを上書きする
+
+    if((fp=fopen(pass, "w"))==NULL){
+        printf("error：Share_Move_Data.txtをwモードで開けませんでした．\n");
+        exit(1);
+    }else{
+        data = strtok(buf, sep);
+        data = strtok(NULL, sep);
+        data = strtok(NULL, sep);
+        if(data != NULL){
+            fprintf(fp, "%s,%d,%s", key, sleep_time, data);
+        }else{
+            printf("error:moveDataToFile\n");
+            exit(1);
+        }
+    }
     fclose(fp);
 }
 
 void initMoveDataFile(void){
-    FILE *fp;
-
-    if((fp=fopen("python/movedata/share_MoveData.txt", "w"))==NULL){
-        printf("error：initMoveDataFile\n");
-        printf("       share_MoveData.txtを開けませんでした．\n");
-        exit(1);
-    }else{
-    fprintf(fp,"Wait\n");
-    fprintf(fp,"0\n");
-    }
-  
-    fclose(fp);
+    moveDataToFile("Wait", 0);
 }
 
-void MonitorMoveData(void){
+void* monitorMoveData(void *arg){
     initMoveDataFile();
     FILE *fp;
     char com[128] = "python/python.exe python/minecraft/monitorPlayerMove.py";
+    printf("プレイヤの移動の監視を開始します．\n");
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:MonitorMoveData\n");
+        printf("error:monitorMoveData\n");
         exit(1);
     }
 }
 
 void finishMonitor(void){
+    FILE *fp;
+    char pass[64] = "python/tmp/Share_Move_Data.txt";
+    char buf[64] = "";
+
     printf("プレイヤの移動の監視を終了します．\n");
-    moveDataToFile("Finish",0);
+
+    if((fp=fopen(pass, "w"))==NULL){
+        printf("error：Share_Move_Data.txtをwモードで開けませんでした．\n");
+        exit(1);
+    }else{
+        fprintf(fp, "Finish,0,0");
+    }
+    fclose(fp);
+    sleep(1);
+    pthread_join(A_thread, NULL);
 }
 
 void moveForward(int sleep_time){
     char key[32]  ="F";
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
-    initMoveDataFile();    
+    initMoveDataFile();  
+    usleep(0.15*1000000);  
 }
 
 void moveLeft(double sleep_time){
@@ -88,13 +119,15 @@ void moveLeft(double sleep_time){
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
     initMoveDataFile();  
+    usleep(0.15*1000000);
 }
 
 void moveRight(double sleep_time){
     char key[32]  ="R";
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
-    initMoveDataFile();   
+    initMoveDataFile(); 
+    usleep(0.15*1000000);  
 }
 
 void moveBack(double sleep_time){
@@ -102,6 +135,7 @@ void moveBack(double sleep_time){
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
     initMoveDataFile(); 
+    usleep(0.15*1000000);
 }
 
 void moveForwardLeft(double sleep_time){
@@ -109,6 +143,7 @@ void moveForwardLeft(double sleep_time){
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
     initMoveDataFile();
+    usleep(0.37*1000000);
 }
 
 void moveForwardRight(double sleep_time){
@@ -116,6 +151,7 @@ void moveForwardRight(double sleep_time){
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
     initMoveDataFile();
+    usleep(0.37*1000000);
 }
 
 void moveBackLeft(double sleep_time){
@@ -123,6 +159,7 @@ void moveBackLeft(double sleep_time){
     moveDataToFile(key,sleep_time);
     sleep(sleep_time);
     initMoveDataFile();
+    usleep(0.37*1000000);
 }
 
 void moveBackRight(double sleep_time){
@@ -130,6 +167,7 @@ void moveBackRight(double sleep_time){
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
     initMoveDataFile();
+    usleep(0.37*1000000);
 }
 
 void moveJump(int times){
@@ -143,36 +181,72 @@ void moveJump(int times){
     }
 }
 
-void moveDash(double sleep_time){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterDash.py";
-    char com[256];
-    sprintf(com, "%s %lf", str, sleep_time);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveDash\n");
+void setDashFlag(int flag){
+    FILE *fp;
+    char pass[64] = "python/tmp/Share_Move_Data.txt";
+    char buf[32] = "";
+    const char* const sep = ",";
+    char *data;
+
+    // Share_Move_Data.txtの内容をbufに保存する
+
+    if((fp=fopen(pass, "r"))==NULL){
+        printf("error：moveDataToFile\nShare_Move_Data.txtをrモードで開けませんでした．\n");
         exit(1);
+    }else{
+        fgets(buf, 31, fp);
     }
+    fclose(fp);
+
+    // bufの内容に変更を加えてShare_Move_Data.txtを上書きする
+
+    if((fp=fopen(pass, "w"))==NULL){
+        printf("error：Share_Move_Data.txtをwモードで開けませんでした．\n");
+        exit(1);
+    }else{
+        data = strtok(buf, sep);
+        
+        fprintf(fp, "%s,", data);
+
+        data = strtok(NULL, sep);
+        if(data != NULL){
+            fprintf(fp, "%s,", data);
+        }
+        fprintf(fp, "%d", flag);
+    }
+    fclose(fp);
+
+    if((fp=fopen(pass, "r"))==NULL){
+        printf("error：moveDataToFile\nShare_Move_Data.txtをrモードで開けませんでした．\n");
+        exit(1);
+    }else{
+        fgets(buf, 31, fp);
+    }
+    fclose(fp);
 }
 
-void moveJumpDash(int times){
-    char str[128] = "python/python.exe python/minecraft/moveCharacterJumpDash.py";
-    char com[256];
-    sprintf(com, "%s %d", str, times);
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:moveJumpDash\n");
-        exit(1);
-    }
+void setDash(void){
+    setDashFlag(1);
 }
 
+void resetDash(void){
+    setDashFlag(0);
+}
 
 void init(void){
     char com[128] = "python/python.exe python/minecraft/init.py";
+    int thread_id;
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
         printf("error:init\n");
         exit(1);
     }
+    thread_id = pthread_create(&A_thread, NULL, monitorMoveData, NULL);
+    if(thread_id != 0){
+        printf("error:pthread_create\n");
+        exit(1);
+    }
+    usleep(0.2*1000000);
 }
 
 void setTime(void){
