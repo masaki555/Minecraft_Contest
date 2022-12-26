@@ -153,6 +153,8 @@ int main(int argc, char *argv[]){
 | void moveBackLeft(double time)        | 左斜め後ろに動く．timeで指定した時間（単位は秒）動く．                                                                                                                                                          |
 | void moveBackRight(double time)         | 右斜め後ろに動く．timeで指定した時間（単位は秒）動く．
 | void movejump(int times)         | ジャンプする．timesで指定した回数分，連続でジャンプし続ける．                                                                                                                                                         |
+| void setDash(void)        | resetDash関数を呼び出すまでctrlキーを押し続ける．ほかのmove系の関数と合わせることでダッシュする．                                                                           |
+| void setDash(void)        | ctrlキーをはなす．                                                                           |
 | void cameraDown(void)       | カメラを下10度に動かす．                                                                                                                                                                   |
 | void cameraLeft(void)       | カメラを左10度に動かす．                                                                                                                                                                   |
 | void cameraRight(void)      | カメラを右10度に動かす．                                                                                                                                                                   |
