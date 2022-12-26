@@ -6,8 +6,7 @@
 
 int main(int argc, char *argv)
 {
-    int ibuf[256];
-    int cbuf, zbuf;
+    int buf;
     int bufLen;
 
     int flag = 0;
@@ -18,16 +17,10 @@ int main(int argc, char *argv)
 
     while (rk)
     {
-        cbuf = detectMobsSimple(1);
-        zbuf = detectMobsSimple(2);
+        buf = detectZombie3();
 
         printf("\n");
-        printf("%010d\n", zbuf);
-        printf("%010d\n", cbuf);
-        for (int i = 0; i < bufLen; i++)
-        {
-            printf("%d", ibuf[i]);
-        }
+        printf("%6d\n", buf);
         printf("\n");
         // 実際に動かすときにはsleepは不要
         // 現状何もしていないため検出より早く出力してしまう

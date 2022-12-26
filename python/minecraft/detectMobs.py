@@ -13,6 +13,13 @@ sys.path.append('.')
 sys.path.append('./python/yolov5-master')
 import detect
 
+path_detectZombie3 = "python/tmp/detectZombie3.txt"
+path_captureImg = "./python/minecraft/yoloFiles/capture.png"
+path_captureTxt = "python/minecraft/yoloFiles/labels/capture.txt"
+
+# 画像の分割数
+splitNum = 6
+
 # 画面内のmob情報を格納するクラス
 # type 0:ゾンビ 1:クリーパー
 class mob:
@@ -22,7 +29,6 @@ class mob:
         self.y = 0
         self.width = 0
         self.height = 0
-        self.distance = 0
 
     def setData(self, result):
         data = result.split()
@@ -31,7 +37,6 @@ class mob:
         self.y = float(data[2])
         self.width = float(data[3])
         self.height = float(data[4])
-        self.distance = calcDistance(self.x)
 
     def printData(self):
         print(self.type)
@@ -39,92 +44,42 @@ class mob:
         print(self.y)
         print(self.width)
         print(self.height)
-         
-
-    # 配列出力用
-    # フォーマット：種類(1,2) X Y width height 距離
-    # 種類以外0埋め三桁表示
-    # def outputDataDetail(self):
-    #     i_x = (int)(self.x * 1000)
-    #     i_y = (int)(self.y * 1000)
-    #     i_width = (int)(self.width * 1000)
-    #     i_height = (int)(self.height * 1000)
-
-    #     # txtに書き込む内容
-    #     txt = "{x:03.0f}{y:03.0f}{w:03.0f}{h:03.0f}{dist:03d}".format(x=i_x,y=i_y,w=i_width,h=i_height,dist=self.distance)
-
-    #     writeTxt(txt, self.type)
-
-    # # フォーマット：種類(1,2) X軸位置 Y軸位置 距離
-    # # 全て１桁
-    # def outputDataAbout(self):
-    #     x_pos = calcPosition(self.x)
-    #     y_pos = calcPosition(self.y)
-
-    #     # txtに書き込む内容
-    #     txt = "{x:01d}{y:01d}{dist:01d}".format(x=x_pos,y=y_pos,dist=self.distance)
-
-    #     if(self.type == 1):
-    #         txtName = "t_zombie.txt"
-    #     else:
-    #         txtName = "t_creeper.txt"
-    #     writeTxt(txt, txtName)
-        
 
 # スクショ用関数
 def captureMC(winHundle, windowSize):
-    # 保存先
-    path = "./python/minecraft/yoloFiles/capture.png"
-    
     if winHundle:
         image = ImageGrab.grab(windowSize)
-        image.save(path)
+        image.save(path_captureImg)
     else:
         print("error: capture window")
-        
-    return path
-
-# 大体の距離を計算
-def calcDistance(width):
-    # 0:近距離 1:中距離 2:遠距離
-    if width > 0.1:
-        distance = 0
-    elif width > 0.05:
-        distance = 1
-    else:
-        distance = 2 
-    
-    return distance
 
 # 大体の位置計算
 def calcPosition(posVal):
-    # 画面を大体１０等分して計算
-    for i in range(10):
-        if(i < posVal*10):
+    # 画面をsplitNum等分して計算
+    border = 1.0 / splitNum
+    for i in range(splitNum):
+        if(border * i < posVal):
             position = i
 
     return position
 
 def check(simplePos, pos):
-    for i in range(len(simplePos)):
-        simplePos[i] = "0"
-    
     simplePos[calcPosition(pos)] = "1"
     
-def makeSimpleTxt(simpleCreeperPos, simpleZombiePos):
-    txtName = "t_simple.txt"
-    line = ""
-    for i in range(10):
-        line = line + simpleCreeperPos[i]
-    line = line + "2"
-    for i in range(10):
-        line = line + simpleZombiePos[i]
+# def makeSimpleTxt(simpleCreeperPos, simpleZombiePos):
+#     txtName = "python/tmp/t_simple.txt"
+#     line = ""
+#     for i in range(10):
+#         line = line + simpleCreeperPos[i]
+#     line = line + "2"
+#     for i in range(10):
+#         line = line + simpleZombiePos[i]
     
-    writeTxt(line, txtName)
-    
+#     writeTxt(line, path_DetectZombie3)
     
 def init():
     initTxt()
+    resetDetection()
     
     logging.config.dictConfig({
         "version": 1,
@@ -147,40 +102,41 @@ def setopt():
     
 def readResult():
     result = ""
-    txtPath = 'python/minecraft/yoloFiles/labels/capture.txt'
-    if os.path.isfile(txtPath):
-        f = open(txtPath, 'r')
+    if os.path.isfile(path_captureTxt):
+        f = open(path_captureTxt, 'r')
         result = f.readlines()
         f.close()
+        # print(result)
     
     return result
     
-
 # 結果の出力用
 # txt初期化
 def initTxt():
-    # f = open('t_zombie.txt', 'w', encoding='UTF-8')
-    # f.write("1")
-    # f.close()
-    # f = open('t_creeper.txt', 'w', encoding='UTF-8')
-    # f.write("2")
-    # f.close()
-    f = open('t_simple.txt', 'w', encoding='UTF-8')
-    f.write("1")
+    f = open(path_detectZombie3, 'w', encoding='UTF-8')
+    f.write("")
     f.close()
     
 def resetDetection():
-    path = 'python/minecraft/yoloFiles/labels/capture.txt'
-    f = open(path, 'w', encoding='UTF-8')
+    f = open(path_captureTxt, 'w', encoding='UTF-8')
     f.write("")
     f.close
         
+def makeZombieTxt(zombiePos):
+    line = ""
+    for i in range(splitNum):
+        line = line + zombiePos[i]
+        
+    # print(line)
+    
+    writeTxt(line, path_detectZombie3)
+    
 # txt書き込み
-def writeTxt(line, txtName):
-    f = open(txtName, 'a', encoding='UTF-8')
+def writeTxt(line, txtPath):
+    f = open(txtPath, 'a', encoding='UTF-8')
     f.write(line)
     f.close()
-    print(line)
+    # print(line)
 
 def main():
     # 初期化
@@ -197,12 +153,12 @@ def main():
     while True:
         resetDetection()
         #スクショ
-        path = captureMC(winHundle, windowSize)
+        captureMC(winHundle, windowSize)
 
         # 検出
         # 画像が読み込めるかチェック
         # 読み込めなければ諦める
-        if Image.open(path):
+        if Image.open(path_captureImg):
             detect.run(**vars(opt))
             result = readResult()
         else:
@@ -210,22 +166,17 @@ def main():
         
         initTxt()
         mobData = []
-        zombiePos = ["0"] * 10
-        creeperPos = ["0"] * 10
+        zombiePos = ["0"] * splitNum
+        creeperPos = ["0"] * splitNum
         for j in range(len(result)):
             mobData.append(mob())
             mobData[j].setData(result=result[j])
             if(mobData[j].type == 1):
-                check(creeperPos, mobData[j].x)
-            else: 
                 check(zombiePos, mobData[j].x)
-            # 配列出力用
-            # mobData[j].outputDataAbout()
-            # mobData[j].outputDataDetail()
             
             # MOB情報を出力
             # mobData[j].printData()
-        makeSimpleTxt(zombiePos, creeperPos)
+        makeZombieTxt(zombiePos)
 
 if __name__ == '__main__':
     main()

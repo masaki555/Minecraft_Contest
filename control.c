@@ -378,7 +378,7 @@ int kbhit(void){
 
 int detectZombie(void){
     FILE	*fp;
-	char	fname[] = "tmp.txt";
+	char	fname[] = "python/tmp/detectZombie1.txt";
     int i,ibuf=0,t=1;
 
 	if ( (fp=fopen(fname,"r")) ==NULL) {
@@ -399,7 +399,7 @@ int detectZombie(void){
 
 int detectZombie2(void){
     FILE	*fp;
-	char	fname[] = "tmp2.txt";
+	char	fname[] = "python/tmp/detectZombie2.txt";
     int i,ibuf=0,t=1;
 
 	if ( (fp=fopen(fname,"r")) ==NULL) {
@@ -415,84 +415,34 @@ int detectZombie2(void){
     return ibuf;
 }
 
-/*
-int detectMobsDetail(int mode, int ibuf[]) {
-    FILE	*fp; 
-    char	*fname;
-    int     i;
+int detectZombie3() {
+    FILE	*fp;
+	char	fname[] = "python/tmp/detectZombie3.txt";
+    int i, t=1;
+    int zbuf=0;
 
-    if(mode == 1) {
-	    fname = "t_creeper.txt";
-    }else if(mode == 2){
-	    fname = "t_zombie.txt";
-    }else {
-        printf("error:detectMobs\n");
-        printf("Non accepted mode value\n");
-        killPython();
-		exit(1);
-    }
-
-    if ( (fp=fopen(fname,"r")) == NULL) {
-		printf("error:detectMobsAbout\n");
+	if ( (fp=fopen(fname,"r")) ==NULL) {
+		printf("error:detectZombie3\n");
         killPython();
 		exit(1);
 	}
-
 	char buf[256];
 	fgets(buf, sizeof(buf), fp);
 	(void) fclose(fp);
-    int bufLength = strlen(buf);
-
-    for(i=0; i<256; i++){
-        ibuf[i] = 0;
+    
+    for(i=0;i<6;i++){
+        zbuf = zbuf + ((buf[5 - i] - '0') * t);
+        t = t * 10;
     }
 
-    for(i=0;i<bufLength;i++){
-        ibuf[i] = buf[i] - '0';
+    if(zbuf < 0) {
+        return 0;
     }
 
-    return bufLength;
+    return zbuf;
 }
 
-int detectMobsAbout(int mode, int ibuf[]) {
-    FILE	*fp; 
-    char	*fname;
-    int     i;
-
-    if(mode == 1) {
-	    fname = "t_creeper.txt";
-    }else if(mode == 2){
-	    fname = "t_zombie.txt";
-    }else {
-        printf("error:detectMobsAbout\n");
-        printf("Non accepted mode value\n");
-        killPython();
-		exit(1);
-    }
-
-    if ( (fp=fopen(fname,"r")) == NULL) {
-		printf("error:detectMobsAbout\n");
-		exit(1);
-	}
-
-	char buf[256];
-	fgets(buf, sizeof(buf), fp);
-	(void) fclose(fp);
-    int bufLength = strlen(buf);
-
-    for(i=0; i<256; i++){
-        ibuf[i] = 0;
-    }
-
-    for(i=0;i<bufLength;i++){
-        ibuf[i] = buf[i] - '0';
-    }
-
-    return bufLength;
-}
-*/
-
-int detectMobsSimple(int mode) {
+int DetectMobs() {
     FILE	*fp;
 	char	fname[] = "t_simple.txt";
     int i, t=1;
@@ -519,12 +469,13 @@ int detectMobsSimple(int mode) {
     if(cbuf < 0 || zbuf < 0) {
         return 0;
     }
-
-    if(mode == 1){
         return cbuf;
-    }else {
-        return zbuf;
-    }
+
+    // if(mode == 1){
+    //     return cbuf;
+    // }else {
+    //     return zbuf;
+    // }
 }
 
 void killPython(void){

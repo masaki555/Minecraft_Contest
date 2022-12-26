@@ -17,12 +17,6 @@ echo "import sys; sys.path.append('')" >> setting.pth
 curl -o YOLO.zip -LJO https://github.com/ultralytics/yolov5/archive/refs/heads/master.zip
 unzip YOLO.zip
 rm -f YOLO.zip
+chmod -R 755 yolov5-master
 
-# unzip yolov5.zip -d YOLO
-# rm -f yolov5.zip
-# chmod -R 705 YOLO
-
-# cd yolov5
-# mv -f -u ./yolov5-master ../
-# cd ../
-# rm -f -d yolov5
+./python.exe -m pip install -r ../python/yolov5-master/requirements.txt
