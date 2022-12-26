@@ -47,5 +47,5 @@ void killPython(void);
 
 int detectZombie(void);
 int detectZombie2(void);
-int detectMobsSimple(int mode);
+int detectZombie3(void);
 void exePython(void);
