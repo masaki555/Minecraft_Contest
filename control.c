@@ -238,6 +238,7 @@ void init(void){
         printf("error:pthread_create\n");
         exit(1);
     }
+    usleep(0.2*1000000);
 }
 
 void setTime(void){
