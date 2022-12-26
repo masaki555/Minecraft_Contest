@@ -110,7 +110,8 @@ void moveForward(int sleep_time){
     char key[32]  ="F";
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
-    initMoveDataFile();    
+    initMoveDataFile();  
+    usleep(0.15*1000000);  
 }
 
 void moveLeft(double sleep_time){
@@ -118,13 +119,15 @@ void moveLeft(double sleep_time){
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
     initMoveDataFile();  
+    usleep(0.15*1000000);
 }
 
 void moveRight(double sleep_time){
     char key[32]  ="R";
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
-    initMoveDataFile();   
+    initMoveDataFile(); 
+    usleep(0.15*1000000);  
 }
 
 void moveBack(double sleep_time){
@@ -132,6 +135,7 @@ void moveBack(double sleep_time){
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
     initMoveDataFile(); 
+    usleep(0.15*1000000);
 }
 
 void moveForwardLeft(double sleep_time){
@@ -139,6 +143,7 @@ void moveForwardLeft(double sleep_time){
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
     initMoveDataFile();
+    usleep(0.37*1000000);
 }
 
 void moveForwardRight(double sleep_time){
@@ -146,6 +151,7 @@ void moveForwardRight(double sleep_time){
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
     initMoveDataFile();
+    usleep(0.37*1000000);
 }
 
 void moveBackLeft(double sleep_time){
@@ -153,6 +159,7 @@ void moveBackLeft(double sleep_time){
     moveDataToFile(key,sleep_time);
     sleep(sleep_time);
     initMoveDataFile();
+    usleep(0.37*1000000);
 }
 
 void moveBackRight(double sleep_time){
@@ -160,6 +167,7 @@ void moveBackRight(double sleep_time){
     moveDataToFile(key ,sleep_time);
     sleep(sleep_time);
     initMoveDataFile();
+    usleep(0.37*1000000);
 }
 
 void moveJump(int times){

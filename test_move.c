@@ -16,8 +16,7 @@ int main(int argc, char *argv){
     moveBackRight(3);
     moveForwardRight(3);
     setDash();
-    moveForward(5);
+    moveForward(3);
     resetDash();
-
     finishMonitor();
 }

@@ -23,30 +23,36 @@ def back(sleep_time):
     time.sleep(sleep_time)
     pydirectinput.keyUp('s')
 
+
 def forwardLeft(sleep_time):
-    #### threading.Thread(target = よびだす関数名, args = 引数(タプル) ) で指定
-    thread1 = threading.Thread(target = forward, args = (sleep_time,))
-    thread2 = threading.Thread(target = left, args = (sleep_time,))
-    thread1.start()
-    thread2.start()
+    pydirectinput.keyDown('w')
+    pydirectinput.keyDown('a')
+    time.sleep(sleep_time)
+    pydirectinput.keyUp('a')
+    pydirectinput.keyUp('w')
+
 
 def forwardRight(sleep_time):
-    thread1 = threading.Thread(target = forward, args = (sleep_time,))
-    thread2 = threading.Thread(target = right, args = (sleep_time,))
-    thread1.start()
-    thread2.start()
+    pydirectinput.keyDown('w')
+    pydirectinput.keyDown('d')
+    time.sleep(sleep_time)
+    pydirectinput.keyUp('d')
+    pydirectinput.keyUp('w')
 
 def backLeft(sleep_time):
-    thread1 = threading.Thread(target = back, args = (sleep_time,))
-    thread2 = threading.Thread(target = left, args = (sleep_time,))
-    thread1.start()
-    thread2.start()
+    pydirectinput.keyDown('s')
+    pydirectinput.keyDown('a')
+    time.sleep(sleep_time)
+    pydirectinput.keyUp('a')
+    pydirectinput.keyUp('s')
 
 def backRight(sleep_time):
-    thread1 = threading.Thread(target = back, args = (sleep_time,))
-    thread2 = threading.Thread(target = right, args = (sleep_time,))
-    thread1.start()
-    thread2.start()
+    pydirectinput.keyDown('s')
+    pydirectinput.keyDown('d')
+    time.sleep(sleep_time)
+    pydirectinput.keyUp('d')
+    pydirectinput.keyUp('s')
+
 
 def setDash(dash_flag):
     if(dash_flag == 1):
