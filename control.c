@@ -65,8 +65,8 @@ void moveDataToFile(char* key, double sleep_time){
         if(data != NULL){
             fprintf(fp, "%s,%f,%s", key, (float)sleep_time, data);
         }else{
-            printf("error:moveDataToFile\n");
-            exit(1);
+            fprintf(fp, "%s,%f,%s", key, (float)sleep_time, "0");
+            //printf("error:moveDataToFile\n");
         }
     }
     fclose(fp);
@@ -220,15 +220,6 @@ void resetDash(void){
     setDashFlag(0);
 }
 
-void init(void){
-    char com[128] = "python/python.exe python/minecraft/init.py";
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:init\n");
-        exit(1);
-    }
-}
-
 void setTime(void){
     char com[128] = "python/python.exe python/minecraft/setTime.py";
     int f = system(com);
@@ -301,6 +292,17 @@ void cameraUp(double time){
     char key[32]  ="U";
     cameraDataToFile(key ,time);
     Sleep(time * 1000);
+    initCameraDataFile();
+}
+
+void init(void){
+    char com[128] = "python/python.exe python/minecraft/init.py";
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:init\n");
+        exit(1);
+    }
+    initMoveDataFile();
     initCameraDataFile();
 }
 
