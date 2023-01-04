@@ -4,11 +4,10 @@ extern int rk;
 void attackLeft(void);
 void attackRight(void);
 
-void moveDataToFile(char* key, int sleep_time);
+void moveDataToFile(char* key, double sleep_time);
 void initMoveDataFile(void);
 void* monitorMoveData(void *arg);
-void finishMonitor(void);
-void moveForward(int time);
+void moveForward(double time);
 void moveLeft(double time);
 void moveRight(double time);
 void moveBack(double time);
@@ -26,12 +25,12 @@ void setTime(void);
 void setMorning(void);
 void setSurvival(void);
 void setCreative(void);
-void cameraPos(void);
 
-void cameraDown(void);
-void cameraLeft(void);
-void cameraRight(void);
-void cameraUp(void);
+void cameraCenter(void);
+void cameraDown(double time);
+void cameraLeft(double time);
+void cameraRight(double time);
+void cameraUp(double time);
 void pushKey(char* key);
 
 int kbhit(void);
@@ -42,7 +41,7 @@ void killPython(void);
 
 int detectZombie(void);
 int detectZombie2(void);
-int detectMobsDetail(int mode, int ibuf[]);
-int detectMobsAbout(int mode, int ibuf[]);
-long detectMobsSimple(int mode);
+/*int detectMobs(int mode, int ibuf[]);*/
+int detectMobsArray(int mode , int ibuf[]);
+long detectMobs(int mode);
 void exePython(void);

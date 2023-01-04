@@ -10,8 +10,8 @@ import numpy as np
 N = 5
 #HSV,RGB値の算出
 def wrightTxt(line):
-    f = open('tmp.txt', 'w', encoding='UTF-8')
-    f.write(line)
+    f = open('./python/tmp/detect_zombie1.txt', 'w', encoding='UTF-8')
+    f.write(str(line))
     f.close()
 
 def color(box):
@@ -192,7 +192,9 @@ def trackZombie(cap):
     #自身の攻撃検出
     area.append(punch_check(frame))
     #print(area)
-    wrightTxt(printByte(area))
+    bytedata = printByte(area)
+    #print(int(bytedata , 2))
+    wrightTxt(int(bytedata , 2))
 
 def main():
     #cap = camera.CameraSelector(args.device, args.fps, args.size, args.box)

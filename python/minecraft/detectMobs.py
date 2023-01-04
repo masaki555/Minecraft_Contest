@@ -60,9 +60,9 @@ class mob:
         txt = "{x:01d}{y:01d}{dist:01d}".format(x=x_pos,y=y_pos,dist=self.distance)
 
         if(self.type == 1):
-            txtName = "t_zombie.txt"
+            txtName = "./python/tmp/t_zombie.txt"
         else:
-            txtName = "t_creeper.txt"
+            txtName = "./python/tmp/t_creeper.txt"
         writeTxt(txt, txtName)
         
 
@@ -107,7 +107,7 @@ def check(simplePos, pos):
     simplePos[calcPosition(pos)] = "1"
     
 def makeSimpleTxt(simpleCreeperPos, simpleZombiePos):
-    txtName = "t_simple.txt"
+    txtName = "./python/tmp/t_simple.txt"
     line = ""
     for i in range(10):
         line = line + simpleCreeperPos[i]
@@ -120,13 +120,13 @@ def makeSimpleTxt(simpleCreeperPos, simpleZombiePos):
 # 結果の出力用
 # txt初期化
 def initTxt():
-        f = open('t_zombie.txt', 'w', encoding='UTF-8')
+        f = open('./python/tmp/t_zombie.txt', 'w', encoding='UTF-8')
         f.write("1")
         f.close()
-        f = open('t_creeper.txt', 'w', encoding='UTF-8')
+        f = open('./python/tmp/t_creeper.txt', 'w', encoding='UTF-8')
         f.write("2")
         f.close()
-        f = open('t_simple.txt', 'w', encoding='UTF-8')
+        f = open('./python/tmp/t_simple.txt', 'w', encoding='UTF-8')
         f.write("1")
         f.close()
 

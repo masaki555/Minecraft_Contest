@@ -2,51 +2,42 @@
 #include <unistd.h>
 #include "control.h"
 
+int printBinary(int value){
+    int binary = 0;
+    int base = 1;
+
+    while(value>0){
+        binary = binary + ( value % 2 ) * base;
+        value = value / 2;
+        base = base * 10;
+    }
+    return binary;
+}
+
 int main(char *argv){
-    int han , han2;
+    int han = 0 , han2 = 0 , han3 = 0;
     int flag=0;
     init();
-    setTime();
+    //setTime();
     exePython();
-    setSurvival();
+    //setSurvival();
     while(rk){
-        printf("%d\n" , han );
+        han = printBinary(detectZombie());
+        han2 = printBinary(detectZombie2());
+        han3 = printBinary(detectMobs(1));
+        /*
         han = detectZombie();
         han2 = detectZombie2();
-        printf("%d\n" , han2);
-        if(flag==0){
-            if( (han/1000000)==1 && ((han/100000)%10)==1 && ((han/10000)%10)==1 ){
-                moveBack();
-                moveBack();
-            }else{
-                if( ((han/100000)%10)==1 && ((han/100)%10)==1 ){
-                    attackLeft();
-                    han = detectZombie();
-                    flag=1;
-                }else if((han/1000000)==1){
-                    cameraLeft();
-                }else if(((han/10000)%10)==1){
-                    cameraRight();
-                }else if(((han/1000)%10)==1){
-                    cameraLeft();
-                }else if(((han/10)%10)==1){
-                    cameraRight();
-                }else{
-                    cameraRight();
-                    moveBack();
-                    sleep(0.05);
-                }
-            }
-        }
-        if(flag==1){
-            if((han%10)==1){
-                    moveForward();
-            }
-            flag=0;
-        }
-        attackLeft();
-        sleep(0.1);
+        han3 = detectMobs(1);
+        */
+        printf("detectZombie1=\t%d\n" , han);
+        printf("detectZombie2=\t%d\n" , han2);
+        printf("detectMobs=\t%d\n" , han3);
+        
+        moveForward(1.5);
+        //cameraRight(2.0);
+
     }
-    setCreative();
-    setMorning();
+    //setCreative();
+    //setMorning();
 }

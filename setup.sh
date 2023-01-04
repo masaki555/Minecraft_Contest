@@ -11,5 +11,14 @@ echo "import sys; sys.path.append('')" >> setting.pth
 
 ./python.exe get-pip.py
 ./python.exe -m pip install update
-
 ./python.exe -m pip install -r ../requirements.txt
+
+mkdir ./python/tmp/
+touch ./python/tmp/detect_zombie1.txt
+touch ./python/tmp/detect_zombie2.txt
+touch ./python/tmp/Move_Log.txt
+touch ./python/tmp/Share_Move_Data.txt
+touch ./python/tmp/Share_Camera_Data.txt
+touch ./python/tmp/t_zombie.txt
+touch ./python/tmp/t_creeper.txt
+touch ./python/tmp/t_simple.txt

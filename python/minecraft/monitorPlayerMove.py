@@ -79,11 +79,17 @@ def monitorPlayerMove():
         Move_Data_File = open('python/tmp/Share_Move_Data.txt','r',encoding='UTF-8')
         
         # move_dataは('移動のkey', '実行し続ける時間(秒)', 'ダッシュするフラグ')のタプル
-        move_data = Move_Data_File.read().split(',')
         
-        key = move_data[0]       
-        sleep_time = int(move_data[1])
-        dash_flag = int(move_data[2])
+        try:
+            move_data = Move_Data_File.read().split(',')
+            key = move_data[0]       
+            sleep_time = float(move_data[1])
+            #print(sleep_time)
+            dash_flag = int(move_data[2])
+        except IndexError as e:
+            #print(e)
+            Move_Log_File.write('error\n')
+            continue
 
         Move_Log_File.write(move_data[0] + ',' + move_data[1] + ',' + move_data[2] + '\n')
 
@@ -118,7 +124,7 @@ def monitorPlayerMove():
             print('error: key = ' + key + '未設定のkeyです．プレイヤの移動の監視をエラー終了します．')
             break
 
-        time.sleep(0.1)
+        time.sleep(0)
 
         Move_Data_File.close()
 

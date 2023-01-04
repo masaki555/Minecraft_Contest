@@ -12,12 +12,12 @@
 #define PRINT_HERE \
    fprintf(stderr, "File:%s Line:%d\t", __FILE__, __LINE__)
 
-pid_t Ppid;
-pid_t Kpid;
-pid_t Mpid;
+pid_t Detect1_pid;
+pid_t Detect2_pid;
+pid_t Detect3_pid;
+pid_t Move_pid;
+pid_t Camera_pid;
 int rk=1;
-pthread_t A_thread;
-
 
 void attackLeft(void){
     char com[128] = "python/python.exe python/minecraft/clickLeft.py";
@@ -36,7 +36,7 @@ void attackRight(void){
     }
 }
 
-void moveDataToFile(char* key, int sleep_time){
+void moveDataToFile(char* key, double sleep_time){
     FILE *fp;
     char pass[64] = "python/tmp/Share_Move_Data.txt";
     char buf[32]="";
@@ -63,7 +63,7 @@ void moveDataToFile(char* key, int sleep_time){
         data = strtok(NULL, sep);
         data = strtok(NULL, sep);
         if(data != NULL){
-            fprintf(fp, "%s,%d,%s", key, sleep_time, data);
+            fprintf(fp, "%s,%f,%s", key, (float)sleep_time, data);
         }else{
             printf("error:moveDataToFile\n");
             exit(1);
@@ -72,102 +72,97 @@ void moveDataToFile(char* key, int sleep_time){
     fclose(fp);
 }
 
+void cameraDataToFile(char* key, double sleep_time){
+    FILE *fp;
+    char pass[64] = "python/tmp/Share_Camera_Data.txt";
+    char buf[32]="";
+    char *data;
+    
+    if((fp=fopen(pass, "r"))==NULL){
+        printf("error：Share_Camera_Data.txtをrモードで開けませんでした．\n");
+        exit(1);
+    }else{
+        fgets(buf, 31, fp);
+    }
+    fclose(fp);
+
+    if((fp=fopen(pass, "w"))==NULL){
+        printf("error：Share_Camera_Data.txtをwモードで開けませんでした．\n");
+        exit(1);
+    }else{
+        fprintf(fp, "%s,%f", key, (float)sleep_time);
+    }
+    fclose(fp);
+}
+
+
 void initMoveDataFile(void){
     moveDataToFile("Wait", 0);
 }
 
-void* monitorMoveData(void *arg){
-    initMoveDataFile();
-    FILE *fp;
-    char com[128] = "python/python.exe python/minecraft/monitorPlayerMove.py";
-    printf("プレイヤの移動の監視を開始します．\n");
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:monitorMoveData\n");
-        exit(1);
-    }
-}
 
-void finishMonitor(void){
-    FILE *fp;
-    char pass[64] = "python/tmp/Share_Move_Data.txt";
-    char buf[64] = "";
-
-    printf("プレイヤの移動の監視を終了します．\n");
-
-    if((fp=fopen(pass, "w"))==NULL){
-        printf("error：Share_Move_Data.txtをwモードで開けませんでした．\n");
-        exit(1);
-    }else{
-        fprintf(fp, "Finish,0,0");
-    }
-    fclose(fp);
-    sleep(1);
-    pthread_join(A_thread, NULL);
-}
-
-void moveForward(int sleep_time){
+void moveForward(double sleep_time){
     char key[32]  ="F";
     moveDataToFile(key ,sleep_time);
-    sleep(sleep_time);
+    Sleep(sleep_time * 1000);
     initMoveDataFile();  
-    usleep(0.15*1000000);  
+    //usleep(0.15*1000000);  
 }
 
 void moveLeft(double sleep_time){
     char key[32]  ="L";
     moveDataToFile(key ,sleep_time);
-    sleep(sleep_time);
+    Sleep(sleep_time * 1000);
     initMoveDataFile();  
-    usleep(0.15*1000000);
+    //usleep(0.15*1000000);
 }
 
 void moveRight(double sleep_time){
     char key[32]  ="R";
     moveDataToFile(key ,sleep_time);
-    sleep(sleep_time);
+    Sleep(sleep_time * 1000);
     initMoveDataFile(); 
-    usleep(0.15*1000000);  
+    //usleep(0.15*1000000);  
 }
 
 void moveBack(double sleep_time){
     char key[32]  ="B";
     moveDataToFile(key ,sleep_time);
-    sleep(sleep_time);
+    Sleep(sleep_time * 1000);
     initMoveDataFile(); 
-    usleep(0.15*1000000);
+    //usleep(0.15*1000000);
 }
 
 void moveForwardLeft(double sleep_time){
     char key[32]  ="FL";
     moveDataToFile(key ,sleep_time);
-    sleep(sleep_time);
+    Sleep(sleep_time * 1000);
     initMoveDataFile();
-    usleep(0.37*1000000);
+    //usleep(0.37*1000000);
 }
 
 void moveForwardRight(double sleep_time){
     char key[32]  ="FR";
     moveDataToFile(key ,sleep_time);
-    sleep(sleep_time);
+    Sleep(sleep_time * 1000);
     initMoveDataFile();
-    usleep(0.37*1000000);
+    //usleep(0.37*1000000);
 }
 
 void moveBackLeft(double sleep_time){
     char key[32]  ="BL";
     moveDataToFile(key,sleep_time);
-    sleep(sleep_time);
+    Sleep(sleep_time * 1000);
     initMoveDataFile();
-    usleep(0.37*1000000);
+    //usleep(0.37*1000000);
 }
 
 void moveBackRight(double sleep_time){
     char key[32]  ="BR";
     moveDataToFile(key ,sleep_time);
-    sleep(sleep_time);
+    Sleep(sleep_time * 1000);
     initMoveDataFile();
-    usleep(0.37*1000000);
+    //usleep(0.37*1000000);
 }
 
 void moveJump(int times){
@@ -215,14 +210,6 @@ void setDashFlag(int flag){
         fprintf(fp, "%d", flag);
     }
     fclose(fp);
-
-    if((fp=fopen(pass, "r"))==NULL){
-        printf("error：moveDataToFile\nShare_Move_Data.txtをrモードで開けませんでした．\n");
-        exit(1);
-    }else{
-        fgets(buf, 31, fp);
-    }
-    fclose(fp);
 }
 
 void setDash(void){
@@ -235,18 +222,11 @@ void resetDash(void){
 
 void init(void){
     char com[128] = "python/python.exe python/minecraft/init.py";
-    int thread_id;
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
         printf("error:init\n");
         exit(1);
     }
-    thread_id = pthread_create(&A_thread, NULL, monitorMoveData, NULL);
-    if(thread_id != 0){
-        printf("error:pthread_create\n");
-        exit(1);
-    }
-    usleep(0.2*1000000);
 }
 
 void setTime(void){
@@ -285,46 +265,43 @@ void setCreative(void){
     }
 }
 
-void cameraPos(void){
-    char com[128] = "python/python.exe python/minecraft/initCameraPos.py";
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:cameraPos\n");
-        exit(1);
-    }
+void initCameraDataFile(void){
+    cameraDataToFile("Wait", 0);
 }
 
-void cameraDown(void){
-    char com[128] = "python/python.exe python/minecraft/moveCameraDown.py";
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:cameraDown\n");
-        exit(1);
-    }
+void cameraCenter(void){
+    char key[32]  ="C";
+    cameraDataToFile(key ,0);
+    Sleep(100);
+    initCameraDataFile();
 }
-void cameraLeft(void){
-    char com[128] = "python/python.exe python/minecraft/moveCameraLeft.py";
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:cameraLeft\n");
-        exit(1);
-    }
+
+void cameraDown(double time){
+    char key[32]  ="D";
+    cameraDataToFile(key ,time);
+    Sleep(time * 1000);
+    initCameraDataFile();
 }
-void cameraRight(void){
-    char com[128] = "python/python.exe python/minecraft/moveCameraRight.py";
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:cameraRight\n");
-        exit(1);
-    }
+
+void cameraLeft(double time){
+    char key[32]  ="L";
+    cameraDataToFile(key ,time);
+    Sleep(time * 1000);
+    initCameraDataFile();
 }
-void cameraUp(void){
-    char com[128] = "python/python.exe python/minecraft/moveCameraUp.py";
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:cameraUp\n");
-        exit(1);
-    }
+
+void cameraRight(double time){
+    char key[32]  ="R";
+    cameraDataToFile(key ,time);
+    Sleep(time * 1000);
+    initCameraDataFile();
+}
+
+void cameraUp(double time){
+    char key[32]  ="U";
+    cameraDataToFile(key ,time);
+    Sleep(time * 1000);
+    initCameraDataFile();
 }
 
 void pushKey(char* key){
@@ -336,7 +313,6 @@ void pushKey(char* key){
         exit(1);
     }
 }
-
 
 int kbhit(void){
     struct termios oldt, newt;
@@ -365,7 +341,7 @@ int kbhit(void){
 
 int detectZombie(void){
     FILE	*fp;
-	char	fname[] = "tmp.txt";
+	char	fname[] = "./python/tmp/detect_zombie1.txt";
     int i,ibuf=0,t=1;
 
 	if ( (fp=fopen(fname,"r")) ==NULL) {
@@ -376,17 +352,20 @@ int detectZombie(void){
 	fgets(buf, sizeof(buf), fp);
 	(void) fclose(fp);
 
+    ibuf = atoi(buf);
+    /*
     for(i=0;i<7;i++){
         ibuf = ibuf + ((buf[6-i] - '0') * t );
         t = t * 10;
     }
+    */
 
     return ibuf;
 }
 
 int detectZombie2(void){
     FILE	*fp;
-	char	fname[] = "tmp2.txt";
+	char	fname[] = "./python/tmp/detect_zombie2.txt";
     int i,ibuf=0,t=1;
 
 	if ( (fp=fopen(fname,"r")) ==NULL) {
@@ -402,15 +381,15 @@ int detectZombie2(void){
     return ibuf;
 }
 
-int detectMobsDetail(int mode, int ibuf[]) {
+int detectMobsArray(int mode , int ibuf[]) {
     FILE	*fp; 
     char	*fname;
     int     i;
 
     if(mode == 1) {
-	    fname = "t_creeper.txt";
+	    fname = "./python/tmp/t_creeper.txt";
     }else if(mode == 2){
-	    fname = "t_zombie.txt";
+	    fname = "./python/tmp/t_zombie.txt";
     }else {
         printf("error:detectMobs\n");
         printf("Non accepted mode value\n");
@@ -426,7 +405,7 @@ int detectMobsDetail(int mode, int ibuf[]) {
 	fgets(buf, sizeof(buf), fp);
 	(void) fclose(fp);
     int bufLength = strlen(buf);
-
+    
     for(i=0; i<256; i++){
         ibuf[i] = 0;
     }
@@ -434,49 +413,13 @@ int detectMobsDetail(int mode, int ibuf[]) {
     for(i=0;i<bufLength;i++){
         ibuf[i] = buf[i] - '0';
     }
-
+    
     return bufLength;
 }
 
-int detectMobsAbout(int mode, int ibuf[]) {
-    FILE	*fp; 
-    char	*fname;
-    int     i;
-
-    if(mode == 1) {
-	    fname = "t_creeper.txt";
-    }else if(mode == 2){
-	    fname = "t_zombie.txt";
-    }else {
-        printf("error:detectMobs\n");
-        printf("Non accepted mode value\n");
-		exit(1);
-    }
-
-    if ( (fp=fopen(fname,"r")) == NULL) {
-		printf("error:detectMobs\n");
-		exit(1);
-	}
-
-	char buf[256];
-	fgets(buf, sizeof(buf), fp);
-	(void) fclose(fp);
-    int bufLength = strlen(buf);
-
-    for(i=0; i<256; i++){
-        ibuf[i] = 0;
-    }
-
-    for(i=0;i<bufLength;i++){
-        ibuf[i] = buf[i] - '0';
-    }
-
-    return bufLength;
-}
-
-long detectMobsSimple(int mode) {
+long detectMobs(int mode) {
     FILE	*fp;
-	char	fname[] = "t_simple.txt";
+	char	fname[] = "./python/tmp/t_simple.txt";
     int i, t=1;
     // クリーパーの情報
     long cbuf=0;
@@ -505,32 +448,19 @@ long detectMobsSimple(int mode) {
 }
 
 void killPython(void){
-    int ret1,ret2,ret3;
-    // ret1 = kill(Ppid, SIGKILL);
-    // ret2 = kill(Kpid, SIGKILL);
-    ret3 = kill(Mpid, SIGKILL);
-    if (ret1 == -1 || ret2 == -1 || ret3 == -1) {
-        perror("error:kill");
-        exit(1);
-    }
-}
+    int ret1,ret2,ret3,ret4,ret5;
+    initMoveDataFile();
+    initCameraDataFile();
 
-void *exeDetectZombie(void *args){
-    char com[128] = "python/python.exe python/minecraft/detectZombie.py";
+    ret1 = kill(Detect1_pid, SIGKILL);
+    ret2 = kill(Detect2_pid, SIGKILL);
+    ret3 = kill(Detect3_pid, SIGKILL);
+    ret4 = kill(Move_pid, SIGKILL);
+    ret5 = kill(Camera_pid, SIGKILL);
     
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:pushKey\n");
-        exit(1);
-    }
-}
-
-void *exeDetectMobs(){
-    char com[128] = "python/python.exe python/minecraft/detectMobs.py";
-
-    int f = system(com);
-    if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:detectMobs\n");
+    if (ret1 == -1 || ret2 == -1 || ret3 == -1 || ret4 == -1 || ret5 == -1) {
+        perror("error:kill");
+        printf("error:kill");
         exit(1);
     }
 }
@@ -549,51 +479,75 @@ void *isInterrupt(void *args){
 }
 
 void exePython(void){
-    char com[128] = "python/python.exe python/minecraft/detectZombie.py";
-
     pthread_t key;
-    int ret;
-
-    Mpid = fork ();
-    if (-1 == Mpid){
+    int kill_p ;
+    
+    Detect1_pid = fork ();
+    if (-1 == Detect1_pid){
         err (EXIT_FAILURE, "can not fork");
         exit(-1);
-    }else if (0 == Mpid){
-        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectMobs.py" , NULL);
+    }else if (0 == Detect1_pid){
+        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectZombie.py" , NULL);
         if(f != 0 && WEXITSTATUS(f) != 0 ){
-            printf("error:exePython\n");
+            printf("error:detectZombie.py\n");
             exit(1);
         }
     }
     Sleep(100);
-    // Ppid = fork ();
-    // if (-1 == Ppid){
-    //     err (EXIT_FAILURE, "can not fork");
-    //     exit(-1);
-    // }else if (0 == Ppid){
-    //     int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectZombie.py" , NULL);
-    //     if(f != 0 && WEXITSTATUS(f) != 0 ){
-    //         printf("error:exePython\n");
-    //         exit(1);
-    //     }
-    // }
-    // Sleep(100);
-    // Kpid = fork ();
-    // if (-1 == Kpid){
-    //     err (EXIT_FAILURE, "can not fork");
-    //     exit(-1);
-    // }else if (0 == Kpid){
-    //     int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectZombie2.py" , NULL);
-    //     if(f != 0 && WEXITSTATUS(f) != 0 ){
-    //         printf("error:exePython\n");
-    //         exit(1);
-    //     }
-    // }
-
     
-   
-    if ((ret = pthread_create(&key, NULL, &isInterrupt , NULL)) != 0) {
-        fprintf(stderr, "スレッド作成失敗");
+    Detect2_pid = fork ();
+    if (-1 == Detect2_pid){
+        err (EXIT_FAILURE, "can not fork");
+        exit(-1);
+    }else if (0 == Detect2_pid){
+        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectZombie2.py" , NULL);
+        if(f != 0 && WEXITSTATUS(f) != 0 ){
+            printf("error:detectZombie2.py\n");
+            exit(1);
+        }
+    }
+    Sleep(100);
+
+    Detect3_pid = fork ();
+    if (-1 == Detect3_pid){
+        err (EXIT_FAILURE, "can not fork");
+        exit(-1);
+    }else if (0 == Detect3_pid){
+        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectMobs.py" , NULL);
+        if(f != 0 && WEXITSTATUS(f) != 0 ){
+            printf("error:detectMobs.py\n");
+            exit(1);
+        }
+    }
+    Sleep(100);
+
+    Move_pid = fork();
+    if (-1 == Move_pid){
+        err (EXIT_FAILURE, "can not fork");
+        exit(-1);
+    }else if (0 == Move_pid){
+        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/monitorPlayerMove.py" , NULL);
+        if(f != 0 && WEXITSTATUS(f) != 0 ){
+            printf("error:monitorPlayerMove.py\n");
+            exit(1);
+        }
+    }
+
+    Camera_pid = fork();
+    if (-1 == Camera_pid){
+        err (EXIT_FAILURE, "can not fork");
+        exit(-1);
+    }else if (0 == Camera_pid){
+        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/monitorPlayerCamera.py" , NULL);
+        if(f != 0 && WEXITSTATUS(f) != 0 ){
+            printf("error:monitorPlayerCamera.py\n");
+            exit(1);
+        }
+    }
+
+    if ((kill_p = pthread_create(&key, NULL, &isInterrupt , NULL)) != 0) {
+        fprintf(stderr, "終了監視スレッド作成失敗");
         exit(1);
     }
+
 }

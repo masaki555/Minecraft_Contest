@@ -152,24 +152,25 @@ def getScreenImage():
 
     # print(srcnum)
 
-    cv2.imshow("detect", tframe)
+    #cv2.imshow("detect", tframe)
 
     #cv2.waitKey(10)
 
     return srcnum
 
 def writeTxt(line):
-    f = open('tmp2.txt', 'w', encoding='UTF-8')
+    f = open('./python/tmp/detect_zombie2.txt', 'w', encoding='UTF-8')
     f.write(line)
     f.close()
 
 if __name__ == '__main__':
-    import init
-    init.init()
+    #import init
+    #init.init()
     while True:
         # tempdetect()
         srcnum = getScreenImage()
-        print(format(srcnum, '0>16b'))
+        # print(format(srcnum, '0>16b'))
         writeTxt(str(srcnum))
         if cv2.waitKey(1) == ord('q'):
             break
+        
