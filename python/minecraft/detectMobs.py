@@ -2,23 +2,34 @@ import sys
 sys.path.append('.')
 sys.path.append('./python/')
 
-from PIL import ImageGrab
-import win32gui, time, os, logging
+from pathlib import Path
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[0]
+
+from PIL import ImageGrab, Image
+import win32gui, time, os, logging, argparse
 
 sys.path.append('.')
-sys.path.append('./python/YOLO')
+sys.path.append('./python/yolov5-master')
 import detect
 
+path_detectZombie3 = "python/tmp/detect_zombie3.txt"
+path_detectMobs = "python/tmp/detect_mobs.txt"
+path_captureImg = "python/minecraft/yoloFiles/capture.png"
+path_captureTxt = "python/minecraft/yoloFiles/labels/capture.txt"
+
+# 画像の分割数
+splitNum = 6
+
 # 画面内のmob情報を格納するクラス
+# type 0:ゾンビ 1:クリーパー
 class mob:
     def __init__(self):
-        #type 1:クリーパー, 2:ゾンビ　（嘘ついてるかも）
         self.type = 1
         self.x = 0
         self.y = 0
         self.width = 0
         self.height = 0
-        self.distance = 0
 
     def setData(self, result):
         data = result.split()
@@ -27,7 +38,6 @@ class mob:
         self.y = float(data[2])
         self.width = float(data[3])
         self.height = float(data[4])
-        self.distance = calcDistance(self.x)
 
     def printData(self):
         print(self.type)
@@ -35,110 +45,85 @@ class mob:
         print(self.y)
         print(self.width)
         print(self.height)
-         
-    # txtに書き込む
-    # フォーマット：種類(1,2) X Y width height 距離
-    # 種類以外0埋め三桁表示
-    def outputDataDetail(self):
-        i_x = (int)(self.x * 1000)
-        i_y = (int)(self.y * 1000)
-        i_width = (int)(self.width * 1000)
-        i_height = (int)(self.height * 1000)
-
-        # txtに書き込む内容
-        txt = "{x:03.0f}{y:03.0f}{w:03.0f}{h:03.0f}{dist:03d}".format(x=i_x,y=i_y,w=i_width,h=i_height,dist=self.distance)
-
-        writeTxt(txt, self.type)
-
-    # フォーマット：種類(1,2) X軸位置 Y軸位置 距離
-    # 全て１桁
-    def outputDataAbout(self):
-        x_pos = calcPosition(self.x)
-        y_pos = calcPosition(self.y)
-
-        # txtに書き込む内容
-        txt = "{x:01d}{y:01d}{dist:01d}".format(x=x_pos,y=y_pos,dist=self.distance)
-
-        if(self.type == 1):
-            txtName = "./python/tmp/t_zombie.txt"
-        else:
-            txtName = "./python/tmp/t_creeper.txt"
-        writeTxt(txt, txtName)
-        
 
 # スクショ用関数
 def captureMC(winHundle, windowSize):
     if winHundle:
         image = ImageGrab.grab(windowSize)
-        # 保存先
-        image.save("./python/YOLO/capture.png")
+        image.save(path_captureImg)
     else:
-        print("error!!")
-
-# 大体の距離を計算
-def calcDistance(width):
-    # 0:近距離 1:中距離 2:遠距離
-    if width > 0.1:
-        distance = 0
-    elif width > 0.05:
-        distance = 1
-    else:
-        distance = 2 
-    
-    return distance
+        print("error: capture window")
 
 # 大体の位置計算
 def calcPosition(posVal):
-    # if posVal < 0.1:
-    #     position = 0
-    # elif posVal < 0.2:
-    #     position = 1
-    # else:
-    #     position = 2
-        
-    # 画面を大体１０等分して計算
-    for i in range(10):
-        if(i < posVal*10):
+    # 画面をsplitNum等分して計算
+    border = 1.0 / splitNum
+    for i in range(splitNum):
+        if(border * i < posVal):
             position = i
 
     return position
+    
+def init():
+    initTxt()
+    resetDetection()
+    
+    logging.config.dictConfig({
+        "version": 1,
+        "disable_existing_loggers": True,
+    })
 
-def check(simplePos, pos):
-    simplePos[calcPosition(pos)] = "1"
+def setopt():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'yoloFiles/best.pt', help='model path or triton URL')
+    parser.add_argument('--source', type=str, default=ROOT / 'yoloFiles/capture.png')
+    parser.add_argument('--save-txt', action='store_true', default=True)
+    parser.add_argument('--data', type=str, default=ROOT / 'yoloFiles/mobs.yaml', help='(optional) dataset.yaml path')
+    parser.add_argument('--nosave', action='store_true', default=True)
+    parser.add_argument('--exist-ok', action='store_true', default=True)
+    parser.add_argument('--project', default=ROOT / 'yoloFiles', help='save results to project/name')
+    parser.add_argument('--name', default='', help='save results to project/name')
     
-def makeSimpleTxt(simpleCreeperPos, simpleZombiePos):
-    txtName = "./python/tmp/t_simple.txt"
-    line = ""
-    for i in range(10):
-        line = line + simpleCreeperPos[i]
-    line = line + "2"
-    for i in range(10):
-        line = line + simpleZombiePos[i]
+    opt = parser.parse_args()
+    return opt
     
-    writeTxt(line, txtName)
+def readResult():
+    result = ""
+    if os.path.isfile(path_captureTxt):
+        f = open(path_captureTxt, 'r')
+        result = f.readlines()
+        f.close()
+    
+    return result
     
 # 結果の出力用
 # txt初期化
 def initTxt():
-        f = open('./python/tmp/t_zombie.txt', 'w', encoding='UTF-8')
-        f.write("1")
-        f.close()
-        f = open('./python/tmp/t_creeper.txt', 'w', encoding='UTF-8')
-        f.write("2")
-        f.close()
-        f = open('./python/tmp/t_simple.txt', 'w', encoding='UTF-8')
-        f.write("1")
-        f.close()
-
-# txt書き込み
-def writeTxt(line, txtName):
-    f = open(txtName, 'a', encoding='UTF-8')
+    f = open(path_detectZombie3, 'w', encoding='UTF-8')
+    f.write("")
+    f.close()
+    f = open(path_detectMobs, 'w', encoding='UTF-8')
+    f.write("")
+    f.close()
+    
+def resetDetection():
+    f = open(path_captureTxt, 'w', encoding='UTF-8')
+    f.write("")
+    f.close
+        
+def makeTxt(pos, txtPath):
+    line = ""
+    for i in range(splitNum):
+        line = line + pos[i]
+    
+    f = open(txtPath, 'a', encoding='UTF-8')
     f.write(line)
     f.close()
 
 def main():
-    # txt初期化
-    initTxt()
+    # 初期化
+    init()
+    opt = setopt()
 
     # Minecraftのウィンドウ取得
     winHundle = win32gui.FindWindow(None, "Minecraft: Education Edition")
@@ -148,24 +133,39 @@ def main():
 
     # スクショ➡検出のループ
     while True:
+        resetDetection()
         #スクショ
         captureMC(winHundle, windowSize)
 
         # 検出
-        result = detect.run()
+        # 画像が読み込めるかチェック
+        # 読み込めなければ諦める
+        if Image.open(path_captureImg):
+            detect.run(**vars(opt))
+            result = readResult()
+        else:
+            continue
+        
         initTxt()
         mobData = []
-        simpleZombiePos = ["0"] * 10
-        simpleCreeperPos = ["0"] * 10
+        zombiePos = ["0"] * splitNum
+        mobsPos = ["0"] * splitNum
         for j in range(len(result)):
             mobData.append(mob())
             mobData[j].setData(result=result[j])
+            
+            # type: ゾンビなら
             if(mobData[j].type == 1):
-                check(simpleCreeperPos, mobData[j].x)
-            else: 
-                check(simpleZombiePos, mobData[j].x)
-            mobData[j].outputDataAbout()
-        makeSimpleTxt(simpleZombiePos, simpleCreeperPos)
+                p = calcPosition(mobData[j].x)
+                zombiePos[p] = "1"
+            
+            p = calcPosition(mobData[j].x)
+            mobsPos[p] = str(mobData[j].type + 1)
+            
+            # MOB情報を出力
+            # mobData[j].printData()
+        makeTxt(zombiePos, path_detectZombie3)
+        makeTxt(mobsPos, path_detectMobs)
 
 if __name__ == '__main__':
     main()

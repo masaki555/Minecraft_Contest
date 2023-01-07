@@ -7,13 +7,13 @@ int main(char *argv){
     long han3 = 0; 
     int flag=0;
     init();
-    setTime();
+    // setTime();
     exePython();
-    setSurvival();
+    // setSurvival();
     while(rk){
         han = detectZombie();
         han2 = detectZombie2();
-        han3 = detectMobs(1);
+        han3 = detectZombie3();
         
         printf("detectZombie1=\t%d\n" , han);
         printf("detectZombie2=\t%d\n" , han2);
@@ -22,6 +22,6 @@ int main(char *argv){
         moveForward(1.5);
 
     }
-    setCreative();
-    setMorning();
+    // setCreative();
+    // setMorning();
 }
