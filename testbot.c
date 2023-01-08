@@ -3,25 +3,47 @@
 #include "control.h"
 
 int main(char *argv){
-    int han = 0 , han2 = 0 ;
-    long han3 = 0; 
-    int flag=0;
+    int han;
     init();
-    // setTime();
     exePython();
-    // setSurvival();
     while(rk){
+        moveForward(1);
         han = detectZombie();
-        han2 = detectZombie2();
-        han3 = detectZombie3();
-        
-        printf("detectZombie1=\t%d\n" , han);
-        printf("detectZombie2=\t%d\n" , han2);
-        printf("detectMobs=\t%d\n" , han3);
-        
-        moveForward(1.5);
-
+        printf("%d\n" , han );
+        if(han == 0){
+            cameraRight(1);
+        }else{
+            while (han != 0)
+            {
+                printf("%d\n" , han);
+                switch (han / 2)
+                {
+                case 32:
+                    moveForwardLeft(1);
+                break;
+                case 16:
+                    moveForward(1);
+                    break;
+                case 8:
+                    moveForwardRight(1);
+                    break;
+                case 4:
+                    moveBackLeft(1);
+                    break;
+                case 2:
+                    break;
+                case 1:
+                    moveBackRight(1);
+                    break;
+                default:
+                    break;
+                }
+                moveBack(1);
+                attackLeft();
+                han = detectZombie();
+            }
+        }
     }
-    // setCreative();
-    // setMorning();
+    setCreative();
+    setMorning();
 }
