@@ -4,7 +4,7 @@ extern int rk;
 void attackLeft(void);
 void attackRight(void);
 
-void moveDataToFile(char* key, double sleep_time);
+void moveDataToFile(char* key);
 void initMoveDataFile(void);
 void* monitorMoveData(void *arg);
 void moveForward(double time);
@@ -41,7 +41,7 @@ void killPython(void);
 
 int detectZombie(void);
 int detectZombie2(void);
-int detectZombie3(void);
+/*int detectMobs(int mode, int ibuf[]);*/
 int detectMobsArray(int mode , int ibuf[]);
-int detectMobs(int mode);
+long detectMobs(int mode);
 void exePython(void);

@@ -36,7 +36,7 @@ void attackRight(void){
     }
 }
 
-void moveDataToFile(char* key, double sleep_time){
+void moveDataToFile(char* key){
     FILE *fp;
     char pass[64] = "python/tmp/Share_Move_Data.txt";
     char buf[32]="";
@@ -61,11 +61,10 @@ void moveDataToFile(char* key, double sleep_time){
     }else{
         data = strtok(buf, sep);
         data = strtok(NULL, sep);
-        data = strtok(NULL, sep);
         if(data != NULL){
-            fprintf(fp, "%s,%f,%s", key, (float)sleep_time, data);
+            fprintf(fp, "%s,%s", key, data);
         }else{
-            fprintf(fp, "%s,%f,%s", key, (float)sleep_time, "0");
+            fprintf(fp, "%s,%s", key, "0");
             //printf("error:moveDataToFile\n");
         }
     }
@@ -97,13 +96,13 @@ void cameraDataToFile(char* key, double sleep_time){
 
 
 void initMoveDataFile(void){
-    moveDataToFile("Wait", 0);
+    moveDataToFile("Wait");
 }
 
 
 void moveForward(double sleep_time){
     char key[32]  ="F";
-    moveDataToFile(key ,sleep_time);
+    moveDataToFile(key);
     Sleep(sleep_time * 1000);
     initMoveDataFile();  
     //usleep(0.15*1000000);  
@@ -111,7 +110,7 @@ void moveForward(double sleep_time){
 
 void moveLeft(double sleep_time){
     char key[32]  ="L";
-    moveDataToFile(key ,sleep_time);
+    moveDataToFile(key);
     Sleep(sleep_time * 1000);
     initMoveDataFile();  
     //usleep(0.15*1000000);
@@ -119,7 +118,7 @@ void moveLeft(double sleep_time){
 
 void moveRight(double sleep_time){
     char key[32]  ="R";
-    moveDataToFile(key ,sleep_time);
+    moveDataToFile(key);
     Sleep(sleep_time * 1000);
     initMoveDataFile(); 
     //usleep(0.15*1000000);  
@@ -127,7 +126,7 @@ void moveRight(double sleep_time){
 
 void moveBack(double sleep_time){
     char key[32]  ="B";
-    moveDataToFile(key ,sleep_time);
+    moveDataToFile(key);
     Sleep(sleep_time * 1000);
     initMoveDataFile(); 
     //usleep(0.15*1000000);
@@ -135,7 +134,7 @@ void moveBack(double sleep_time){
 
 void moveForwardLeft(double sleep_time){
     char key[32]  ="FL";
-    moveDataToFile(key ,sleep_time);
+    moveDataToFile(key);
     Sleep(sleep_time * 1000);
     initMoveDataFile();
     //usleep(0.37*1000000);
@@ -143,7 +142,7 @@ void moveForwardLeft(double sleep_time){
 
 void moveForwardRight(double sleep_time){
     char key[32]  ="FR";
-    moveDataToFile(key ,sleep_time);
+    moveDataToFile(key);
     Sleep(sleep_time * 1000);
     initMoveDataFile();
     //usleep(0.37*1000000);
@@ -151,7 +150,7 @@ void moveForwardRight(double sleep_time){
 
 void moveBackLeft(double sleep_time){
     char key[32]  ="BL";
-    moveDataToFile(key,sleep_time);
+    moveDataToFile(key);
     Sleep(sleep_time * 1000);
     initMoveDataFile();
     //usleep(0.37*1000000);
@@ -159,7 +158,7 @@ void moveBackLeft(double sleep_time){
 
 void moveBackRight(double sleep_time){
     char key[32]  ="BR";
-    moveDataToFile(key ,sleep_time);
+    moveDataToFile(key);
     Sleep(sleep_time * 1000);
     initMoveDataFile();
     //usleep(0.37*1000000);
@@ -202,11 +201,6 @@ void setDashFlag(int flag){
         data = strtok(buf, sep);
         
         fprintf(fp, "%s,", data);
-
-        data = strtok(NULL, sep);
-        if(data != NULL){
-            fprintf(fp, "%s,", data);
-        }
         fprintf(fp, "%d", flag);
     }
     fclose(fp);
@@ -383,33 +377,6 @@ int detectZombie2(void){
     return ibuf;
 }
 
-int detectZombie3(void) {
-    FILE	*fp;
-	char	fname[] = "python/tmp/detect_zombie3.txt";
-    int i, t=1;
-    int zbuf=0;
-
-	if ( (fp=fopen(fname,"r")) ==NULL) {
-		printf("error:detectZombie3\n");
-        killPython();
-		exit(1);
-	}
-	char buf[256];
-	fgets(buf, sizeof(buf), fp);
-	(void) fclose(fp);
-    
-    for(i=0;i<6;i++){
-        zbuf = zbuf + ((buf[5 - i] - '0') * t);
-        t = t * 10;
-    }
-
-    if(zbuf < 0) {
-        return 0;
-    }
-
-    return zbuf;
-}
-
 int detectMobsArray(int mode , int ibuf[]) {
     FILE	*fp; 
     char	*fname;
@@ -446,9 +413,9 @@ int detectMobsArray(int mode , int ibuf[]) {
     return bufLength;
 }
 
-int detectMobs(int mode) {
+long detectMobs(int mode) {
     FILE	*fp;
-	char	fname[] = "./python/tmp/detect_mobs.txt";
+	char	fname[] = "./python/tmp/t_simple.txt";
     int i, t=1;
     // クリーパーの情報
     long cbuf=0;
@@ -561,6 +528,8 @@ void exePython(void){
             exit(1);
         }
     }
+    
+     Sleep(100);
 
     Camera_pid = fork();
     if (-1 == Camera_pid){
@@ -574,9 +543,12 @@ void exePython(void){
         }
     }
 
+     Sleep(100);
+
     if ((kill_p = pthread_create(&key, NULL, &isInterrupt , NULL)) != 0) {
         fprintf(stderr, "終了監視スレッド作成失敗");
         exit(1);
     }
 
+     Sleep(100);
 }
