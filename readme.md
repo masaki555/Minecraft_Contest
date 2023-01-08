@@ -296,8 +296,7 @@ YOLOは**学習**させることにより、新しく物体を認識できるよ
    SLEEP = 5
    date = datetime.datetime.now().strftime("%m%d")
 
-   if not os.path.exists("img"):
-       os.makedirs("img")
+   os.makedirs("img", exist_ok=True)
 
    for i in tqdm(range(1, LIMIT+1)):
        time.sleep(SLEEP)
