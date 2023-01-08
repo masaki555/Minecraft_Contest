@@ -142,7 +142,7 @@ int main(int argc, char *argv[]){
 | int detectZombie2(void) | 画像処理の結果を取得する．戻り値はint型で，15bitの2進数結果を10進数に変換した0から4924までのint型が返却される．詳細は後述． |
 | int detectZombie3(void) | 画面を6分割して左から順に検出した場所を1にする．戻り値はint型で，例えば100001だと左端と右端に検出された状態．詳細は後述． |
 | int detectMobs(int mode) | 画面を６分割して検出．戻り値はint型で，数字が１の時：ゾンビ ２の時：クリーパー ３の時：スケルトンのように出力する．たとえば200001だと画面左端にクリーパーがいて右端にゾンビがいる状態．詳細は後述． |
-<!-- | long detectMobs(int target) | 引数で指定するMobを画像認識（学習）で検出する．引数targetに0を指定するゾンビ，1を指定するとクリーパーを検出する．戻り値は2進数をlong型で表記した値が返却される．詳細は後述． | -->
+| long detectMobs(int target) | 引数で指定するMobを画像認識（学習）で検出する．引数targetに0を指定するゾンビ，1を指定するとクリーパーを検出する．戻り値は2進数をlong型で表記した値が返却される．詳細は後述． |
 | void attackLeft(void) | 左クリック．0.01秒間隔で入力されるが，実際にはもう少し遅い． |
 | void attackRight(void) | 右クリック．1.50秒間入力される． |
 | void moveForward(double time) | 前進する．timeで指定した時間（単位は秒）動く． |
