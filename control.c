@@ -377,6 +377,33 @@ int detectZombie2(void){
     return ibuf;
 }
 
+int detectZombie3(void) {
+    FILE	*fp;
+	char	fname[] = "python/tmp/detect_zombie3.txt";
+    int i, t=1;
+    int zbuf=0;
+
+	if ( (fp=fopen(fname,"r")) ==NULL) {
+		printf("error:detectZombie3\n");
+        killPython();
+		exit(1);
+	}
+	char buf[256];
+	fgets(buf, sizeof(buf), fp);
+	(void) fclose(fp);
+    
+    for(i=0;i<6;i++){
+        zbuf = zbuf + ((buf[5 - i] - '0') * t);
+        t = t * 10;
+    }
+
+    if(zbuf < 0) {
+        return 0;
+    }
+
+    return zbuf;
+}
+
 int detectMobsArray(int mode , int ibuf[]) {
     FILE	*fp; 
     char	*fname;
@@ -413,9 +440,9 @@ int detectMobsArray(int mode , int ibuf[]) {
     return bufLength;
 }
 
-long detectMobs(int mode) {
+int detectMobs(int mode) {
     FILE	*fp;
-	char	fname[] = "./python/tmp/t_simple.txt";
+	char	fname[] = "./python/tmp/detect_mobs.txt";
     int i, t=1;
     // クリーパーの情報
     long cbuf=0;

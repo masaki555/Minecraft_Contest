@@ -8,12 +8,12 @@ int main(char *argv){
     exePython();
     while(rk){
         moveForward(1);
-        han = detectZombie();
+        han = detectZombie3();
         printf("%d\n" , han );
         if(han == 0){
             cameraRight(1);
         }else{
-            while (han != 0)
+            while (rk)
             {
                 printf("%d\n" , han);
                 switch (han / 2)
@@ -40,10 +40,10 @@ int main(char *argv){
                 }
                 moveBack(1);
                 attackLeft();
-                han = detectZombie();
+                han = detectZombie3();
             }
         }
     }
-    setCreative();
-    setMorning();
+    // setCreative();
+    // setMorning();
 }

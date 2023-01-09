@@ -41,7 +41,7 @@ void killPython(void);
 
 int detectZombie(void);
 int detectZombie2(void);
-/*int detectMobs(int mode, int ibuf[]);*/
+int detectZombie3(void);
 int detectMobsArray(int mode , int ibuf[]);
-long detectMobs(int mode);
+int detectMobs(int mode);
 void exePython(void);
