@@ -335,7 +335,7 @@ int kbhit(void){
     return 0;
 }
 
-int detectZombie(void){
+int detectZombie1(void){
     FILE	*fp;
 	char	fname[] = "./python/tmp/detect_zombie1.txt";
     int i,ibuf=0,t=1;
@@ -510,9 +510,9 @@ void exePython(void){
         err (EXIT_FAILURE, "can not fork");
         exit(-1);
     }else if (0 == Detect1_pid){
-        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectZombie.py" , NULL);
+        int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/detectZombie1.py" , NULL);
         if(f != 0 && WEXITSTATUS(f) != 0 ){
-            printf("error:detectZombie.py\n");
+            printf("error:detectZombie1.py\n");
             exit(1);
         }
     }

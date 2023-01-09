@@ -4,28 +4,36 @@ import time
 
 def left(sleep_time):
     pydirectinput.keyDown('left')
-    time.sleep(sleep_time)
-    pydirectinput.keyUp('left')
+    #time.sleep(sleep_time)
+    #pydirectinput.keyUp('left')
 
 def right(sleep_time):
     pydirectinput.keyDown('right')
-    time.sleep(sleep_time)
-    pydirectinput.keyUp('right')
+    #time.sleep(sleep_time)
+    #pydirectinput.keyUp('right')
 
 def up(sleep_time):
     pydirectinput.keyDown('up')
-    time.sleep(sleep_time)
-    pydirectinput.keyUp('up')
+    #time.sleep(sleep_time)
+    #pydirectinput.keyUp('up')
 
 def down(sleep_time):
     pydirectinput.keyDown('down')
-    time.sleep(sleep_time)
-    pydirectinput.keyUp('down')
+    #time.sleep(sleep_time)
+    #pydirectinput.keyUp('down')
 
 def center():
     pydirectinput.keyDown('End')
     time.sleep(0.1)
     pydirectinput.keyUp('End')
+
+def keyRelese():
+    pydirectinput.keyUp('left')
+    pydirectinput.keyUp('right')
+    pydirectinput.keyUp('up')
+    pydirectinput.keyUp('down')
+    pydirectinput.keyUp('End')
+
 
 def monitorPlayerCamera():
     while True:
@@ -51,7 +59,7 @@ def monitorPlayerCamera():
         elif(key == 'C'):
             center()
         elif(key == 'Wait'):
-            pass
+            keyRelese()
         else:
             print('error: key = ' + key + '未設定のkeyです．プレイヤのカメラの監視をエラー終了します．')
             break

@@ -194,8 +194,8 @@ def trackZombie(cap):
     #print(area)
     bytedata = printByte(area)
     #print(int(bytedata , 2))
-    wrightTxt(int(bytedata , 2))
-
+    #wrightTxt(int(bytedata , 2))
+    wrightTxt(bytedata)
 def main():
     #cap = camera.CameraSelector(args.device, args.fps, args.size, args.box)
     box = [20, 20, 900 , 1000] 

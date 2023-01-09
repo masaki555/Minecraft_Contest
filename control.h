@@ -1,4 +1,3 @@
-extern pid_t pid;
 extern int rk;
 
 void attackLeft(void);
@@ -39,7 +38,7 @@ void *exeDetectZombie(void *args);
 void *exeDetectMobs();
 void killPython(void);
 
-int detectZombie(void);
+int detectZombie1(void);
 int detectZombie2(void);
 int detectZombie3(void);
 int detectMobsArray(int mode , int ibuf[]);

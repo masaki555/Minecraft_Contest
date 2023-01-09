@@ -93,7 +93,7 @@ gcc -o minebot.exe testbot.c control.c
 
 プログラムを停止する際には「F12」を押す（連打する）と停止させることができます．停止できたらc1-byod上に終了コード送信と表示されます．
 
-※上記でも停止しない場合はc1-byod上で`【Ctrl + C】`で強制終了できますが，ゾンビプロセスが発生するため正常に終了できません．その場合はPCを再起動する等で対応して下さい．
+※上記でも停止しない場合はc1-byod上で`【Ctrl + C】`で強制終了できますが，ゾンビプロセスが発生する可能性があります．その場合はPCを再起動する等で対応して下さい．
 
 ---
 
@@ -138,28 +138,28 @@ int main(int argc, char *argv[]){
 | void setMorning(void) | Minecraftの時間を朝に設定してくれる． |
 | void setSurvival(void) | Minecraftの設定をサバイバルモードにしてくれる． |
 | void setCreative(void) | Minecraftの設定をクリエイティブモードにしてくれる． |
-| int detectZombie(void) | 画像処理の結果を取得する．戻り値はint型で，7bitの2進数結果を10進数に変換した0から127までのint型が返却される．詳細は後述． |
+| int detectZombie1(void) | 画像処理の結果を取得する．戻り値はint型で，7bitの2進数結果を10進数に変換した0から127までのint型が返却される．詳細は後述． |
 | int detectZombie2(void) | 画像処理の結果を取得する．戻り値はint型で，15bitの2進数結果を10進数に変換した0から4924までのint型が返却される．詳細は後述． |
 | int detectZombie3(void) | 画面を6分割して左から順に検出した場所を1にする．戻り値はint型で，例えば100001だと左端と右端に検出された状態．詳細は後述． |
 | int detectMobs(int mode) | 画面を６分割して検出．戻り値はint型で，数字が１の時：ゾンビ ２の時：クリーパー ３の時：スケルトンのように出力する．たとえば200001だと画面左端にクリーパーがいて右端にゾンビがいる状態．詳細は後述． |
 | long detectMobs(int target) | 引数で指定するMobを画像認識（学習）で検出する．引数targetに0を指定するゾンビ，1を指定するとクリーパーを検出する．戻り値は2進数をlong型で表記した値が返却される．詳細は後述． |
 | void attackLeft(void) | 左クリック．0.01秒間隔で入力されるが，実際にはもう少し遅い． |
 | void attackRight(void) | 右クリック．1.50秒間入力される． |
-| void moveForward(double time) | 前進する．timeで指定した時間（単位は秒）動く． |
-| void moveLeft(double time) | 左に動く．timeで指定した時間（単位は秒）動く． |
-| void moveRight(double time) | 右に動く．timeで指定した時間（単位は秒）動く． |
-| void moveBack(double time) | 後進する．timeで指定した時間（単位は秒）動く． |
-| void moveForwardLeft(double time) | 左斜め前に動く．timeで指定した時間（単位は秒）動く． |
-| void moveForwardRight(double time) | 右斜め前に動く．timeで指定した時間（単位は秒）動く． |
-| void moveBackLeft(double time) | 左斜め後ろに動く．timeで指定した時間（単位は秒）動く． |
-| void moveBackRight(double time) | 右斜め後ろに動く．timeで指定した時間（単位は秒）動く． |
+| void moveForward(double time) | 前進する．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
+| void moveLeft(double time) | 左に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
+| void moveRight(double time) | 右に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
+| void moveBack(double time) | 後進する．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
+| void moveForwardLeft(double time) | 左斜め前に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
+| void moveForwardRight(double time) | 右斜め前に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
+| void moveBackLeft(double time) | 左斜め後ろに動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
+| void moveBackRight(double time) | 右斜め後ろに動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
 | void movejump(int times) | ジャンプする．timesで指定した回数分，連続でジャンプし続ける． |
 | void setDash(void) | 常に移動がダッシュになる． |
 | void resetDash(void) | 常に移動が歩くになる． |
-| void cameraDown(double time) | カメラを下にtimeで指定した時間（単位は秒）動かす． |
-| void cameraLeft(double time) | カメラを左にtimeで指定した時間（単位は秒）動かす． |
-| void cameraRight(double time) | カメラを右にtimeで指定した時間（単位は秒）動かす． |
-| void cameraUp(double time) | カメラを上にtimeで指定した時間（単位は秒）動かす． |
+| void cameraDown(double time) | カメラを下にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす． |
+| void cameraLeft(double time) | カメラを左にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす． |
+| void cameraRight(double time) | カメラを右にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす． |
+| void cameraUp(double time) | カメラを上にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす． |
 | void cameraCenter(void) | カメラ（カーソル）を中央に戻す． |
 
 例えば以下のようなプログラムを記載するとc1-byod環境でF12キーを押さない限り前進し続けるプログラムとなる．
@@ -187,15 +187,15 @@ int main(int argc, char *argv[]){
 }
 ```
 
-### ゾンビ検出関数，detectZombie関数の仕様
+### ゾンビ検出関数，detectZombie1関数の仕様
 
-地平線にクロスヘアを合わせた状態で，地面部分にゾンビがいるかを検出を行う．detectZombie関数はint型が戻り値である．int型の戻り値を２進数に変更し，先頭のビットから画面左上，画面真ん中上・・・・というように各桁でゾンビがいるかの結果が格納されている．各値の詳細は以下の通り．
+地平線にクロスヘアを合わせた状態で，地面部分にゾンビがいるかを検出を行う．detectZombie1関数はint型が戻り値である．int型の戻り値を2進数であり先頭のビットから画面左上，画面真ん中上・・・・というように各桁でゾンビがいるかの結果が格納されている．各値の詳細は以下の通り．
 
 | 7桁目 | 6桁目 | 5桁目  | 4桁目 | 3桁目 | 2桁目 | 1桁目 |
 | :- | - | - | - | - | - | - |
 | 地面の左上にゾンビがいれば1，いなければ0となる． | 地面の真ん中上にゾンビがいれば1，いなければ0となる． | 地面の右上にゾンビがいれば1，いなければ0となる． | 地面の左下にゾンビがいれば1，いなければ0となる． | 地面の真ん中下にゾンビがいれば1，いなければ0となる． | 地面の右下にゾンビがいれば1，いなければ0となる． | 1であれば攻撃がヒット，0であれば攻撃が当たってない（精度はよくない） |
 
-例えば，detectZombie関数の戻り値が80(2進数で1010000)の場合，地面の左上，右上にゾンビがいるとなる．また，36(2進数で0100100)となると画面中央にゾンビがいるため，ゾンビが接近している可能性がある．そのため攻撃できる可能性があるという事になる．ただし，画面中央にいるからと言って必ず攻撃ができるという訳では無い．
+例えば，detectZombie関数の戻り値が1010000の場合，地面の左上，右上にゾンビがいるとなる．また，0100100となると画面中央にゾンビがいるため，ゾンビが接近している可能性がある．そのため攻撃できる可能性があるという事になる．ただし，画面中央にいるからと言って必ず攻撃ができるという訳では無い．
 
 本ライブラリは単純に現状のゾンビ配置からゾンビを倒そうとするとかなり難易度が高いです．ゾンビの配置を何らかの手法で記憶させておく必要があります．
 

@@ -7,9 +7,9 @@ sleep_time = 0.01
 ################################
 
 def clickLeft():
-    pydirectinput.mouseDown(button="left")
+    pydirectinput.keyDown('q')
     time.sleep(sleep_time)
-    pydirectinput.mouseUp(button="left")
+    pydirectinput.keyUp('q')
 
 if __name__ == '__main__':
     clickLeft()

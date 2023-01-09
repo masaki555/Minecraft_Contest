@@ -143,12 +143,12 @@ def writeTxt(line):
     f.close()
 
 if __name__ == '__main__':
-    import init
-    init.init()
+#    import init
+#    init.init()
     while True:
         # tempdetect()
         srcnum = getScreenImage()
-        print(format(srcnum, '0>16b'))
+        #print(format(srcnum, '0>16b'))
         #writeTxt(str(srcnum))
         if cv2.waitKey(1) == ord('q'):
             break
