@@ -63,11 +63,11 @@ def calcPosition(posVal):
             position = i
 
     return position
-    
+
 def init():
     initTxt()
     resetDetection()
-    
+
     logging.config.dictConfig({
         "version": 1,
         "disable_existing_loggers": True,
@@ -83,19 +83,19 @@ def setopt():
     parser.add_argument('--exist-ok', action='store_true', default=True)
     parser.add_argument('--project', default=ROOT / 'yoloFiles', help='save results to project/name')
     parser.add_argument('--name', default='', help='save results to project/name')
-    
+
     opt = parser.parse_args()
     return opt
-    
+
 def readResult():
     result = ""
     if os.path.isfile(path_captureTxt):
         f = open(path_captureTxt, 'r')
         result = f.readlines()
         f.close()
-    
+
     return result
-    
+
 # 結果の出力用
 # txt初期化
 def initTxt():
@@ -105,17 +105,17 @@ def initTxt():
     f = open(path_detectMobs, 'w', encoding='UTF-8')
     f.write("")
     f.close()
-    
+
 def resetDetection():
     f = open(path_captureTxt, 'w', encoding='UTF-8')
     f.write("")
     f.close
-        
+
 def makeTxt(pos, txtPath):
     line = ""
     for i in range(splitNum):
         line = line + pos[i]
-    
+
     f = open(txtPath, 'a', encoding='UTF-8')
     f.write(line)
     f.close()
@@ -145,7 +145,7 @@ def main():
             result = readResult()
         else:
             continue
-        
+
         initTxt()
         mobData = []
         zombiePos = ["0"] * splitNum
@@ -153,16 +153,16 @@ def main():
         for j in range(len(result)):
             mobData.append(mob())
             mobData[j].setData(result=result[j])
-            
+
             # type: ゾンビなら
             if(mobData[j].type == 1):
                 p = calcPosition(mobData[j].x)
                 zombiePos[p] = "1"
-            
+
             p = calcPosition(mobData[j].x)
             mobsPos[p] = str(mobData[j].type + 1)
-            
-            # MOB情報を出力
+
+            # Mob情報を出力
             # mobData[j].printData()
         makeTxt(zombiePos, path_detectZombie3)
         makeTxt(mobsPos, path_detectMobs)
