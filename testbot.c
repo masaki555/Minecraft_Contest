@@ -15,8 +15,8 @@ int main(char *argv){
         han2 = detectZombie2();
         han3 = detectZombie3();
         printf("han1=%d\n" , han1);
-        printf("han2=%ld\n" , han1);
-        printf("han3=%d\n" , han1);
+        printf("han2=%ld\n" , han2);
+        printf("han3=%d\n" , han3);
         if(flag==0){
             if( (han1/1000000)==1 && ((han1/100000)%10)==1 && ((han1/10000)%10)==1 ){
                 moveBack(0.5);
