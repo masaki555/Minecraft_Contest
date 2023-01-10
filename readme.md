@@ -139,7 +139,7 @@ int main(int argc, char *argv[]){
 | void setSurvival(void) | Minecraftの設定をサバイバルモードにしてくれる． |
 | void setCreative(void) | Minecraftの設定をクリエイティブモードにしてくれる． |
 | int detectZombie1(void) | 画像処理の結果を取得する．戻り値はint型で，7bitの2進数をint型で返却される．詳細は後述． |
-| int detectZombie2(void) | 画像処理の結果を取得する．戻り値はint型で，15bitの2進数結果をint型で返却される．詳細は後述． |
+| long detectZombie2(void) | 画像処理の結果を取得する．戻り値はlong型で，15bitの2進数結果をlong型で返却される．詳細は後述． |
 | int detectZombie3(void) | 画面を6分割して左から順に検出した場所を1にする．戻り値はint型で，例えば100001だと左端と右端に検出された状態．詳細は後述． |
 | int detectMobs(void) | 画面を6分割して検出．戻り値はint型で，検出したMobがいない場合は0，ゾンビを1，クリーパーを2として値を返す．たとえば200001だと画面左端にクリーパーがいて右端にゾンビがいる状態．詳細は後述． |
 | void attackLeft(void) | 左クリック．0.01秒間隔で入力されるが，実際にはもう少し遅い． |
@@ -202,9 +202,9 @@ int main(int argc, char *argv[]){
 
 ### ゾンビ動態検出関数，detectZombie2関数の仕様
 
-利用する場合は**明るさの設定を50**にして利用してください．
+利用する場合は**明るさの設定を100**にして利用してください．
 
-detectZombie2関数を呼び出すと15bitの2進数がint型で返却される．画像検出は以下のURLにある画像の①～⑤ように画面右下，左下，右上，左上，中央の5カ所で動態検知をしています．更にそのエリアの中で遠距離，中距離，近距離の３段階を検出し，これらを15bitの値で管理されています．また，近距離にゾンビがいる場合は攻撃が当たる範囲にいる可能性が高いです．
+detectZombie2関数を呼び出すと15bitの2進数がlong型で返却される．画像検出は以下のURLにある画像の①～⑤ように画面右下，左下，右上，左上，中央の5カ所で動態検知をしています．更にそのエリアの中で遠距離，中距離，近距離の３段階を検出し，これらを15bitの値で管理されています．また，近距離にゾンビがいる場合は攻撃が当たる範囲にいる可能性が高いです．
 
 [detectZombie2による動態検出画像](https://oskit-my.sharepoint.com/:i:/g/personal/masaki_obana_oit_ac_jp/EV6amJG9qf9IikoaKJ8ksM8BMUpeWLJ5TaZ6FPEEtqk7Fg?e=Pga4NH) （右クリックから「開く」を選択しないと見れないかも・・・）
 

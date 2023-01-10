@@ -359,10 +359,11 @@ int detectZombie1(void){
     return ibuf;
 }
 
-int detectZombie2(void){
+long detectZombie2(void){
     FILE	*fp;
 	char	fname[] = "./python/tmp/detect_zombie2.txt";
-    int i,ibuf=0,t=1;
+    int i,t=1;
+    long ibuf=0;
 
 	if ( (fp=fopen(fname,"r")) ==NULL) {
 		printf("error:detectZombie\n");
@@ -372,7 +373,7 @@ int detectZombie2(void){
 	fgets(buf, sizeof(buf), fp);
 	(void) fclose(fp);
 
-    ibuf = atoi(buf);
+    ibuf = atol(buf);
 
     return ibuf;
 }

@@ -39,7 +39,7 @@ void *exeDetectMobs();
 void killPython(void);
 
 int detectZombie1(void);
-int detectZombie2(void);
+long detectZombie2(void);
 int detectZombie3(void);
 int detectMobsArray(int mode , int ibuf[]);
 int detectMobs(int mode);

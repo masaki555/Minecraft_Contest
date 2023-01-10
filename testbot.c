@@ -3,7 +3,8 @@
 #include "control.h"
 
 int main(char *argv){
-    int han1 , han2 , han3;
+    int han1 , han3;
+    long han2;
     int flag=0;
     init();
     setTime();
@@ -13,7 +14,9 @@ int main(char *argv){
         han1 = detectZombie1();
         han2 = detectZombie2();
         han3 = detectZombie3();
-        printf("%d\n" , han1);
+        printf("han1=%d\n" , han1);
+        printf("han2=%ld\n" , han1);
+        printf("han3=%d\n" , han1);
         if(flag==0){
             if( (han1/1000000)==1 && ((han1/100000)%10)==1 && ((han1/10000)%10)==1 ){
                 moveBack(0.5);
