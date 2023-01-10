@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+python/minecraft/yoloFiles/capture.png
+python/minecraft/yoloFiles/labels/capture.txt

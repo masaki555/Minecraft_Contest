@@ -3,44 +3,46 @@
 #include "control.h"
 
 int main(char *argv){
-    int han , han2;
+    int han1 , han3;
+    long han2;
     int flag=0;
     init();
     setTime();
     exePython();
     setSurvival();
     while(rk){
-        printf("%d\n" , han );
-        han = detectZombie();
+        han1 = detectZombie1();
         han2 = detectZombie2();
-        printf("%d\n" , han2);
+        han3 = detectZombie3();
+        printf("han1=%d\n" , han1);
+        printf("han2=%ld\n" , han2);
+        printf("han3=%d\n" , han3);
         if(flag==0){
-            if( (han/1000000)==1 && ((han/100000)%10)==1 && ((han/10000)%10)==1 ){
-                moveBack();
-                moveBack();
+            if( (han1/1000000)==1 && ((han1/100000)%10)==1 && ((han1/10000)%10)==1 ){
+                moveBack(0.5);
             }else{
-                if( ((han/100000)%10)==1 && ((han/100)%10)==1 ){
+                if( ((han1/100000)%10)==1 && ((han1/100)%10)==1 ){
                     attackLeft();
-                    han = detectZombie();
+                    han1 = detectZombie1();
                     flag=1;
-                }else if((han/1000000)==1){
-                    cameraLeft();
-                }else if(((han/10000)%10)==1){
-                    cameraRight();
-                }else if(((han/1000)%10)==1){
-                    cameraLeft();
-                }else if(((han/10)%10)==1){
-                    cameraRight();
+                }else if((han1/1000000)==1){
+                    cameraLeft(0.3);
+                }else if(((han1/10000)%10)==1){
+                    cameraRight(0.3);
+                }else if(((han1/1000)%10)==1){
+                    cameraLeft(1);
+                }else if(((han1/10)%10)==1){
+                    cameraRight(0.5);
                 }else{
-                    cameraRight();
-                    moveBack();
+                    cameraRight(0.5);
+                    moveBack(0.5);
                     sleep(0.05);
                 }
             }
         }
         if(flag==1){
-            if((han%10)==1){
-                    moveForward();
+            if((han1%10)==1){
+                    moveForward(1);
             }
             flag=0;
         }
