@@ -6,10 +6,11 @@ import pyautogui
 import time
 import sys
 
+game_name = 'Minecraft Education'
 slee_time = 0.01
 try:
     if len(sys.argv) >= 2:
-        mcapp = win32gui.FindWindow(None,'Minecraft: Education Edition')
+        mcapp = win32gui.FindWindow(None,game_name)
         time.sleep(1.00)
         left, top, right, bottom = win32gui.GetWindowRect(mcapp)
         print({left} , {top} , {right} , {bottom} )

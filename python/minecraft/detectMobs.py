@@ -121,12 +121,14 @@ def makeTxt(pos, txtPath):
     f.close()
 
 def main():
+    game_name = 'Minecraft Education'
+
     # 初期化
     init()
     opt = setopt()
 
     # Minecraftのウィンドウ取得
-    winHundle = win32gui.FindWindow(None, "Minecraft: Education Edition")
+    winHundle = win32gui.FindWindow(None, game_name)
 
     # Minecraftのウィンドウサイズを取得
     windowSize = win32gui.GetWindowRect(winHundle)
