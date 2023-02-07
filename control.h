@@ -42,5 +42,5 @@ int detectZombie1(void);
 long detectZombie2(void);
 int detectZombie3(void);
 int detectMobsArray(int mode , int ibuf[]);
-int detectMobs(int mode);
+int detectMobs(void);
 void exePython(void);

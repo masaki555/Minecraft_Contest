@@ -23,11 +23,13 @@ path_captureTxt = "python/minecraft/yoloFiles/labels/capture.txt"
 # 画像の分割数
 splitNum = 6
 
+# mobの辞書
+mobsDict = {"creeper":0, "zombie":1}
+
 # 扱うmobの種類
-mobNum = 2
+mobNum = len(mobsDict)
 
 # 画面内のmob情報を格納するクラス
-# type 0:ゾンビ 1:クリーパー
 class mob:
     def __init__(self):
         self.type = 1
@@ -56,15 +58,16 @@ class mob:
     # フォーマット：種類(1,2) X軸位置 Y軸位置 距離
     # 全て１桁
     def outputDataAbout(self):
+        path = path_zombietxt
         x_pos = calcPosition(self.x)
         y_pos = calcPosition(self.y)
 
         # txtに書き込む内容
         txt = "{x:01d}{y:01d}{dist:01d}".format(x=x_pos,y=y_pos,dist=self.distance)
 
-        if(self.type == 1):
+        if(self.type == mobsDict["zombie"]):
             path = path_zombietxt
-        elif(self.type == 2):
+        elif(self.type == mobsDict["creeper"]):
             path = path_creepertxt
         makeTxt(txt, path)
 
@@ -188,18 +191,17 @@ def main():
         resetAllTxt()
         mobData = []
         zombiePos = ["0"] * splitNum
-        mobsPos = ["0"] * (splitNum * mobNum)
+        mobsPos = ["0"] * splitNum
         for j in range(len(result)):
             mobData.append(mob())
             mobData[j].setData(result=result[j])
+            p = calcPosition(mobData[j].x)
 
             # type: ゾンビなら
-            if(mobData[j].type == 1):
-                p = calcPosition(mobData[j].x)
+            if(mobData[j].type == mobsDict["zombie"]):
                 zombiePos[p] = "1"
 
-            p = calcPosition(mobData[j].x) + 6 * mobData[j].type
-            mobsPos[p] = str(mobData[j].type)
+            mobsPos[p] = str(mobData[j].type + 1)
             
             # 配列出力
             mobData[j].outputDataAbout()
