@@ -441,16 +441,13 @@ int detectMobsArray(int mode , int ibuf[]) {
     return bufLength;
 }
 
-int detectMobs(int mode) {
+int detectMobs(void) {
     FILE	*fp;
 	char	fname[] = "./python/tmp/detect_mobs.txt";
     int i, t=1;
-    // クリーパーの情報
-    long cbuf=0;
-    // ゾンビの情報
-    long zbuf=0;
+    int obuf = 0;
 
-	if ( (fp=fopen(fname,"r")) ==NULL) {
+    if ( (fp=fopen(fname,"r")) == NULL) {
 		printf("error:detectMobs\n");
 		exit(1);
 	}
@@ -458,17 +455,12 @@ int detectMobs(int mode) {
 	fgets(buf, sizeof(buf), fp);
 	(void) fclose(fp);
     
-    for(i=0;i<10;i++){
-        cbuf = cbuf + ((buf[10 - i] - '0') * t);
-        zbuf = zbuf + ((buf[21 - i] - '0') * t);
+    for(i=0;i<6;i++){
+        obuf = obuf + ((buf[5 - i] - '0') * t);
         t = t * 10;
     }
 
-    if(mode == 1){
-        return cbuf;
-    }else {
-        return zbuf;
-    }
+    return obuf;
 }
 
 void killPython(void){
