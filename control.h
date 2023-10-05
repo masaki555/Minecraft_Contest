@@ -1,7 +1,7 @@
 extern int rk;
 
 void attackLeft(void);
-void attackRight(void);
+void attackLeft_long(void);
 
 void moveDataToFile(char* key);
 void initMoveDataFile(void);
