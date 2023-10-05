@@ -31,7 +31,7 @@ void attackLeft_long(void){
     char com[128] = "python/python.exe python/minecraft/clickLeft_long.py";
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:attackLefy_long\n");
+        printf("error:attackLeft_long\n");
         exit(1);
     }
 }

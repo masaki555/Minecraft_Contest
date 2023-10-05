@@ -22,10 +22,10 @@ int main(char *argv){
                 moveBack(0.5);
             }else{
                 if( ((han1/100000)%10)==1 && ((han1/100)%10)==1 ){
-                    attackLeft();
+                    attackLeft_long();
                     han1 = detectZombie1();
                     flag=1;
-                }else if((han1/1000000)==1){
+                }/*else if((han1/1000000)==1){
                     cameraLeft(0.3);
                 }else if(((han1/10000)%10)==1){
                     cameraRight(0.3);
@@ -37,7 +37,7 @@ int main(char *argv){
                     cameraRight(0.5);
                     moveBack(0.5);
                     sleep(0.05);
-                }
+                }*/
             }
         }
         if(flag==1){
