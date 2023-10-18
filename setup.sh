@@ -33,3 +33,5 @@ touch ./tmp/detect_zombie3.txt
 touch ./tmp/detect_mobs.txt
 mkdir ./minecraft/yoloFiles/labels/
 touch ./minecraft/yoloFiles/labels/capture.txt
+
+git config --local core.filemode false
