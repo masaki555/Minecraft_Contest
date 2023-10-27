@@ -18,6 +18,7 @@ void moveJump(int times);
 void setDashFlag(int flag);
 void setDash(void);
 void resetDash(void);
+void moveDash(int times);
 
 void init(void);
 void setTime(void);
