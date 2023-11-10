@@ -27,3 +27,5 @@ torchvision>=0.8.1
 tqdm>=4.64.0
 pandas>=1.1.4
 seaborn>=0.11.0
+pytesseract==0.3.10
+tesseract-ocr-data==1.6
