@@ -2,5 +2,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.vscode
+
+!python/minecraft
+python
+
 python/minecraft/yoloFiles/capture.png
+python/minecraft/yoloFiles/input.png
 python/minecraft/yoloFiles/labels/capture.txt
+
+*.exe
