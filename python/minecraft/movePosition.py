@@ -10,6 +10,7 @@ import win32com.client
 import numpy as np 
 from matplotlib import pylab as plt
 import monitorPlayerCamera
+import getPosition
 
 ##################################
 game_name = 'Minecraft Education'
@@ -17,6 +18,8 @@ sleep_time = 0.05
 ##################################
 
 def main():
+    print("position:")
+    print(getPosition.getPosition())
     mcapp = win32gui.FindWindow(None,game_name)
     time.sleep(sleep_time)
     shell = win32com.client.Dispatch("WScript.Shell")

@@ -15,6 +15,8 @@ import moveCharacterLeft
 import moveCharacterRight
 import setTime
 import detectZombie2
+import getPosition
+import movePosition
 
 init.init()
 for i in range(1):

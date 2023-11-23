@@ -12,7 +12,42 @@ game_name = 'Minecraft Education'
 sleep_time = 0.05
 ##################################
 
-def main():
+def add_to_next_element(lst, indx):
+    if indx + 1 >= len(lst):
+        lst.append('')
+    lst[indx + 1] = str(lst[indx])[-1] + lst[indx + 1]
+    lst[indx] = str(lst[indx])[:-1]
+    return lst
+
+'''
+ocrで,を認識しない場合があるため、,なしで座標を整形する
+x,z,yで座標は構成され、xは40未満,zは4(固定),yは40未満である
+2桁ごとに値を分割し、その後にyが1桁の整数になるように調整する
+'''
+def format_position(pos):
+    y_value = '4'
+
+    pos.replace(',', '').replace('.', '').replace(' ','')
+    pattern = r'(-?[1-9][0-9]?)'
+    pos = re.findall(pattern, pos)
+    if len(pos) == 2:
+        pos = add_to_next_element(pos, 1)
+    if pos[1] == '-':
+        pos = add_to_next_element(pos, 1)
+    if len(pos[1]) == 0:
+        pos = add_to_next_element(pos, 0)
+    if pos[1] != '4':
+        pos = add_to_next_element(pos, 1)
+        pos = add_to_next_element(pos, 0)
+    while len(pos[1]) >= 2:
+        pos = add_to_next_element(pos, 1)
+
+    pos = list(map(int, pos))
+
+    return pos
+
+
+def getPosition():
     mcapp = win32gui.FindWindow(None,game_name)
     time.sleep(sleep_time)
     win32gui.SetForegroundWindow(mcapp)         #ウィンドウの指定
@@ -23,74 +58,23 @@ def main():
 
     hwnd = win32gui.GetForegroundWindow()
     left, top, right, bottom = win32gui.GetWindowRect(hwnd)
-    print(left, top, right, bottom)
-    cordinate = (left+45, top+131, right-800, bottom-845)
+    cordinate = (left+95, top+131, right-725, bottom-845)
 
     TESSERACT_EXECUTABLE = data_here + "\\tesseract.exe"
     pytesseract.pytesseract.tesseract_cmd =  TESSERACT_EXECUTABLE
+    tesseract_args = '-c tessedit_char_whitelist="0123456789-,. "'
 
     time.sleep(1)
 
     # スクショと文字認識
     image = ImageGrab.grab(cordinate)
     image.save('image.png')
-    text = pytesseract.image_to_string(image)
 
-    print(text)
-
-    # ','または'.'を除いて分割する
-    delimiter_pattern = re.compile('[,\\.]')
-    x1, z1, y1 = map(int, re.split(delimiter_pattern, text))
-
-    print(x1, z1, y1)
-
-    # 目標座標
-    x = 0
-    y = 0
-
-    # 
-    while True:
-        monitorPlayerMove.forward(1)
-        image = ImageGrab.grab(cordinate)
-        image.save('image.png')
-        text = pytesseract.image_to_string(image)
-        delimiter_pattern = re.compile('[,\\.]')
-        x2, z2, y2 = map(int, re.split(delimiter_pattern, text))
-        if(x1 != x2 or y1 != y2):
-            print(x2, z2, y2)
-            monitorPlayerMove.forward(0)
-            break
-    
-    # もしx-x1<x-x2(目的座標から遠ざかれば)ならば
-    if x-x1 < x-x2:
-        while True:
-            monitorPlayerMove.back(1)
-            image = ImageGrab.grab(cordinate)
-            image.save('image.png')
-            text = pytesseract.image_to_string(image)
-            print(text)
-            delimiter_pattern = re.compile('[,\\.]')
-            x2, z2, y2 = map(int, re.split(delimiter_pattern, text))
-            if -5 < x-x2 < 5:
-                monitorPlayerMove.back(0)
-                break
-    if x-x1 > x-x2:
-        while True:
-            monitorPlayerMove.forward(1)
-            image = ImageGrab.grab(cordinate)
-            image.save('image.png')
-            text = pytesseract.image_to_string(image)
-            print(text)
-            delimiter_pattern = re.compile('[,\\.]')
-            x2, z2, y2 = map(int, re.split(delimiter_pattern, text))
-            if -5 < x-x2 < 5:
-                monitorPlayerMove.forward(0)
-                break
+    text = pytesseract.image_to_string(image, config=tesseract_args)
+    position = format_position(text)
 
 
+    return position
 
-    print(x,y)
-
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    getPosition()
