@@ -17,8 +17,8 @@ class DetectMobs:
     def __init__(
         self,
         img_path=None,
-        capture_path="./yoloFiles/capture.png",
-        txt_path="./yoloFiles/labels/capture.txt",
+        capture_path="yoloFiles/capture.png",
+        txt_path="yoloFiles/labels/capture.txt",
         input_img_size=640,
         is_save_result=False,
         vertical_split_num=5,
@@ -26,8 +26,8 @@ class DetectMobs:
         confidence=0.6,
     ):
         self.img_path = img_path
-        self.capture_path = capture_path
-        self.txt_path = txt_path
+        self.capture_path = os.path.join(base_dir, capture_path)
+        self.txt_path = os.path.join(base_dir, txt_path)
         self.input_img_size = input_img_size
         self.is_save_result = is_save_result
         self.vertical_split_num = vertical_split_num
@@ -187,13 +187,13 @@ class DetectMobs:
 
 if __name__ == "__main__":
     detect = DetectMobs(
-        img_path="./yoloFiles/input.png",
-        capture_path="./yoloFiles/capture.png",
-        txt_path="./yoloFiles/labels/capture.txt",
+        img_path=os.path.join(base_dir, "yoloFiles/input.png"),
+        capture_path="yoloFiles/capture.png",
+        txt_path="yoloFiles/labels/capture.txt",
         input_img_size=640,
         is_save_result=False,
-        vertical_split_num=5,
-        horizontal_split_num=3,
+        vertical_split_num=6,
+        horizontal_split_num=1,
         confidence=0.6,
     )
     start_time = time.perf_counter()
