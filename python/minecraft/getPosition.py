@@ -6,6 +6,7 @@ import time
 import pydirectinput
 import re
 import monitorPlayerMove
+import numpy as np 
 
 ##################################
 game_name = 'Minecraft Education'
@@ -69,8 +70,13 @@ def getPosition():
     # スクショと文字認識
     image = ImageGrab.grab(cordinate)
     image.save('image.png')
-
-    text = pytesseract.image_to_string(image, config=tesseract_args)
+    
+    imageG = np.array(image.convert('L'), 'f')
+    imageG = (imageG <150) * 255
+    imageG = Image.fromarray(imageG)
+    imageG = imageG.convert('RGBA')
+    
+    text = pytesseract.image_to_string(imageG, config=tesseract_args)
     position = format_position(text)
 
 
