@@ -1,3 +1,4 @@
+import os
 import win32gui
 from PIL import ImageGrab, Image
 import pytesseract
@@ -12,6 +13,9 @@ import numpy as np
 game_name = 'Minecraft Education'
 sleep_time = 0.05
 ##################################
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.environ['TESSDATA_PREFIX'] = script_dir + '/tessdata/'
+
 
 def add_to_next_element(lst, indx):
     if indx + 1 >= len(lst):
@@ -76,11 +80,11 @@ def getPosition():
     imageG = Image.fromarray(imageG)
     imageG = imageG.convert('RGBA')
     
-    text = pytesseract.image_to_string(imageG, config=tesseract_args)
+    text = pytesseract.image_to_string(imageG, config=tesseract_args, lang='minecraft')
     position = format_position(text)
-
 
     return position
 
 if __name__ == '__main__':
-    getPosition()
+    cordinate = getPosition()
+    print(cordinate)
