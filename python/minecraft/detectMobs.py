@@ -1,9 +1,14 @@
+import os
+
 import cv2
 import numpy as np
 import onnxruntime as ort
 import pygetwindow as gw
 import pyautogui
 import time
+
+base_dir = os.path.dirname(os.path.realpath(__file__))
+model_path = os.path.join(base_dir, "yoloFiles/best.onnx")
 
 
 class DetectMobs:
@@ -30,7 +35,7 @@ class DetectMobs:
         self.confidence = confidence
 
         # load onnx model
-        self.ort_session = ort.InferenceSession("./yoloFiles/best.onnx")
+        self.ort_session = ort.InferenceSession(model_path)
 
     def capture_img(self):
         window_title = "Minecraft Education"
@@ -125,7 +130,7 @@ class DetectMobs:
     def write_result_to_text(self, bboxes, classes):
         with open(self.txt_path, encoding="UTF-8", mode="w") as f:
             results = self.calc_location(bboxes, classes)
-            for i, result in enumerate(results):
+            for result in results:
                 f.write(str(result))
                 f.write("\n")
 
@@ -145,7 +150,7 @@ class DetectMobs:
             x_center, y_center, _, _ = bbox
             x_position = int(x_center / self.input_img_size * self.vertical_split_num)
             y_position = int(y_center / self.input_img_size * self.horizontal_split_num)
-            index = y_position * self.horizontal_split_num + x_position
+            index = y_position * self.vertical_split_num + x_position
             if results[index] != -1:
                 if results[index] != classes[i]:
                     results[index] = 9
@@ -173,7 +178,9 @@ class DetectMobs:
         self.write_result_to_text(bboxes, classes)
 
     def main(self):
+        # while True:
         self.detect()
+
         if self.is_save_result:
             self.show_result_img()
 
