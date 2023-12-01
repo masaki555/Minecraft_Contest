@@ -41,7 +41,7 @@ def format_position(pos):
         pos = add_to_next_element(pos, 1)
     if len(pos[1]) == 0:
         pos = add_to_next_element(pos, 0)
-    if pos[1] != '4':
+    if pos[1] != y_value:
         pos = add_to_next_element(pos, 1)
         pos = add_to_next_element(pos, 0)
     while len(pos[1]) >= 2:
@@ -54,6 +54,9 @@ def format_position(pos):
 
 def getPosition():
     mcapp = win32gui.FindWindow(None,game_name)
+    time.sleep(sleep_time)
+    shell = win32com.client.Dispatch("WScript.Shell")
+    shell.SendKeys('%')
     time.sleep(sleep_time)
     win32gui.SetForegroundWindow(mcapp)         #ウィンドウの指定
     time.sleep(sleep_time)
