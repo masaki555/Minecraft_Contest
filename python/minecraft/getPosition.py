@@ -34,7 +34,7 @@ def format_position(pos):
     y_value = '4'
 
     pos.replace(',', '').replace('.', '').replace(' ','')
-    pattern = r'(-?[1-9][0-9]?)'
+    pattern = r'(-?[0-9][0-9]?)'
     pos = re.findall(pattern, pos)
     if len(pos) == 2:
         pos = add_to_next_element(pos, 1)
