@@ -1,5 +1,6 @@
 import os
 import win32gui
+import win32com.client
 from PIL import ImageGrab, Image
 import pytesseract
 from tesseract_pack import data_here
