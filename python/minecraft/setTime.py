@@ -1,20 +1,15 @@
 import sys
 sys.path.append('.')
 
-import pydirectinput
-import time
+from python.minecraft import command
 
 ################################
-sleep_time = 0.25
-command = "/time set 17000"
+cmd = "/time set 17000"
 ################################
 
+#　ゲーム内時間を夜に設定する
 def setTime():
-    pydirectinput.press('enter')
-    for i in command:
-        pydirectinput.press(i)
-    pydirectinput.press('enter')
-    
+    command.run(cmd)
 
 if __name__ == '__main__':
     setTime()
