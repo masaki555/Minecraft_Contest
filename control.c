@@ -175,6 +175,20 @@ void moveJump(int times){
     }
 }
 
+void moveToPosition(int x, int y) {
+    int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/movePosition.py" , x, y, NULL);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:movePosition\n");
+        exit(1);
+    }
+}
+
+void moveToCenter() {
+    int center_x = -3;
+    int center_y = -1;
+    movePosition(center_x, center_y);
+}
+
 void setDashFlag(int flag){
     FILE *fp;
     char pass[64] = "python/tmp/Share_Move_Data.txt";

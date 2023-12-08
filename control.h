@@ -15,6 +15,8 @@ void moveForwardRight(double time);
 void moveBackLeft(double time);
 void moveBackRight(double time);
 void moveJump(int times);
+void moveToPosition(int x, int y);
+void moveToCenter();
 void setDashFlag(int flag);
 void setDash(void);
 void resetDash(void);
