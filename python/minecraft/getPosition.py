@@ -9,6 +9,7 @@ import pydirectinput
 import re
 import monitorPlayerMove
 import numpy as np 
+import init
 
 ##################################
 game_name = 'Minecraft Education'
@@ -54,17 +55,6 @@ def format_position(pos):
 
 
 def getPosition():
-    mcapp = win32gui.FindWindow(None,game_name)
-    time.sleep(sleep_time)
-    shell = win32com.client.Dispatch("WScript.Shell")
-    shell.SendKeys('%')
-    time.sleep(sleep_time)
-    win32gui.SetForegroundWindow(mcapp)         #ウィンドウの指定
-    time.sleep(sleep_time)
-    pydirectinput.keyDown('esc')
-    pydirectinput.keyUp('esc')
-    time.sleep(sleep_time)
-
     hwnd = win32gui.GetForegroundWindow()
     left, top, right, bottom = win32gui.GetWindowRect(hwnd)
     cordinate = (left+95, top+131, right-725, bottom-845)
@@ -90,5 +80,6 @@ def getPosition():
     return position
 
 if __name__ == '__main__':
+    init.init()
     cordinate = getPosition()
     print(cordinate)
