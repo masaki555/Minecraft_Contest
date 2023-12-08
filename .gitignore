@@ -5,7 +5,7 @@ __pycache__/
 .vscode
 
 python
-!python/minecraft
+!python/minecraft/**
 
 python/minecraft/yoloFiles/capture.png
 python/minecraft/yoloFiles/labels/capture.txt
