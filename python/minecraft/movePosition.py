@@ -1,17 +1,13 @@
-import win32gui
-from PIL import ImageGrab, Image
-import pytesseract
-from tesseract_pack import data_here
+import sys
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(script_dir)
 import time
-import pydirectinput
-import re
 import monitorPlayerMove
-import win32com.client
 import numpy as np 
 from matplotlib import pylab as plt
 import math
 import getPosition
-import init
 
 def main():
 
@@ -44,8 +40,8 @@ def main():
             if(flag==0):
                 monitorPlayerMove.forward(1)
                 if(min>now):
-                    min=now # minに最小値を入れる
-                while True:
+                    min=now 
+                while True: 
                     past = now
                     x3, z3, y3 = getPosition.getPosition()
                     print(x3, z3, y3) # 現在の座標を表示
@@ -70,14 +66,7 @@ def main():
                         break
                 break
 
-    # # スクショと文字認識
-    # image = ImageGrab.grab(cordinate) # スクショを撮る
-    # image.save('image.png') # スクショを保存
-    # tesseract_args = '-c tessedit_char_whitelist="0123456789-,. "' # 認識する文字の指定
-    # text = pytesseract.image_to_string(image, config=tesseract_args) # 文字認識
-    # text = text.replace(' ', '').rstrip() # 認識した文字から空白を削除
-    # x1, z1, y1 = map(int, re.split('[,.]', text)) # 認識した文字を座標に変換
-    # print(x1, z1, y1)
+
     x1, z1, y1 = getPosition.getPosition()
     while True:
         monitorPlayerMove.right(1)
@@ -121,5 +110,4 @@ def main():
                 break
 
 if __name__ == "__main__":
-    init.init()
     main()

@@ -186,7 +186,7 @@ void moveToPosition(int x, int y) {
 void moveToCenter() {
     int center_x = -3;
     int center_y = -1;
-    movePosition(center_x, center_y);
+    moveToPosition(center_x, center_y);
 }
 
 void setDashFlag(int flag){
