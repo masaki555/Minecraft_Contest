@@ -19,8 +19,7 @@ def main():
     y = -1
 
     x1, z1, y1 = getPosition.getPosition()
-    print(x1, z1, y1)
-
+    print(x1, z1, y1) # 現在の座標を表示
     now = math.sqrt((x - x1)**2 + (y - y1)**2) # 目的座標と現在の座標の距離を計算
     min = now
     
@@ -32,6 +31,7 @@ def main():
         now = math.sqrt((x - x2)**2 + (y - y2)**2) # 目的座標と現在の座標の距離を計算
         if(past != now): # 前回の座標と現在の座標が異なる場合
             monitorPlayerMove.forward(0)
+            time.sleep(0.5)
             # 目的地に近づいている場合
             if(now<past):
                 flag=0
@@ -53,7 +53,12 @@ def main():
                         break
                 break
             if(flag==1):
+                x1, z1, y1 = getPosition.getPosition()
+                now = math.sqrt((x - x1)**2 + (y - y1)**2) # 目的座標と現在の座標の距離を計算
+                min = now
                 monitorPlayerMove.back(1)
+                if(min>now):
+                    min=now
                 while True:
                     past = now
                     x3, z3, y3 =  getPosition.getPosition()
@@ -68,6 +73,8 @@ def main():
 
 
     x1, z1, y1 = getPosition.getPosition()
+    now = math.sqrt((x - x1)**2 + (y - y1)**2) # 目的座標と現在の座標の距離を計算
+    min = now
     while True:
         monitorPlayerMove.right(1)
         past = now
@@ -96,6 +103,9 @@ def main():
                         break
                 break
             if(flag==1):
+                x1, z1, y1 = getPosition.getPosition()
+                now = math.sqrt((x - x1)**2 + (y - y1)**2) # 目的座標と現在の座標の距離を計算
+                min = now
                 monitorPlayerMove.left(1)
                 while True:
                     past = now
