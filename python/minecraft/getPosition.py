@@ -33,7 +33,7 @@ def getBinaryData(heightCrop, widthCrop,imageCrop):
                 elif(str(imageArray[y][x])==BLACK_PIXEL):
                     colorType=1
                 else:
-                    print("Error:")
+                    print("Error:1")
                 
                 flagWideth=1
             elif(flagWideth==1):
@@ -42,7 +42,7 @@ def getBinaryData(heightCrop, widthCrop,imageCrop):
                 elif(str(imageArray[y][x])==BLACK_PIXEL and colorType==1):
                     binary+=str(1)
                 else:
-                    print("Error:")
+                    print("Error:2")
                     
                 flagWideth=0
                 
@@ -57,7 +57,7 @@ def getBinaryData(heightCrop, widthCrop,imageCrop):
                 positionData+=str(line1)
                 
             else:
-                print("error")
+                print("Error:3")
             
             flagLine=0
         
