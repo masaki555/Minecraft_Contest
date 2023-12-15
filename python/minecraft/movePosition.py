@@ -84,7 +84,6 @@ def main():
             min = now
             continue
 
-
     x1, z1, y1 = getPosition.getPosition()
     print(x1, z1, y1) # 現在の座標を表示
     now = math.sqrt((x - x1)**2 + (y - y1)**2) # 目的座標と現在の座標の距離を計算

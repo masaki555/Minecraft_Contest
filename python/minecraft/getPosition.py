@@ -2,9 +2,22 @@ import os
 import win32gui
 from PIL import ImageGrab, Image
 import numpy as np 
+import sys
 
 script_dir = os.path.dirname(os.path.abspath(__file__)) 
 data_dir= script_dir + '/posdata/'
+
+def getPositionX():
+    x, z, y = getPosition()
+    return x
+
+def getPositionZ():
+    x, z, y = getPosition()
+    return z
+
+def getPositionY():
+    x, z, y = getPosition()
+    return y
 
 def getPosition():
 
@@ -135,5 +148,12 @@ def getPosition():
     return zahyouList
 
 if __name__ == '__main__':
-    cordinate = getPosition()
-    print(cordinate)
+    if len(sys.argv) == 1:
+        cordinate = getPosition()
+        print(cordinate)
+    elif sys.argv[1] == 'x':
+        print(getPositionX())
+    elif sys.argv[1] == 'z':
+        print(getPositionZ())
+    elif sys.argv[1] == 'y':
+        print(getPositionY())

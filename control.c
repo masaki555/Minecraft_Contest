@@ -175,6 +175,45 @@ void moveJump(int times){
     }
 }
 
+int getPositionX(){
+    char x[8];
+    FILE *fp;
+    fp = popen("python/python.exe python/minecraft/getPosition.py x", "r");
+    if(fp == NULL){
+        printf("error:getPositionX\n");
+        return 999;
+    }
+    fgets(x, 7, fp);
+    pclose(fp);
+    return atoi(x);
+}
+
+int getPositionZ(){
+    char z[8];
+    FILE *fp;
+    fp = popen("python/python.exe python/minecraft/getPosition.py z", "r");
+    if(fp == NULL){
+        printf("error:getPositionZ\n");
+        return 999;
+    }
+    fgets(z, 7, fp);
+    pclose(fp);
+    return atoi(z);
+}
+
+int getPositionY(){
+    char y[8];
+    FILE *fp;
+    fp = popen("python/python.exe python/minecraft/getPosition.py y", "r");
+    if(fp == NULL){
+        printf("error:getPositionY\n");
+        return 999;
+    }
+    fgets(y, 7, fp);
+    pclose(fp);
+    return atoi(y);
+}
+
 void moveToPosition(int x, int y) {
     char str_x[4];
     char str_y[4];
