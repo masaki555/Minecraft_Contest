@@ -13,10 +13,10 @@ def main():
 
     time.sleep(1)
 
-   # 目標座標(x,z,y)
-    x = -3
+   # 目標座標(x,z,y)を入力
+    x = int(sys.argv[1])
     z = 4
-    y = -1
+    y = int(sys.argv[2])
 
     x1, z1, y1 = getPosition.getPosition()
     print(x1, z1, y1) # 現在の座標を表示
