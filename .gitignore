@@ -10,7 +10,4 @@ python
 python/minecraft/yoloFiles/capture.png
 python/minecraft/yoloFiles/labels/capture.txt
 
-python/minecraft/posdata/imageColorValues.txt
-python/minecraft/posdata/imageColorValues2.txt
-
 *.exe
