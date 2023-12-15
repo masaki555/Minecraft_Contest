@@ -176,7 +176,11 @@ void moveJump(int times){
 }
 
 void moveToPosition(int x, int y) {
-    int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/movePosition.py" , x, y, NULL);
+    char str_x[4];
+    char str_y[4];
+    sprintf(str_x, "%d", x);
+    sprintf(str_y, "%d", y);
+    int f = execl("python/python.exe" , "python/python.exe" ,"python/minecraft/movePosition.py" , str_x, str_y, NULL);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
         printf("error:movePosition\n");
         exit(1);
