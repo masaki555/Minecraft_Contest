@@ -11,7 +11,6 @@ python
 
 python/minecraft/yoloFiles/capture.png
 python/minecraft/yoloFiles/input.png
-python/minecraft/yoloFiles/detectMobs_config.txt
 python/minecraft/yoloFiles/labels/capture.txt
 
 *.exe
