@@ -128,11 +128,11 @@ class DetectMobs:
 
     def write_result_to_text(self, bboxes, classes):
         with open(self.txt_path, encoding="UTF-8", mode="w") as f:
-            results_zombie, results_sckelton = self.calc_location(bboxes, classes)
+            results_zombie, results_skeleton = self.calc_location(bboxes, classes)
             for result in results_zombie:
                 f.write(str(result) + " ")
             f.write("\n")
-            for result in results_sckelton:
+            for result in results_skeleton:
                 f.write(str(result) + " ")
             f.write("\n")
 
@@ -148,7 +148,7 @@ class DetectMobs:
             occupancy level in segments
         """
         occupancy_grid_zombie = np.zeros((640, 640))
-        occupancy_grid_sckelton = np.zeros((640, 640))
+        occupancy_grid_skeleton = np.zeros((640, 640))
 
         for bbox, cls in zip(bboxes, classes):
             x_center, y_center, width, height = bbox
@@ -160,7 +160,7 @@ class DetectMobs:
             if cls == 0:
                 occupancy_grid_zombie[y_min:y_max, x_min:x_max] = 1
             elif cls == 1:
-                occupancy_grid_sckelton[y_min:y_max, x_min:x_max] = 1
+                occupancy_grid_skeleton[y_min:y_max, x_min:x_max] = 1
 
         segment_width = 640 // self.vertical_split_num
         segment_height = 640 // self.horizontal_split_num
@@ -168,7 +168,7 @@ class DetectMobs:
         occupancy_ratios_zombie = np.zeros(
             self.horizontal_split_num * self.vertical_split_num
         )
-        occupancy_ratios_sckelton = np.zeros_like(occupancy_ratios_zombie)
+        occupancy_ratios_skeleton = np.zeros_like(occupancy_ratios_zombie)
 
         for x in range(self.vertical_split_num):
             for y in range(self.horizontal_split_num):
@@ -176,24 +176,24 @@ class DetectMobs:
                     y * segment_height : (y + 1) * segment_height,
                     x * segment_width : (x + 1) * segment_width,
                 ]
-                segment_sckelton = occupancy_grid_sckelton[
+                segment_skeleton = occupancy_grid_skeleton[
                     y * segment_height : (y + 1) * segment_height,
                     x * segment_width : (x + 1) * segment_width,
                 ]
                 occupancy_ratio_zombie = np.sum(segment_zombie) / (
                     segment_width * segment_height
                 )
-                occupancy_ratio_sckelton = np.sum(segment_sckelton) / (
+                occupancy_ratio_skeleton = np.sum(segment_skeleton) / (
                     segment_width * segment_height
                 )
                 index = y * self.vertical_split_num + x
                 occupancy_ratios_zombie[index] = occupancy_ratio_zombie
-                occupancy_ratios_sckelton[index] = occupancy_ratio_sckelton
+                occupancy_ratios_skeleton[index] = occupancy_ratio_skeleton
 
         occupancy_ratios_zombie = (occupancy_ratios_zombie * 10).astype(int)
-        occupancy_ratios_sckelton = (occupancy_ratios_sckelton * 10).astype(int)
+        occupancy_ratios_skeleton = (occupancy_ratios_skeleton * 10).astype(int)
 
-        return occupancy_ratios_zombie, occupancy_ratios_sckelton
+        return occupancy_ratios_zombie, occupancy_ratios_skeleton
 
     def detect(self):
         """this is main process in this class"""
@@ -218,12 +218,12 @@ class DetectMobs:
             self.detect()
 
         # debug show
-        #if self.is_save_result:
+        # if self.is_save_result:
         #    self.show_result_img()
 
 
 if __name__ == "__main__":
-    with open('yoloFiles/detectMobs_config.txt', 'r') as file:
+    with open("yoloFiles/detectMobs_config.txt", "r") as file:
         v = int(file.readline())
         h = int(file.readline())
     detect = DetectMobs(
