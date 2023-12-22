@@ -1,11 +1,11 @@
 import os
+import time
 
 import cv2
 import numpy as np
 import onnxruntime as ort
 import pygetwindow as gw
 import pyautogui
-import time
 
 base_dir = os.path.dirname(os.path.realpath(__file__))
 model_path = os.path.join(base_dir, "yoloFiles/best.onnx")
@@ -129,35 +129,72 @@ class DetectMobs:
 
     def write_result_to_text(self, bboxes, classes):
         with open(self.txt_path, encoding="UTF-8", mode="w") as f:
-            results = self.calc_location(bboxes, classes)
-            for result in results:
-                f.write(str(result))
-                f.write("\n")
+            results_zommbie, results_sckelton = self.calc_location(bboxes, classes)
+            for result in results_zommbie:
+                f.write(str(result) + " ")
+            f.write("\n")
+            for result in results_sckelton:
+                f.write(str(result) + " ")
+            f.write("\n")
 
     def calc_location(self, bboxes, classes):
-        """calculate location on spliting image
+        """
+        calulate Mob's location. return level of occupancy in individual segment.
 
         Args:
-            bboxes (list): coordinations of mobs
-            classes (list): classification of mobs
+            bboxes (_type_): the results of detect
+            classes (_type_): the results of detect
 
         Returns:
-            ndarray : locations
+            occupancy level in segments
         """
-        results = np.full(self.horizontal_split_num * self.vertical_split_num, -1)
+        occupancy_grid_zommbie = np.zeros((640, 640))
+        occupancy_grid_sckelton = np.zeros((640, 640))
 
-        for i, bbox in enumerate(bboxes):
-            x_center, y_center, _, _ = bbox
-            x_position = int(x_center / self.input_img_size * self.vertical_split_num)
-            y_position = int(y_center / self.input_img_size * self.horizontal_split_num)
-            index = y_position * self.vertical_split_num + x_position
-            if results[index] != -1:
-                if results[index] != classes[i]:
-                    results[index] = 9
-            else:
-                results[index] = classes[i]
+        for bbox, cls in zip(bboxes, classes):
+            x_center, y_center, width, height = bbox
+            x_min = int(max(x_center - width / 2.0, 0))
+            x_max = int(min(x_center + width / 2.0, 640))
+            y_min = int(max(y_center - height / 2.0, 0))
+            y_max = int(min(y_center + height / 2.0, 640))
 
-        return results
+            if cls == 0:
+                occupancy_grid_zommbie[y_min:y_max, x_min:x_max] = 1
+            elif cls == 1:
+                occupancy_grid_sckelton[y_min:y_max, x_min:x_max] = 1
+
+        segment_width = 640 // self.vertical_split_num
+        segment_height = 640 // self.horizontal_split_num
+
+        occupancy_ratios_zommbie = np.zeros(
+            self.horizontal_split_num * self.vertical_split_num
+        )
+        occupancy_ratios_sckelton = np.zeros_like(occupancy_ratios_zommbie)
+
+        for x in range(self.vertical_split_num):
+            for y in range(self.horizontal_split_num):
+                segment_zommbie = occupancy_grid_zommbie[
+                    y * segment_height : (y + 1) * segment_height,
+                    x * segment_width : (x + 1) * segment_width,
+                ]
+                segment_sckelton = occupancy_grid_sckelton[
+                    y * segment_height : (y + 1) * segment_height,
+                    x * segment_width : (x + 1) * segment_width,
+                ]
+                occupancy_ratio_zommbie = np.sum(segment_zommbie) / (
+                    segment_width * segment_height
+                )
+                occupancy_ratio_sckelton = np.sum(segment_sckelton) / (
+                    segment_width * segment_height
+                )
+                index = y * self.vertical_split_num + x
+                occupancy_ratios_zommbie[index] = occupancy_ratio_zommbie
+                occupancy_ratios_sckelton[index] = occupancy_ratio_sckelton
+
+        occupancy_ratios_zommbie = (occupancy_ratios_zommbie * 10).astype(int)
+        occupancy_ratios_sckelton = (occupancy_ratios_sckelton * 10).astype(int)
+
+        return occupancy_ratios_zommbie, occupancy_ratios_sckelton
 
     def detect(self):
         """this is main process in this class"""
@@ -192,8 +229,8 @@ if __name__ == "__main__":
         txt_path="yoloFiles/labels/capture.txt",
         input_img_size=640,
         is_save_result=False,
-        vertical_split_num=6,
-        horizontal_split_num=1,
+        vertical_split_num=5,
+        horizontal_split_num=5,
         confidence=0.6,
     )
     start_time = time.perf_counter()
