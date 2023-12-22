@@ -223,7 +223,7 @@ class DetectMobs:
 
 
 if __name__ == "__main__":
-    with open("yoloFiles/detectMobs_config.txt", "r") as file:
+    with open(os.path.join(base_dir, "yoloFiles/detectMobs_config.txt"), "r") as file:
         v = int(file.readline())
         h = int(file.readline())
     detect = DetectMobs(
