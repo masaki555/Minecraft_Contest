@@ -3,6 +3,7 @@ import time
 import win32gui
 import win32con
 import win32api
+import win32com.client
 import pydirectinput
 
 ################################
@@ -12,6 +13,9 @@ sleep_time = 0.05
 
 def init():
     mcapp = win32gui.FindWindow(None,game_name)
+    time.sleep(sleep_time)
+    shell = win32com.client.Dispatch("WScript.Shell")
+    shell.SendKeys('%')
     time.sleep(sleep_time)
     win32gui.SetForegroundWindow(mcapp)         #ウィンドウの指定
     time.sleep(sleep_time)

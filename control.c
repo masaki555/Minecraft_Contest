@@ -27,11 +27,11 @@ void attackLeft(void){
         exit(1);
     }
 }
-void attackRight(void){
-    char com[128] = "python/python.exe python/minecraft/clickRight.py";
+void attackLeft_long(void){
+    char com[128] = "python/python.exe python/minecraft/clickLeft_long.py";
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:attackRight\n");
+        printf("error:attackLefy_long\n");
         exit(1);
     }
 }
@@ -174,6 +174,19 @@ void moveJump(int times){
         exit(1);
     }
 }
+
+
+void moveDash(int times){
+    char str[128] = "python/python.exe python/minecraft/moveCharacterJumpDash.py";
+    char com[256];
+    sprintf(com, "%s %d", str, times);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:moveJump\n");
+        exit(1);
+    }
+}
+
 
 void setDashFlag(int flag){
     FILE *fp;

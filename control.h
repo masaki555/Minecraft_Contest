@@ -1,6 +1,7 @@
 extern int rk;
 
 void attackLeft(void);
+void attackLeft_long(void);
 void attackRight(void);
 
 void moveDataToFile(char* key);
@@ -18,6 +19,7 @@ void moveJump(int times);
 void setDashFlag(int flag);
 void setDash(void);
 void resetDash(void);
+void moveDash(int times);
 
 void init(void);
 void setTime(void);
