@@ -152,14 +152,15 @@ int main(int argc, char *argv[]){
 | void moveForwardRight(double time) | 右斜め前に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
 | void moveBackLeft(double time) | 左斜め後ろに動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
 | void moveBackRight(double time) | 右斜め後ろに動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
-| void movejump(int times) | ジャンプする．timesで指定した回数分，連続でジャンプし続ける． |
-| void setDash(void) | 常に移動がダッシュになる． |
-| void resetDash(void) | 常に移動が歩くになる． |
-| void cameraDown(double time) | カメラを下にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす． |
-| void cameraLeft(double time) | カメラを左にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす． |
-| void cameraRight(double time) | カメラを右にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす． |
-| void cameraUp(double time) | カメラを上にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす． |
+| void moveJump(int times) | ジャンプする．timesで指定した回数分，連続でジャンプし続ける． |
+| void moveDash(int times) | ダッシュする．timesで指定した時間(単位は秒,整数でのみ指定できる)動く． |
+| void cameraDown(double time) | カメラを下にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
+| void cameraLeft(double time) | カメラを左にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
+| void cameraRight(double time) | カメラを右にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
+| void cameraUp(double time) | カメラを上にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
 | void cameraCenter(void) | カメラ（カーソル）を中央に戻す． |
+
+※1 値は0.24以上である必要がある．動作後は1秒以上カメラ以外の動作を行わなければカメラが動作しない場合がある．プログラムの最初の動作をカメラ移動にすると，正常に動作しない場合がある．
 
 例えば以下のようなプログラムを記載するとc1-byod環境でF12キーを押さない限り前進し続けるプログラムとなる．
 
