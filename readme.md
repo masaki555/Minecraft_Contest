@@ -143,7 +143,6 @@ int main(int argc, char *argv[]){
 | int detectZombie3(void) | 画面を6分割して左から順に検出した場所を1にする．戻り値はint型で，例えば100001だと左端と右端に検出された状態．詳細は後述． |
 | int detectMobs(void) | 画面を6分割して検出．戻り値はint型で，検出したMobがいない場合は0，クリーパーを1，ゾンビを2として値を返す．たとえば200001だと画面左端にゾンビがいて右端にクリーパーがいる状態．詳細は後述． |
 | void attackLeft(void) | 左クリック．0.01秒間隔で入力されるが，実際にはもう少し遅い． |
-| void attackRight(void) | 右クリック．1.50秒間入力される． |
 | void moveForward(double time) | 前進する．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
 | void moveLeft(double time) | 左に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
 | void moveRight(double time) | 右に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
