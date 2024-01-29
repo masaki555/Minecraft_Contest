@@ -160,7 +160,7 @@ int main(int argc, char *argv[]){
 | void cameraLeft(double time) | カメラを左にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
 | void cameraRight(double time) | カメラを右にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
 | void cameraUp(double time) | カメラを上にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
-| void cameraCenter(void) | カメラ（カーソル）を中央に戻す． |
+
 
 ※1 値は0.24以上である必要がある．動作後は1秒以上カメラ以外の動作を行わなければカメラが動作しない場合がある．Botのアルゴリズムを実装するwhile文の最初のカメラ動作を実行すると，正常に動作しない場合がある．
 
