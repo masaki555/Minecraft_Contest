@@ -1,20 +1,15 @@
 import sys
 sys.path.append('.')
 
-import pydirectinput
-import time
+from python.minecraft import command
 
 ################################
-sleep_time = 0.25
-command = "/gamemode s"
+cmd = "/gamemode s"
 ################################
 
-def setTime():
-    pydirectinput.press('enter')
-    for i in command:
-        pydirectinput.press(i)
-    pydirectinput.press('enter')
-    
+# # ゲームモードをサバイバルに設定する
+def setSurvivalMode():
+    command.run(cmd)
 
 if __name__ == '__main__':
-    setTime()
+    setSurvivalMode()

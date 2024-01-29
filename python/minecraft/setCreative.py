@@ -1,20 +1,15 @@
 import sys
 sys.path.append('.')
 
-import pydirectinput
-import time
+from python.minecraft import command
 
 ################################
-sleep_time = 0.25
-command = "/gamemode c"
+cmd = "/gamemode c"
 ################################
 
-def setTime():
-    pydirectinput.press('enter')
-    for i in command:
-        pydirectinput.press(i)
-    pydirectinput.press('enter')
-    
+# ゲームモードをクリエイティブに設定する
+def setCreativeMode():
+    command.run(cmd)
 
 if __name__ == '__main__':
-    setTime()
+    setCreativeMode()

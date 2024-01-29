@@ -3,8 +3,9 @@ __pycache__/
 *$py.class
 
 .vscode
+.idea
 
-python
+python/*
 !python/minecraft
 
 python/minecraft/yoloFiles/capture.png
