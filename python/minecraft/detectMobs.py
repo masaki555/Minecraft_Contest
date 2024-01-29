@@ -1,215 +1,241 @@
-import sys
-sys.path.append('.')
-sys.path.append('./python/')
+import os
 
-from pathlib import Path
-FILE = Path(__file__).resolve()
-ROOT = FILE.parents[0]
+import cv2
+import numpy as np
+import onnxruntime as ort
+import pygetwindow as gw
+import pyautogui
 
-from PIL import ImageGrab, Image
-import win32gui, time, os, logging, argparse
+base_dir = os.path.dirname(os.path.realpath(__file__))
+model_path = os.path.join(base_dir, "yoloFiles/best.onnx")
 
-sys.path.append('.')
-sys.path.append('./python/yolov5-master')
-import detect
 
-path_detectZombie3 = "python/tmp/detect_zombie3.txt"
-path_detectMobs = "python/tmp/detect_mobs.txt"
-path_creepertxt = "python/tmp/t_creeper.txt"
-path_zombietxt = "python/tmp/t_zombie.txt"
-path_captureImg = "python/minecraft/yoloFiles/capture.png"
-path_captureTxt = "python/minecraft/yoloFiles/labels/capture.txt"
+class DetectMobs:
+    """Detect Mobs(Zombie, Skeleton) location with image regognition"""
 
-# 画像の分割数
-splitNum = 6
+    def __init__(
+        self,
+        img_path=None,
+        capture_path="yoloFiles/capture.png",
+        txt_path="yoloFiles/labels/capture.txt",
+        input_img_size=640,
+        is_save_result=False,
+        vertical_split_num=5,
+        horizontal_split_num=3,
+        confidence=0.6,
+    ):
+        self.img_path = img_path
+        self.capture_path = os.path.join(base_dir, capture_path)
+        self.txt_path = os.path.join(base_dir, txt_path)
+        self.input_img_size = input_img_size
+        self.is_save_result = is_save_result
+        self.vertical_split_num = vertical_split_num
+        self.horizontal_split_num = horizontal_split_num
+        self.confidence = confidence
 
-# mobの辞書
-mobsDict = {"creeper":0, "zombie":1}
+        # load onnx model
+        self.ort_session = ort.InferenceSession(model_path)
 
-# 扱うmobの種類
-mobNum = len(mobsDict)
+    def capture_img(self):
+        window_title = "Minecraft Education"
+        window = gw.getWindowsWithTitle(window_title)[0]
+        window_location = (window.left, window.top, window.width, window.height)
+        window_image = pyautogui.screenshot(region=window_location)
+        window_image = cv2.cvtColor(np.array(window_image), cv2.COLOR_BGR2RGB)
 
-# 画面内のmob情報を格納するクラス
-class mob:
-    def __init__(self):
-        self.type = 1
-        self.x = 0
-        self.y = 0
-        self.width = 0
-        self.height = 0
-        self.distance = 0
+        return window_image
 
-    def setData(self, result):
-        data = result.split()
-        self.type = int(data[0])
-        self.x = float(data[1])
-        self.y = float(data[2])
-        self.width = float(data[3])
-        self.height = float(data[4])
-        self.distance = calcDistance(self.width)
-
-    def printData(self):
-        print(self.type)
-        print(self.x)
-        print(self.y)
-        print(self.width)
-        print(self.height)
-        
-    # フォーマット：種類(1,2) X軸位置 Y軸位置 距離
-    # 全て１桁
-    def outputDataAbout(self):
-        path = path_zombietxt
-        x_pos = calcPosition(self.x)
-        y_pos = calcPosition(self.y)
-
-        # txtに書き込む内容
-        txt = "{x:01d}{y:01d}{dist:01d}".format(x=x_pos,y=y_pos,dist=self.distance)
-
-        if(self.type == mobsDict["zombie"]):
-            path = path_zombietxt
-        elif(self.type == mobsDict["creeper"]):
-            path = path_creepertxt
-        makeTxt(txt, path)
-
-# スクショ用関数
-def captureMC(winHundle, windowSize):
-    if winHundle:
-        image = ImageGrab.grab(windowSize)
-        image.save(path_captureImg)
-    else:
-        print("error: capture window")
-
-# 大体の距離を計算
-def calcDistance(width):
-    # 0:近距離 1:中距離 2:遠距離
-    if width > 0.1:
-        distance = 0
-    elif width > 0.05:
-        distance = 1
-    else:
-        distance = 2 
-    
-    return distance
-
-# 大体の位置計算
-def calcPosition(posVal):
-    # 画面をsplitNum等分して計算
-    border = 1.0 / splitNum
-    for i in range(splitNum):
-        if(border * i < posVal):
-            position = i
-
-    return position
-
-def readResult():
-    result = ""
-    if os.path.isfile(path_captureTxt):
-        f = open(path_captureTxt, 'r')
-        result = f.readlines()
-        f.close()
-
-    return result
-
-# txt系
-# txt初期化
-def initTxt(fileName):
-    f = open(fileName, 'w', encoding='UTF-8')
-    f.write("")
-    f.close()
-    
-def resetDetection():
-    initTxt(path_captureTxt)
-
-def resetAllTxt():
-    files = [path_detectZombie3, path_detectMobs, path_creepertxt, path_zombietxt]
-    for f in files:
-        initTxt(f)
-
-def makeLine(pos, txtPath):
-    line = ""
-    for i in range(len(pos)):
-        line = line + pos[i]
-        
-    makeTxt(line, txtPath)
-
-def makeTxt(line, txtPath):
-    f = open(txtPath, 'a', encoding='UTF-8')
-    f.write(line)
-    f.close()
-
-def setopt():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'yoloFiles/best.pt', help='model path or triton URL')
-    parser.add_argument('--source', type=str, default=ROOT / 'yoloFiles/capture.png')
-    parser.add_argument('--save-txt', action='store_true', default=True)
-    parser.add_argument('--data', type=str, default=ROOT / 'yoloFiles/mobs.yaml', help='(optional) dataset.yaml path')
-    parser.add_argument('--nosave', action='store_true', default=True)
-    parser.add_argument('--exist-ok', action='store_true', default=True)
-    parser.add_argument('--project', default=ROOT / 'yoloFiles', help='save results to project/name')
-    parser.add_argument('--name', default='', help='save results to project/name')
-
-    opt = parser.parse_args()
-    return opt
-
-def init():
-    resetAllTxt()
-    resetDetection()
-
-    logging.config.dictConfig({
-        "version": 1,
-        "disable_existing_loggers": True,
-    })
-
-def main():
-    game_name = 'Minecraft Education'
-
-    # 初期化
-    init()
-    opt = setopt()
-
-    # Minecraftのウィンドウ取得
-    winHundle = win32gui.FindWindow(None, game_name)
-
-    # Minecraftのウィンドウサイズを取得
-    windowSize = win32gui.GetWindowRect(winHundle)
-
-    # スクショ➡検出のループ
-    while True:
-        resetDetection()
-        #スクショ
-        captureMC(winHundle, windowSize)
-
-        # 検出
-        # 画像が読み込めるかチェック
-        # 読み込めなければ諦める
-        if Image.open(path_captureImg):
-            detect.run(**vars(opt))
-            result = readResult()
+    def preprocess_image(self):
+        """to load and preprocess images"""
+        if self.img_path is None:
+            img = self.capture_img()
         else:
-            continue
+            img = cv2.imread(self.img_path)
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-        resetAllTxt()
-        mobData = []
-        zombiePos = ["0"] * splitNum
-        mobsPos = ["0"] * splitNum
-        for j in range(len(result)):
-            mobData.append(mob())
-            mobData[j].setData(result=result[j])
-            p = calcPosition(mobData[j].x)
+        # if we need to save result of img
+        if self.is_save_result is True:
+            cv2.imwrite(self.capture_path, img)
+        img_resized = cv2.resize(img_rgb, (self.input_img_size, self.input_img_size))
+        img_normalized = img_resized / 255.0  # standarzation to 0-1
+        img_transposed = np.transpose(img_normalized, (2, 0, 1))  # HWC->CHW
 
-            # type: ゾンビなら
-            if(mobData[j].type == mobsDict["zombie"]):
-                zombiePos[p] = "1"
+        return np.expand_dims(img_transposed, axis=0).astype(np.float32)
 
-            mobsPos[p] = str(mobData[j].type + 1)
-            
-            # 配列出力
-            mobData[j].outputDataAbout()
+    def draw_result(self, bboxes):
+        """
+        draw result(bbox, splitline, center) on input image
 
-            # Mob情報を出力
-            # mobData[j].printData()
-        makeLine(zombiePos, path_detectZombie3)
-        makeLine(mobsPos, path_detectMobs)
+        Args:
+            bboxes (list): coordinations of bboxes
+        """
+        img = cv2.imread(self.capture_path)
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        h, w, _ = img_rgb.shape
 
-if __name__ == '__main__':
-    main()
+        for bbox in bboxes:
+            x_center, y_center, width, height = bbox
+            # Rescale the bbox to original image size
+            x_center = x_center * w / self.input_img_size
+            y_center = y_center * h / self.input_img_size
+            width = width * w / self.input_img_size
+            height = height * h / self.input_img_size
+
+            x_min = int(x_center - width / 2.0)
+            y_min = int(y_center - height / 2.0)
+            x_max = int(x_center + width / 2.0)
+            y_max = int(y_center + height / 2.0)
+
+            # draw red color bbox
+            cv2.rectangle(img_rgb, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
+            # draw center point
+            cv2.circle(
+                img_rgb,
+                center=(int(x_center), int(y_center)),
+                radius=5,
+                color=(0, 0, 255),
+                thickness=-1,
+            )
+
+        # draw spliting lines
+        for i in range(self.horizontal_split_num):
+            line_h = int(i * h / self.horizontal_split_num)
+            cv2.line(
+                img_rgb,
+                pt1=(0, line_h),
+                pt2=(w, line_h),
+                color=(0, 255, 0),
+                thickness=3,
+            )
+        for i in range(self.vertical_split_num):
+            line_w = int(i * w / self.vertical_split_num)
+            cv2.line(
+                img_rgb,
+                pt1=(line_w, 0),
+                pt2=(line_w, h),
+                color=(0, 255, 0),
+                thickness=3,
+            )
+
+        # save image which is result of anotation
+        cv2.imwrite(self.capture_path, cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR))
+
+    def show_result_img(self):
+        img = cv2.imread(self.capture_path)
+        cv2.imshow("result_img", img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    def write_result_to_text(self, bboxes, classes):
+        with open(self.txt_path, encoding="UTF-8", mode="w") as f:
+            results_zombie, results_skeleton = self.calc_location(bboxes, classes)
+            for result in results_zombie:
+                f.write(str(result) + " ")
+            f.write("\n")
+            for result in results_skeleton:
+                f.write(str(result) + " ")
+            f.write("\n")
+
+    def calc_location(self, bboxes, classes):
+        """
+        calulate Mob's location. return level of occupancy in individual segment.
+
+        Args:
+            bboxes (_type_): the results of detect
+            classes (_type_): the results of detect
+
+        Returns:
+            occupancy level in segments
+        """
+        occupancy_grid_zombie = np.zeros((640, 640))
+        occupancy_grid_skeleton = np.zeros((640, 640))
+
+        for bbox, cls in zip(bboxes, classes):
+            x_center, y_center, width, height = bbox
+            x_min = int(max(x_center - width / 2.0, 0))
+            x_max = int(min(x_center + width / 2.0, 640))
+            y_min = int(max(y_center - height / 2.0, 0))
+            y_max = int(min(y_center + height / 2.0, 640))
+
+            if cls == 0:
+                occupancy_grid_zombie[y_min:y_max, x_min:x_max] = 1
+            elif cls == 1:
+                occupancy_grid_skeleton[y_min:y_max, x_min:x_max] = 1
+
+        segment_width = 640 // self.vertical_split_num
+        segment_height = 640 // self.horizontal_split_num
+
+        occupancy_ratios_zombie = np.zeros(
+            self.horizontal_split_num * self.vertical_split_num
+        )
+        occupancy_ratios_skeleton = np.zeros_like(occupancy_ratios_zombie)
+
+        for x in range(self.vertical_split_num):
+            for y in range(self.horizontal_split_num):
+                segment_zombie = occupancy_grid_zombie[
+                    y * segment_height : (y + 1) * segment_height,
+                    x * segment_width : (x + 1) * segment_width,
+                ]
+                segment_skeleton = occupancy_grid_skeleton[
+                    y * segment_height : (y + 1) * segment_height,
+                    x * segment_width : (x + 1) * segment_width,
+                ]
+                occupancy_ratio_zombie = np.sum(segment_zombie) / (
+                    segment_width * segment_height
+                )
+                occupancy_ratio_skeleton = np.sum(segment_skeleton) / (
+                    segment_width * segment_height
+                )
+                index = y * self.vertical_split_num + x
+                occupancy_ratios_zombie[index] = occupancy_ratio_zombie
+                occupancy_ratios_skeleton[index] = occupancy_ratio_skeleton
+
+        occupancy_ratios_zombie = (occupancy_ratios_zombie * 10).astype(int)
+        occupancy_ratios_skeleton = (occupancy_ratios_skeleton * 10).astype(int)
+
+        return occupancy_ratios_zombie, occupancy_ratios_skeleton
+
+    def detect(self):
+        """this is main process in this class"""
+        img_tensor = self.preprocess_image()
+        outputs = self.ort_session.run(None, {"images": img_tensor})
+
+        # choose mobs coordination in image
+        detections = outputs[0]
+
+        bboxes = [list(det[:4]) for det in detections[0] if det[4] > self.confidence]
+        classes = [
+            np.argmax(det[5:]) for det in detections[0] if det[4] > self.confidence
+        ]
+
+        # save results
+        if self.is_save_result is True:
+            self.draw_result(bboxes)
+        self.write_result_to_text(bboxes, classes)
+
+    def main(self):
+        while True:
+            self.detect()
+
+        # debug show
+        # if self.is_save_result:
+        #    self.show_result_img()
+
+
+if __name__ == "__main__":
+    with open(os.path.join(base_dir, "yoloFiles/detectMobs_config.txt"), "r") as file:
+        v = int(file.readline())
+        h = int(file.readline())
+    detect = DetectMobs(
+        # debug input
+        img_path=os.path.join(base_dir, "yoloFiles/input.png"),
+        capture_path="yoloFiles/capture.png",
+        txt_path="yoloFiles/labels/capture.txt",
+        input_img_size=640,
+        is_save_result=False,
+        vertical_split_num=v,
+        horizontal_split_num=h,
+        confidence=0.6,
+    )
+
+    detect.main()

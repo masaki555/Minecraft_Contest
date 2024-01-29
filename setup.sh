@@ -14,13 +14,6 @@ echo "import sys; sys.path.append('')" >> setting.pth
 
 ./python.exe -m pip install -r ../requirements.txt
 
-curl -o YOLO.zip -LJO https://github.com/ultralytics/yolov5/archive/refs/heads/master.zip
-unzip YOLO.zip
-rm -f YOLO.zip
-chmod -R 755 yolov5-master
-
-./python.exe -m pip install -r ../python/yolov5-master/requirements.txt
-
 mkdir ./tmp/
 touch ./tmp/detect_zombie1.txt
 touch ./tmp/detect_zombie2.txt
