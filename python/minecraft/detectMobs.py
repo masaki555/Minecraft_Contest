@@ -51,7 +51,8 @@ class DetectMobs:
             img = self.capture_img()
         else:
             img = cv2.imread(self.img_path)
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         # if we need to save result of img
         if self.is_save_result is True:
@@ -228,7 +229,8 @@ if __name__ == "__main__":
         h = int(file.readline())
     detect = DetectMobs(
         # debug input
-        img_path=os.path.join(base_dir, "yoloFiles/input.png"),
+        #img_path=os.path.join(base_dir, "yoloFiles/input.png"),
+        img_path=None,
         capture_path="yoloFiles/capture.png",
         txt_path="yoloFiles/labels/capture.txt",
         input_img_size=640,
