@@ -1,0 +1,11 @@
+services:
+  yolov5:
+    build: .
+    shm_size: '4gb'
+    volumes:
+      - "./train:/yolov5/data/train"
+      - "./valid:/yolov5/data/valid"
+      - "./data.yaml:/yolov5/data/data.yaml"
+    privileged: true
+    command: /bin/bash -c "cd yolov5 && python3 train.py --data data/data.yaml --cfg yolov5s.yaml --weights '' --batch-size 8 --epochs 300"
+#    command: /sbin/init

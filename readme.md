@@ -45,6 +45,7 @@ chmod -R 755 python
 ``` file
   📁Minecraft_Contest       // 作成したMinecraft_Contestフォルダ
    ┗ 📁python               // Botを動かすために必要なpythonファイル関係
+   ┗ 📁docker               // yoloをコンテナで動かす環境（試作）
      📃 control.c           // C言語からpythonを呼び出すために必要なライブラリ
      📃 control.h           // control.cファイルのヘッダファイル
      📃 testbot.c           // botプログラムのサンプル．このプログラムを参考にbotプログラムを書く
