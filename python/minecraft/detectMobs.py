@@ -130,10 +130,11 @@ class DetectMobs:
         with open(self.txt_path, encoding="UTF-8", mode="w") as f:
             results_zombie, results_skeleton = self.calc_location(bboxes, classes)
             for result in results_zombie:
-                f.write(str(result) + " ")
+            # resultが1以上なら1を、そうでなければ0を書き込む
+                f.write("1" if result >= 1 else "0")
             f.write("\n")
             for result in results_skeleton:
-                f.write(str(result) + " ")
+                f.write("1" if result >= 1 else "0")
             f.write("\n")
 
     def calc_location(self, bboxes, classes):
