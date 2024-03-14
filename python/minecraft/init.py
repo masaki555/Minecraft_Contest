@@ -5,14 +5,16 @@ import win32con
 import win32api
 import win32com.client
 import pydirectinput
+import pygetwindow as gw
+
+from python.minecraft import settings
 
 ################################
-game_name = 'Minecraft Education'
 sleep_time = 0.05
 ################################
 
 def init():
-    mcapp = win32gui.FindWindow(None,game_name)
+    mcapp = win32gui.FindWindow(None,settings.GAME_NAME)
     time.sleep(sleep_time)
     shell = win32com.client.Dispatch("WScript.Shell")
     shell.SendKeys('%')

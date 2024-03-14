@@ -5,7 +5,7 @@ import numpy as np
 import onnxruntime as ort
 import pygetwindow as gw
 import pyautogui
-
+from python.minecraft import settings
 base_dir = os.path.dirname(os.path.realpath(__file__))
 model_path = os.path.join(base_dir, "yoloFiles/best.onnx")
 
@@ -37,8 +37,7 @@ class DetectMobs:
         self.ort_session = ort.InferenceSession(model_path)
 
     def capture_img(self):
-        window_title = "Minecraft Education"
-        window = gw.getWindowsWithTitle(window_title)[0]
+        window = gw.getWindowsWithTitle(settings.GAME_NAME)[0]
         window_location = (window.left, window.top, window.width, window.height)
         window_image = pyautogui.screenshot(region=window_location)
         window_image = cv2.cvtColor(np.array(window_image), cv2.COLOR_BGR2RGB)

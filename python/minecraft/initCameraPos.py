@@ -6,7 +6,6 @@ import win32api
 import pydirectinput
 
 ################################
-game_name = 'Minecraft Education'
 sleep_time = 0.05
 ################################
 
