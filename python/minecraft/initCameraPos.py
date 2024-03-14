@@ -5,6 +5,8 @@ import win32con
 import win32api
 import pydirectinput
 
+from python.minecraft import settings
+
 ################################
 sleep_time = 0.05
 ################################
@@ -16,7 +18,7 @@ def initCameraPos():
 #    print( "init後" , {init_x} , {init_y})
 
 def getInitialPoint():
-    mcapp = win32gui.FindWindow(None,game_name)
+    mcapp = win32gui.FindWindow(None,settings.GAME_NAME)
     time.sleep(sleep_time)
     left, top, right, bottom = win32gui.GetWindowRect(mcapp)
 #    print({left} , {top} , {right} , {bottom} )
