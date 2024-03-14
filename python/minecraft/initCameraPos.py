@@ -26,7 +26,7 @@ def getInitialPoint():
     return init_x , init_y
 
 def getWindowsRect():
-    mcapp = win32gui.FindWindow(None,game_name)
+    mcapp = win32gui.FindWindow(None,settings.GAME_NAME)
     time.sleep(sleep_time)
     left, top, right, bottom = win32gui.GetWindowRect(mcapp)
     return left , top , right , bottom
