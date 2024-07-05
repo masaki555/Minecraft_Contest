@@ -150,9 +150,9 @@ int main(int argc, char *argv[]){
 | void attackLeft_long(void) | 左クリック．1.50秒間入力される. |
 | void attackLeft_continuous(int n) | 左クリックを指定した回数入力する．0.01秒間隔で入力される. |
 | void eat(int n) | 指定した番号のアイテムを使用する(食べる/飲む). |
-| void downKey(char* key) | 指定したキーを下げた状態にする(upKeyが実行されるまで押しっぱなし). |
-| void upKey(char* key) | 指定したキーを上げた状態にする. |
-| void pushKey(char* key) | 指定したキーを押す. |
+| void downKey(char* key) | 指定したキーを下げた状態にする(upKeyが実行されるまで押しっぱなし).※1 |
+| void upKey(char* key) | 指定したキーを上げた状態にする.※1 |
+| void pushKey(char* key) | 指定したキーを押す.※1 |
 | void moveForward(double time) | 前進する．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
 | void moveLeft(double time) | 左に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
 | void moveRight(double time) | 右に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
@@ -163,13 +163,16 @@ int main(int argc, char *argv[]){
 | void moveBackRight(double time) | 右斜め後ろに動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
 | void moveJump(int times) | ジャンプする．timesで指定した時間，連続でジャンプし続ける．大体1秒に1回ジャンプする． |
 | void moveDash(int times) | ダッシュする．timesで指定した時間(単位は秒,整数でのみ指定できる)動く． |
-| void cameraDown(double time) | カメラを下にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
-| void cameraLeft(double time) | カメラを左にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
-| void cameraRight(double time) | カメラを右にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
-| void cameraUp(double time) | カメラを上にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※1 |
+| void cameraDown(double time) | カメラを下にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※2 |
+| void cameraLeft(double time) | カメラを左にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※2 |
+| void cameraRight(double time) | カメラを右にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※2 |
+| void cameraUp(double time) | カメラを上にtimeで指定した時間（単位は秒,ミリ秒も指定できる）動かす．※2 |
 
 
-※1 値は0.24以上である必要がある．動作後は1秒以上カメラ以外の動作を行わなければカメラが動作しない場合がある．Botのアルゴリズムを実装するwhile文の最初のカメラ動作を実行すると，正常に動作しない場合がある．
+※1 Shiftキーは"shift",Ctrlキーは"ctrl",スペースキーは"space",エンターキーは"enter",左キー(マイクラ内の表記は左手)は"left",右キー(マイクラ内の表記は右手)は"right",上キーは"up",下キーは"down"である。
+  　「中心を見る」に割り当てられているキーは本番の環境だと使用できないため、キーボードレイアウト設定を変更し、Pキーなどに変更する必要がある。
+    同様に、テンキーも使用することができない。
+※2 値は0.24以上である必要がある．動作後は1秒以上カメラ以外の動作を行わなければカメラが動作しない場合がある．Botのアルゴリズムを実装するwhile文の最初のカメラ動作を実行すると，正常に動作しない場合がある．
 
 例えば以下のようなプログラムを記載するとc1-byod環境でF12キーを押さない限り前進し続けるプログラムとなる．
 
