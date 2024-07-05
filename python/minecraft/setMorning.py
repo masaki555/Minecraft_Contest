@@ -1,13 +1,12 @@
 import sys
 sys.path.append('.')
-
 from python.minecraft import command
 
 ################################
 cmd = "/time set 2000"
 ################################
 
-# ゲーム内時間を朝に設定する
+#ゲーム内時間を朝に設定する
 def setMorning():
     command.run(cmd)
 

@@ -1,5 +1,4 @@
 import pydirectinput
-import sys
 import time
 
 def left(sleep_time):
@@ -61,7 +60,7 @@ def monitorPlayerCamera():
         elif(key == 'Wait'):
             keyRelese()
         else:
-            print('error: key = ' + key + '未設定のkeyです．プレイヤのカメラの監視をエラー終了します．')
+            print('error: key = ' + key + '未設定のkeyです.プレイヤのカメラの監視をエラー終了します．')
             break
 
         time.sleep(0)

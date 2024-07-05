@@ -1,6 +1,4 @@
 import pydirectinput
-import threading
-import sys
 import time
 
 def forward(updown_flag):
@@ -89,7 +87,7 @@ def setMove(move_key, updown_flag):
     elif(move_key == 'Finish'):
         return 0
     else:
-        print('error: move_key = ' + move_key + '未設定のkeyです．プレイヤの移動の監視をエラー終了します．')
+        print('error: move_key = ' + move_key + '未設定のkeyです.プレイヤの移動の監視をエラー終了します.')
         return -1
 
 def setDash(dash_flag):
@@ -146,7 +144,7 @@ def monitorPlayerMove():
         time.sleep(0.1)
         Move_Data_File.close()
 
- 
+
     print('pythonプログラムによる監視を終了しました')
 
 

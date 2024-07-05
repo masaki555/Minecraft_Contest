@@ -1,12 +1,13 @@
-import pydirectinput
 import time
+import sys
+sys.path.append('.')
+from python.minecraft import pushKey
 
 # ゲーム内でコマンドを実行する
 def run(command):
     # コマンド入力欄を開く
-    pydirectinput.press('enter')
-    time.sleep(0.1)
-
+    pushKey.push('enter')
     # コマンドを入力する
-    [pydirectinput.press(c) for c in command]
-    pydirectinput.press('enter')
+    for i in command:
+        pushKey.push(i)
+    pushKey.push("enter")

@@ -1,13 +1,12 @@
 import sys
 sys.path.append('.')
-
 from python.minecraft import command
 
 ################################
 cmd = "/gamemode c"
 ################################
 
-# ゲームモードをクリエイティブに設定する
+#ゲームモードをクリエイティブに設定する
 def setCreativeMode():
     command.run(cmd)
 
