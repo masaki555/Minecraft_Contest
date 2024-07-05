@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include "control.h"
 
-int main(char *argv){
+int main(int argc, char *argv[]){
     int han1 , han3;
     long han2;
     int flag=0;
