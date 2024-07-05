@@ -3,21 +3,10 @@ extern int rk;
 void attackLeft(void);
 void attackLeft_long(void);
 void attackLeft_continuous(int n);
-void eat(char *n);
+void eat(int n);
 void center(void);
 void upKey(char* key);
 void downKey(char* key);
-
-/*
-void potion(void);
-void jumpAttack(void);
-void attack(void);
-void attack2(void);
-void attack3(void);
-void attack4(void);
-void dash1(void);
-void dash2(void);
-*/
 
 void moveDataToFile(char* key);
 void initMoveDataFile(void);

@@ -4,14 +4,16 @@
 
 int main(int argc, char *argv[]) {
     init();
+    setTime();
     exePython();
+    setSurvival();
     while(rk){
-        upKey("Shift");
-        attackLeft_long();
-        attackLeft_long();
-        attackLeft_long();
-        attackLeft_long();
-        downKey("Shift");
+        downKey("shift");
+        attackLeft_continuous(10);
+        eat(2);
+        upKey("shift");
     }
+    setCreative();
+    setMorning();
     return 0;
 }

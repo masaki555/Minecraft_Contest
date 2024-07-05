@@ -8,6 +8,7 @@ def run(command):
     # コマンド入力欄を開く
     pushKey.push('enter')
     # コマンドを入力する
+    time.sleep(0.5)
     for i in command:
         pushKey.push(i)
     pushKey.push("enter")
