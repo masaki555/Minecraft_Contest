@@ -1,16 +1,18 @@
+#include "control.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <err.h>
-#include <termios.h>
 #include <fcntl.h>
 #include <windows.h>
-#include "control.h"
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <err.h>
+#include <termios.h>
 #include <pthread.h>
 
 #define PRINT_HERE \
-   fprintf(stderr, "File:%s Line:%d\t", __FILE__, __LINE__)
+    fprintf(stderr, "File:%s Line:%d\t", __FILE__, __LINE__)
 
 pid_t Detect1_pid;
 pid_t Detect2_pid;
@@ -18,6 +20,182 @@ pid_t Detect3_pid;
 pid_t Move_pid;
 pid_t Camera_pid;
 int rk=1;
+
+/*void attack(void){
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0) {
+        // 子プロセス
+        execlp("python/python.exe", "python/python.exe", "python/minecraft/attack.py", NULL);
+        perror("execlp");
+        exit(EXIT_FAILURE);
+    } else {
+        // 親プロセス
+        int status;
+        if (waitpid(pid, &status, 0) == -1) {
+            perror("waitpid");
+            exit(EXIT_FAILURE);
+        }
+
+        if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+            printf("error:attack\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+
+void attack2(void){
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0) {
+        // 子プロセス
+        execlp("python/python.exe", "python/python.exe", "python/minecraft/attack2.py", NULL);
+        perror("execlp");
+        exit(EXIT_FAILURE);
+    } else {
+        // 親プロセス
+        int status;
+        if (waitpid(pid, &status, 0) == -1) {
+            perror("waitpid");
+            exit(EXIT_FAILURE);
+        }
+
+        if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+            printf("error:attack\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+
+void attack3(void){
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0) {
+        // 子プロセス
+        execlp("python/python.exe", "python/python.exe", "python/minecraft/attack3.py", NULL);
+        perror("execlp");
+        exit(EXIT_FAILURE);
+    } else {
+        // 親プロセス
+        int status;
+        if (waitpid(pid, &status, 0) == -1) {
+            perror("waitpid");
+            exit(EXIT_FAILURE);
+        }
+
+        if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+            printf("error:attack\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+
+void attack4(void){
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0) {
+        // 子プロセス
+        execlp("python/python.exe", "python/python.exe", "python/minecraft/attack4.py", NULL);
+        perror("execlp");
+        exit(EXIT_FAILURE);
+    } else {
+        // 親プロセス
+        int status;
+        if (waitpid(pid, &status, 0) == -1) {
+            perror("waitpid");
+            exit(EXIT_FAILURE);
+        }
+
+        if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+            printf("error:attack\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+
+void dash1(void){
+    char com[128] = "python/python.exe python/minecraft/moveDash1.py";
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:dash\n");
+        exit(1);
+    }
+}
+void dash2(void){
+    char com[128] = "python/python.exe python/minecraft/moveDash2.py";
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:dash\n");
+        exit(1);
+    }
+}
+
+void potion(void){
+    char com[128] = "python/python.exe python/minecraft/potion.py";
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:potion\n");
+        exit(1);
+    }
+}
+
+void jumpAttack(void){
+    char com[128] = "python/python.exe python/minecraft/jumpattack.py";
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:jumpAttack\n");
+        exit(1);
+    }
+}
+
+void attackLeft_long(void){
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+
+    if (pid == 0) {
+        // 子プロセス
+        execlp("python/python.exe", "python/python.exe", "python/minecraft/clickLeft_long.py", NULL);
+        perror("execlp");
+        exit(EXIT_FAILURE);
+    } else {
+        // 親プロセス
+        int status;
+        if (waitpid(pid, &status, 0) == -1) {
+            perror("waitpid");
+            exit(EXIT_FAILURE);
+        }
+
+        if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+            printf("error:attack\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+*/
 
 void attackLeft(void){
     char com[128] = "python/python.exe python/minecraft/clickLeft.py";
@@ -27,14 +205,67 @@ void attackLeft(void){
         exit(1);
     }
 }
+
 void attackLeft_long(void){
     char com[128] = "python/python.exe python/minecraft/clickLeft_long.py";
     int f = system(com);
     if(f != 0 && WEXITSTATUS(f) != 0 ){
-        printf("error:attackLefy_long\n");
+        printf("error:attackLeft_long\n");
         exit(1);
     }
 }
+
+void attackLeft_continuous(int n){
+    char com[128] = "python/python.exe python/minecraft/clickLeft_Continuous.py";
+    char buf[12];
+    snprintf(buf, 12, "%d", n);
+    strcat(com, buf);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:attackLeft_continuous\n");
+        exit(1);
+    }
+}
+
+void eat(char *n){
+        char com[128] = "python/python.exe python/minecraft/eat.py ";
+        strcat(com, n);
+        int f = system(com);
+        if(f != 0 && WEXITSTATUS(f) != 0 ){
+            printf("error:eat\n");
+            exit(1);
+        }
+}
+
+void center(void){
+    char com[128] = "python/python.exe python/minecraft/center.py";
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:center\n");
+        exit(1);
+    }
+}
+
+void upKey(char* key){
+    char com[128] = "python/python.exe python/minecraft/upKey.py ";
+    strcat(com, key);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:upKey\n");
+        exit(1);
+    }
+}
+
+void downKey(char* key){
+    char com[128] = "python/python.exe python/minecraft/downKey.py ";
+    strcat(com, key);
+    int f = system(com);
+    if(f != 0 && WEXITSTATUS(f) != 0 ){
+        printf("error:downKey\n");
+        exit(1);
+    }
+}
+
 
 void moveDataToFile(char* key){
     FILE *fp;
@@ -75,7 +306,7 @@ void cameraDataToFile(char* key, double sleep_time){
     FILE *fp;
     char pass[64] = "python/tmp/Share_Camera_Data.txt";
     char buf[32]="";
-    char *data;
+    //char *data;
 
     if((fp=fopen(pass, "r"))==NULL){
         printf("error：Share_Camera_Data.txtをrモードで開けませんでした．\n");
@@ -351,7 +582,8 @@ int kbhit(void){
 int detectZombie1(void){
     FILE	*fp;
 	char	fname[] = "./python/tmp/detect_zombie1.txt";
-    int i,ibuf=0,t=1;
+    int ibuf=0;
+    //int i,t=1;
 
 	if ( (fp=fopen(fname,"r")) ==NULL) {
 		printf("error:detectZombie\n");
@@ -375,7 +607,7 @@ int detectZombie1(void){
 long detectZombie2(void){
     FILE	*fp;
 	char	fname[] = "./python/tmp/detect_zombie2.txt";
-    int i,t=1;
+    //int i,t=1;
     long ibuf=0;
 
 	if ( (fp=fopen(fname,"r")) ==NULL) {
@@ -591,7 +823,7 @@ void exePython(void){
         }
     }
 
-     Sleep(100);
+    Sleep(100);
 
     Camera_pid = fork();
     if (-1 == Camera_pid){
@@ -605,12 +837,12 @@ void exePython(void){
         }
     }
 
-     Sleep(100);
+    Sleep(100);
 
     if ((kill_p = pthread_create(&key, NULL, &isInterrupt , NULL)) != 0) {
         fprintf(stderr, "終了監視スレッド作成失敗");
         exit(1);
     }
 
-     Sleep(100);
+    Sleep(100);
 }
