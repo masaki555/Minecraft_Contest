@@ -147,6 +147,12 @@ int main(int argc, char *argv[]){
 | int detectZombie3(void) | 画面を6分割して左から順に検出した場所を1にする．戻り値はint型で，例えば100001だと左端と右端に検出された状態．詳細は後述． |
 | int detectSkeleton(void) | 画面を6分割して左から順に検出した場所を1にする．戻り値はint型で，例えば100001だと左端と右端に検出された状態．詳細は後述． |
 | void attackLeft(void) | 左クリック．0.01秒間隔で入力されるが，実際にはもう少し遅い． |
+| void attackLeft_long(void) | 左クリック．1.50秒間入力される. |
+| void attackLeft_continuous(int n) | 左クリックを指定した回数入力する．0.01秒間隔で入力される. |
+| void eat(int n) | 指定した番号のアイテムを使用する(食べる/飲む). |
+| void downKey(char* key) | 指定したキーを下げた状態にする(upKeyが実行されるまで押しっぱなし). |
+| void upKey(char* key) | 指定したキーを上げた状態にする. |
+| void pushKey(char* key) | 指定したキーを押す. |
 | void moveForward(double time) | 前進する．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
 | void moveLeft(double time) | 左に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
 | void moveRight(double time) | 右に動く．timeで指定した時間（単位は秒,ミリ秒も指定できる）動く． |
