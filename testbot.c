@@ -51,4 +51,5 @@ int main(int argc, char *argv[]){
     }
     setCreative();
     setMorning();
+    return 0;
 }
