@@ -586,6 +586,7 @@ void *isInterrupt(void *args) {
         Sleep(100);
     }
     rk = 0;
+    return args;
 }
 
 void exePython(void) {

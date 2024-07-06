@@ -1,4 +1,4 @@
-下記のエラーが出たためrequirements.txtにnumpyを追記
+exePython関数の実行時に下記のエラーが出たためrequirements.txtにnumpyを追記
 RuntimeError: module compiled against ABI version 0x1000009 but this version of numpy is 0x2000000
 Traceback (most recent call last):
   File "C:\Users\-\oithomes\c\Minecraft_Contest\python\minecraft\detectMobs.py", line 3, in <module>
@@ -6,6 +6,12 @@ Traceback (most recent call last):
   File "C:\Users\-\oithomes\c\Minecraft_Contest\python\lib\site-packages\cv2\__init__.py", line 8, in <module>
     from .cv2 import *
 ImportError: numpy.core.multiarray failed to import
+
+コンパイル時に下記のエラーが出たためcontrol.c内のisInterrupt関数の最後にreturn args;を追記
+control.c: 関数 ‘isInterrupt’ 内:
+control.c:590:1: 警告: 制御が非 void 関数の終りに到達しました [-Wreturn-type]
+  590 | }
+      | ^
 
 control.cに下記の関数を追加
 void attackLeft_continuous(int n);　引数で指定した回数だけ攻撃する
