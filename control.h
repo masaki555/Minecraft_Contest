@@ -1,5 +1,7 @@
 extern int rk;
 
+void equipmentDev(void);
+void equipment(void);
 void attackLeft(void);
 void attackLeft_long(void);
 void attackLeft_continuous(int n);

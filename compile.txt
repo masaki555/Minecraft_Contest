@@ -1,1 +1,1 @@
-gcc -o minebot.exe main.c control.c -Wall
+gcc -o minebot.exe testbot.c control.c -Wall
