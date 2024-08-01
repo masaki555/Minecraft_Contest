@@ -20,8 +20,6 @@ void center(void);　中心を見る(初期設定でEndキーおよび\キーが
 ※EndキーのないPCでは使えない
 void upKey(char* key);　キーを上げた状態にする
 void downKey(char* key);　キーを下げた状態にする
-void equipment(void);
-void equipmentDev(void);
 
 python/minecraft
 下記のファイルを追加
@@ -30,8 +28,6 @@ eat.py
 center.py
 downKey.py
 upKey.py
-equipment.py
-equipmentDev.py
 
 下記のファイルを変更してコマンド入力を高速化
 command.py
@@ -40,8 +36,6 @@ setCreative.py
 setMorning.py
 setSurvival.py
 setTime.py
-
-requirements.txtにkeyboardを追記
 
 
 
