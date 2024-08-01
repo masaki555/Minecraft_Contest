@@ -9,6 +9,7 @@ def run(command):
         pushKey.push(i)
 
 def equipment():
+    pushKey.push("space")
     time.sleep(1)
     pushKey.push("2")
     pushKey.push("e")
