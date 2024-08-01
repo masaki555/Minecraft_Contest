@@ -119,7 +119,6 @@ int main(int argc, char *argv[]){
     setTime();       //Minecraft上で時間を夜にしてくれる．
     exePython();     //画像処理プログラムを実行する関数．
     setSurvival();   //サバイバルモードにする．
-    equipment();
     while(rk){       //無限loopする．rkはF12キーを押すと0となり，プログラムが停止します．
         /*ここからBotプログラムを書く*/
 
@@ -188,7 +187,6 @@ int main(int argc, char *argv[]){
     setTime();       //Minecraft上で時間を夜にしてくれる．
     exePython();     //画像処理プログラムを実行する関数．
     setSurvival();   //サバイバルモードにする．
-    equipment();
     while(rk){       //無限loopする．rkはF12キーを押すと0となり，プログラムが停止します．
         /*ここからBotプログラムを書く*/
 
