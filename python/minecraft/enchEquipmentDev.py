@@ -11,10 +11,30 @@ def run(command):
 
 def equipment():
     pushKey.push("2")
+    pushKey.push('enter')
+    run("/enchant ")
+    keyboard.send('@')
+    time.sleep(0.5)
+    run("p unbreaking 3")
+    pushKey.push('enter')
     pushKey.push("e")
+
     pushKey.push("3")
+    pushKey.push('enter')
+    run("/enchant ")
+    keyboard.send('@')
+    time.sleep(0.5)
+    run("p unbreaking 3")
+    pushKey.push('enter')
     pushKey.push("e")
+
     pushKey.push("1")
+    pushKey.push('enter')
+    run("/enchant ")
+    keyboard.send('@')
+    time.sleep(0.5)
+    run("p unbreaking 3")
+    pushKey.push('enter')
 
     pushKey.push('enter')
     run("/tp ")

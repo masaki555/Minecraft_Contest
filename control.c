@@ -39,6 +39,24 @@ void equipment(void) {
     }
 }
 
+void enchEquipmentDev(void) {
+    char com[128] = "python/python.exe python/minecraft/enchEquipmentDev.py";
+    int f = system(com);
+    if (f != 0 && WEXITSTATUS(f) != 0) {
+        printf("error:equipmentDev\n");
+        exit(1);
+    }
+}
+
+void enchEquipment(void) {
+    char com[128] = "python/python.exe python/minecraft/enchEquipment.py";
+    int f = system(com);
+    if (f != 0 && WEXITSTATUS(f) != 0) {
+        printf("error:equipment\n");
+        exit(1);
+    }
+}
+
 void attackLeft(void) {
     char com[128] = "python/python.exe python/minecraft/clickLeft.py";
     int f = system(com);

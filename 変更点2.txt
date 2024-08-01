@@ -3,11 +3,15 @@ requirements.txtにkeyboardを追記
 control.cに下記の関数を追加
 void equipment(void);
 void equipmentDev(void);
+void enchEquipment(void);
+void enchEquipmentDev(void);
 
 python/minecraft
 下記のファイルを追加
 equipment.py
 equipmentDev.py
+enchEquipment.py
+enchEquipmentDev.py
 
 ゾンビをスポーンさせるコマンドブロックを削除
 時間を常に昼間に設定
@@ -21,12 +25,25 @@ equipmentDev.py
 ・ダイヤのブーツを取得
 
 equipmentDev関数
+スロット2にあるアイテム(ダイヤのヘルメット)を装備する
+スロット3にあるアイテム(ダイヤのブーツ)を装備する
+座標(0,4,0)にテレポートするコマンドを入力する
+
+equipmentDev関数
+ダイヤモンドの剣を取得するコマンドを入力する
+ダイヤモンドのヘルメットを取得するコマンドを入力する
+ダイヤモンドのブーツを取得するコマンドを入力する
+スロット2にあるアイテム(ダイヤのヘルメット)を装備する
+スロット3にあるアイテム(ダイヤのブーツ)を装備する
+会場内のランダムな座標にテレポートするコマンドを入力する
+
+enchEquipmentDev関数
 スロット2にあるアイテム(ダイヤのヘルメット)に耐久力Ⅲのエンチャントをするコマンドを入力して装備する
 スロット3にあるアイテム(ダイヤのブーツ)に耐久力Ⅲのエンチャントをするコマンドを入力して装備する
 スロット1にあるアイテム(ダイヤの剣)に耐久力Ⅲのエンチャントをするコマンドを入力する
 座標(0,4,0)にテレポートするコマンドを入力する
 
-equipmentDev関数
+enchEquipmentDev関数
 ダイヤモンドの剣を取得するコマンドを入力する
 ダイヤモンドのヘルメットを取得するコマンドを入力する
 ダイヤモンドのブーツを取得するコマンドを入力する
