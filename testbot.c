@@ -8,8 +8,9 @@ int main(int argc, char *argv[]){
     setSurvival();   //サバイバルモードにする．
     while(rk){       //無限loopする．rkはF12キーを押すと0となり，プログラムが停止します．
         /*ここからBotプログラムを書く*/
-        
+        printf("ゾンビ:%d\n",detectZombie3());
+
         /*ここまでBotプログラムを書く*/
-        sleep(0.1);
+        sleep(1);
     }
 }

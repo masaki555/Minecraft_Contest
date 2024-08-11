@@ -1,21 +1,21 @@
 import sys
 import time
 sys.path.append('.')
-from python.minecraft import pushKey
+import pydirectinput
 
-def run(command):
-    time.sleep(0.5)
-    for i in command:
-        pushKey.push(i)
+def push(key):
+    pydirectinput.keyDown(key)
+    time.sleep(0.05)
+    pydirectinput.keyUp(key)
 
 def equipment():
-    pushKey.push("space")
+    push("space")
     time.sleep(1)
-    pushKey.push("2")
-    pushKey.push("e")
-    pushKey.push("3")
-    pushKey.push("e")
-    pushKey.push("1")
+    push("2")
+    push("e")
+    push("3")
+    push("e")
+    push("1")
 
 if __name__ == '__main__':
     equipment()
