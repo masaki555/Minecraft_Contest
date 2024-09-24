@@ -22,7 +22,7 @@ pid_t Camera_pid;
 int rk = 1;
 
 void equipmentDev(void) {
-    char com[128] = "python/python.exe python/minecraft/equipmentDev.py";
+    char com[128] = "python/python.exe python/minecraft/equipment.py";
     int f = system(com);
     if (f != 0 && WEXITSTATUS(f) != 0) {
         printf("error:equipmentDev\n");
