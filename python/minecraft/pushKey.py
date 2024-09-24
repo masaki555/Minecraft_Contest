@@ -1,17 +1,15 @@
 import pydirectinput
-
 import time
-
 import sys
 
 ################################
-sleep_time = 0.50
+sleep_time = 0.05
 ################################
 
-def pushKey(key):
+def push(key):
     pydirectinput.keyDown(key)
     time.sleep(sleep_time)
     pydirectinput.keyUp(key)
 
 if __name__ == '__main__':
-    pushKey(sys.argv[1])
+    push(sys.argv[1])

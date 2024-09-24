@@ -1,0 +1,37 @@
+void init(void)
+void exePython(void)
+void setTime(void)
+void setMorning(void)
+void setSurvival(void)
+void setCreative(void)
+
+int detectZombie1(void)
+long detectZombie2(void)
+int detectZombie3(void)     0しか出ない
+int detectSkeleton(void)    0しか出ない
+
+void attackLeft(void)
+void attackLeft_long(void)
+void attackLeft_continuous(int n)
+
+void eat(int n)
+void downKey(char* key)
+void upKey(char* key)
+void pushKey(char* key)
+
+以下の関数は単体で使用するとEscキーを押すまで止まらない
+void moveForward(double time) 
+void moveLeft(double time)
+void moveRight(double time)
+void moveBack(double time)
+void moveForwardLeft(double time)
+void moveForwardRight(double time)
+void moveBackLeft(double time)
+void moveBackRight(double time)
+void moveJump(int times)
+void moveDash(int times)
+
+void cameraDown(double time)
+void cameraLeft(double time)
+void cameraRight(double time)
+void cameraUp(double time)
