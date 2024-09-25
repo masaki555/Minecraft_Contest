@@ -1,0 +1,4 @@
+minecraft/pictureフォルダ
+minecraft/getScreenshot.py
+minecraft/ssim.py
+requirements.txt

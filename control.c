@@ -20,6 +20,31 @@ pid_t Detect3_pid;
 pid_t Move_pid;
 pid_t Camera_pid;
 int rk = 1;
+pthread_t python_thread;
+
+void create_python_thread() {
+    if (pthread_create(&python_thread, NULL, respawn, NULL) != 0) {
+        fprintf(stderr, "Error creating Python thread.\n");
+        exit(1);
+    }
+}
+
+void close_python_thread() {
+    pthread_join(python_thread, NULL);
+}
+
+void* respawn(void* arg){ 
+    char com[128] = "python/python.exe python/minecraft/ssim.py";
+    while(rk){
+        int f = system(com);
+        if (f != 0 && WEXITSTATUS(f) != 0) {
+            printf("error:ssim\n");
+            exit(1);
+        }
+        sleep(1);
+    }
+    return arg;
+}
 
 void equipmentDev(void) {
     char com[128] = "python/python.exe python/minecraft/equipment.py";

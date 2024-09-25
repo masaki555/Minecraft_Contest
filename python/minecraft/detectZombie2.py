@@ -151,7 +151,7 @@ if __name__ == '__main__':
         #print(format(srcnum, '0>16b'))
         #writeTxt(str(srcnum))
         writeTxt(str(format(srcnum, '0>15b')))
-        if cv2.waitKey(1) == ord('q'):
-            break
+        #if cv2.waitKey(1) == ord('q'):
+        #    break
         time.sleep(sleep_time)
         

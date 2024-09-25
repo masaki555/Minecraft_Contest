@@ -1,5 +1,8 @@
 extern int rk;
 
+void create_python_thread(void);
+void close_python_thread(void);
+void* respawn(void* arg);
 void equipmentDev(void);
 void attackLeft(void);
 void attackLeft_long(void);
