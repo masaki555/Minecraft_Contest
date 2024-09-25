@@ -1,6 +1,7 @@
 import cv2
 from skimage.metrics import structural_similarity as ssim
 import sys
+import os
 sys.path.append('.')
 from python.minecraft import getScreenshot
 from python.minecraft import equipment
@@ -29,4 +30,4 @@ if __name__ == "__main__":
         print(result)
         if result == True:
             equipment.equipment()
-        # os.remove("./python/minecraft/picture/screenshot.png")
+        os.remove("./python/minecraft/picture/screenshot.png")

@@ -2,3 +2,4 @@ minecraft/pictureフォルダ
 minecraft/getScreenshot.py
 minecraft/ssim.py
 requirements.txt
+[waitproc] bot 1689 proc_waiter: error on read of child wait pipe 0x0, Win32 error 6
