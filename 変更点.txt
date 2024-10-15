@@ -1,0 +1,4 @@
+void create_python_thread(void);
+void close_python_thread(void);
+void* respawn(void* arg);
+の追加 2024/10/15

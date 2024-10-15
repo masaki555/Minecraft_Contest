@@ -53,3 +53,6 @@ int detectMobsArray(int mode , int ibuf[]);
 int detectMobs(void);
 void exePython(void);
 
+void create_python_thread(void);
+void close_python_thread(void);
+void* respawn(void* arg);
