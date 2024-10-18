@@ -48,10 +48,11 @@ class DetectMobs:
     def preprocess_image(self):
         """to load and preprocess images"""
         if self.img_path is None:
-            img_rgb = self.capture_img()
+            img = self.capture_img()
         else:
             img = cv2.imread(self.img_path)
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         # if we need to save result of img
         if self.is_save_result is True:
@@ -233,7 +234,7 @@ if __name__ == "__main__":
         capture_path="yoloFiles/capture.png",
         txt_path="yoloFiles/labels/capture.txt",
         input_img_size=640,
-        is_save_result=False,
+        is_save_result=True,
         vertical_split_num=v,
         horizontal_split_num=h,
         confidence=0.6,
