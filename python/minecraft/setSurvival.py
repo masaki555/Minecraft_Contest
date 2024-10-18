@@ -1,13 +1,11 @@
 import sys
 sys.path.append('.')
-
 from python.minecraft import command
-
 ################################
 cmd = "/gamemode s"
 ################################
 
-# # ゲームモードをサバイバルに設定する
+#ゲームモードをサバイバルに設定する
 def setSurvivalMode():
     command.run(cmd)
 

@@ -1,8 +1,13 @@
 extern int rk;
 
+void equipmentDev(void);
 void attackLeft(void);
 void attackLeft_long(void);
-void attackRight(void);
+void attackLeft_continuous(int n);
+void eat(int n);
+void center(void);
+void upKey(char* key);
+void downKey(char* key);
 
 void moveDataToFile(char* key);
 void initMoveDataFile(void);
@@ -47,3 +52,7 @@ int detectSkeleton(void);
 int detectMobsArray(int mode , int ibuf[]);
 int detectMobs(void);
 void exePython(void);
+
+void create_python_thread(void);
+void close_python_thread(void);
+void* respawn(void* arg);

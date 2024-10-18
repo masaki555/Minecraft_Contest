@@ -1,7 +1,7 @@
 curl -o python.zip https://www.python.org/ftp/python/3.9.10/python-3.9.10-embed-amd64.zip
 unzip python.zip -d python
 rm -f python.zip
-chmod -R 705 python
+chmod -R 755 python
 
 cd python
 echo "import site" >> python39._pth
