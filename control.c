@@ -470,7 +470,7 @@ int detectPlayer1(void) {
     int zbuf = 0;
 
     if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectHuman\n");
+        printf("error:detectPlayer1\n");
         killPython();
         exit(1);
     }
@@ -497,7 +497,7 @@ int detectPlayer2(void) {
     int zbuf = 0;
 
     if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectHuman2\n");
+        printf("error:detectPlayer2\n");
         killPython();
         exit(1);
     }
