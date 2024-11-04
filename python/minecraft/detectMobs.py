@@ -128,13 +128,16 @@ class DetectMobs:
         cv2.destroyAllWindows()
 
     def write_result_to_text(self, bboxes, classes):
+        results_diamondhead, results_diamondboot = self.calc_location(bboxes, classes)
+        # debug results
+        #print("Results Diamondhead:", results_diamondhead)
+        #print("Results Diamondboot:", results_diamondboot)
         with open(self.txt_path, encoding="UTF-8", mode="w") as f:
-            results_zombie, results_skeleton = self.calc_location(bboxes, classes)
-            for result in results_zombie:
-            # resultが1以上なら1を、そうでなければ0を書き込む
+            for result in results_diamondhead:
+                # resultが1以上なら1を、そうでなければ0を書き込む
                 f.write("1" if result >= 1 else "0")
             f.write("\n")
-            for result in results_skeleton:
+            for result in results_diamondboot:
                 f.write("1" if result >= 1 else "0")
             f.write("\n")
 
@@ -149,8 +152,8 @@ class DetectMobs:
         Returns:
             occupancy level in segments
         """
-        occupancy_grid_zombie = np.zeros((640, 640))
-        occupancy_grid_skeleton = np.zeros((640, 640))
+        occupancy_grid_diamondhead = np.zeros((640, 640))
+        occupancy_grid_diamondboot = np.zeros((640, 640))
 
         for bbox, cls in zip(bboxes, classes):
             x_center, y_center, width, height = bbox
@@ -159,44 +162,55 @@ class DetectMobs:
             y_min = int(max(y_center - height / 2.0, 0))
             y_max = int(min(y_center + height / 2.0, 640))
 
-            if cls == 0:
-                occupancy_grid_zombie[y_min:y_max, x_min:x_max] = 1
-            elif cls == 1:
-                occupancy_grid_skeleton[y_min:y_max, x_min:x_max] = 1
+            # debug coordinates
+            #print(f"Class: {cls}, x_min: {x_min}, x_max: {x_max}, y_min: {y_min}, y_max: {y_max}")
+
+            if cls == 0:  # diamondhead
+                occupancy_grid_diamondhead[y_min:y_max, x_min:x_max] = 1
+            elif cls == 1:  # diamondboot
+                occupancy_grid_diamondboot[y_min:y_max, x_min:x_max] = 1
 
         segment_width = 640 // self.vertical_split_num
         segment_height = 640 // self.horizontal_split_num
 
-        occupancy_ratios_zombie = np.zeros(
+        occupancy_ratios_diamondhead = np.zeros(
             self.horizontal_split_num * self.vertical_split_num
         )
-        occupancy_ratios_skeleton = np.zeros_like(occupancy_ratios_zombie)
+        occupancy_ratios_diamondboot = np.zeros_like(occupancy_ratios_diamondhead)
 
-        for x in range(self.vertical_split_num):
-            for y in range(self.horizontal_split_num):
-                segment_zombie = occupancy_grid_zombie[
+        for y in range(self.horizontal_split_num):
+            for x in range(self.vertical_split_num):
+                segment_diamondhead = occupancy_grid_diamondhead[
                     y * segment_height : (y + 1) * segment_height,
                     x * segment_width : (x + 1) * segment_width,
                 ]
-                segment_skeleton = occupancy_grid_skeleton[
+                segment_diamondboot = occupancy_grid_diamondboot[
                     y * segment_height : (y + 1) * segment_height,
                     x * segment_width : (x + 1) * segment_width,
                 ]
-                occupancy_ratio_zombie = np.sum(segment_zombie) / (
+                occupancy_ratio_diamondhead = np.sum(segment_diamondhead) / (
                     segment_width * segment_height
                 )
-                occupancy_ratio_skeleton = np.sum(segment_skeleton) / (
+                occupancy_ratio_diamondboot = np.sum(segment_diamondboot) / (
                     segment_width * segment_height
                 )
                 index = y * self.vertical_split_num + x
-                occupancy_ratios_zombie[index] = occupancy_ratio_zombie
-                occupancy_ratios_skeleton[index] = occupancy_ratio_skeleton
+                occupancy_ratios_diamondhead[index] = occupancy_ratio_diamondhead
+                occupancy_ratios_diamondboot[index] = occupancy_ratio_diamondboot
 
-        occupancy_ratios_zombie = (occupancy_ratios_zombie * 10).astype(int)
-        occupancy_ratios_skeleton = (occupancy_ratios_skeleton * 10).astype(int)
+                # debug Occupancy ratio
+                #print(f"Segment ({x}, {y}): Diamondhead Occupancy Ratio: {occupancy_ratio_diamondhead}, Diamondboot Occupancy Ratio: {occupancy_ratio_diamondboot}")
 
-        return occupancy_ratios_zombie, occupancy_ratios_skeleton
+        occupancy_ratios_diamondhead = (occupancy_ratios_diamondhead * 1000).astype(int)
+        occupancy_ratios_diamondboot = (occupancy_ratios_diamondboot * 1000).astype(int)
 
+        # debug Occupancy Ratios
+        #print("Occupancy Ratios Diamondhead:", occupancy_ratios_diamondhead)
+        #print("Occupancy Ratios Diamondboot:", occupancy_ratios_diamondboot)
+
+        return occupancy_ratios_diamondhead, occupancy_ratios_diamondboot
+    
+    
     def detect(self):
         """this is main process in this class"""
         img_tensor = self.preprocess_image()
@@ -209,6 +223,10 @@ class DetectMobs:
         classes = [
             np.argmax(det[5:]) for det in detections[0] if det[4] > self.confidence
         ]
+
+        # debug Bboxes and Classes
+        #print("Bboxes:", bboxes)
+        #print("Classes:", classes)
 
         # save results
         if self.is_save_result is True:
