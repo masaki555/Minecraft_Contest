@@ -201,8 +201,8 @@ class DetectMobs:
                 # debug Occupancy ratio
                 #print(f"Segment ({x}, {y}): Diamondhead Occupancy Ratio: {occupancy_ratio_diamondhead}, Diamondboot Occupancy Ratio: {occupancy_ratio_diamondboot}")
 
-        occupancy_ratios_diamondhead = (occupancy_ratios_diamondhead * 1000).astype(int)
-        occupancy_ratios_diamondboot = (occupancy_ratios_diamondboot * 1000).astype(int)
+        occupancy_ratios_diamondhead = (occupancy_ratios_diamondhead * 10000).astype(int)
+        occupancy_ratios_diamondboot = (occupancy_ratios_diamondboot * 10000).astype(int)
 
         # debug Occupancy Ratios
         #print("Occupancy Ratios Diamondhead:", occupancy_ratios_diamondhead)
