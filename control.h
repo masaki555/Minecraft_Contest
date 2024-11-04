@@ -2,7 +2,8 @@ extern int rk;
 
 void init(void);
 void exePython(void);
-int detectPlayer(void);
+int detectPlayer1(void);
+int detectPlayer2(void);
 
 void attackLeft(void);
 void attackLeft_long(void);
