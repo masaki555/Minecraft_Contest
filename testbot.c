@@ -47,6 +47,7 @@ int main(int argc, char *argv[]){
         }
 
         if(flag==0){
+            cnt=0;
             attackLeft();
             downKey("ctrl");
             downKey("w");
