@@ -42,3 +42,6 @@ void cameraUp(double time);
 
 void create_python_thread(void);
 void close_python_thread(void);
+
+void create_python_thread2(void);
+void close_python_thread2(void);
