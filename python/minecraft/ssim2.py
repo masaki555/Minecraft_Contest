@@ -33,4 +33,4 @@ if __name__ == "__main__":
             pydirectinput.keyDown('esc')
             time.sleep(0.05)
             pydirectinput.keyUp('esc')
-        #os.remove("./python/minecraft/picture/screenshot2.png")
+        os.remove("./python/minecraft/picture/screenshot2.png")

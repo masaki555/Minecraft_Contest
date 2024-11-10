@@ -14,8 +14,9 @@ int main(int argc, char *argv[]){
         han2 = detectPlayer2();
         printf("han1=%06d\n" , han1);
         printf("han2=%06d\n" , han2);
-        
-        if(han1/1000%10==1||han2/1000%10==1){
+        if((han1/1000%10==1||han2/1000%10==1)&&(han1/100%10==1||han2/100%10==1)){
+        }
+        else if(han1/1000%10==1||han2/1000%10==1){
             pushKey("left");
         }
         else if(han1/100%10==1||han2/100%10==1){
