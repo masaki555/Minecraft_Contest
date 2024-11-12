@@ -10,11 +10,11 @@ int main(int argc, char *argv[]){
         /*ここからBotプログラム を書く*/
         han3 = detectHuman();
         sleep(1);
-        printf("han3=%d\n" , han3);
+        printf("head=%d\n" , han3);
 
         han1 = detectHuman2();
         sleep(1);
-        printf("han1=%d\n" , han1);
+        printf("boot=%d\n" , han1);
         /*ここまでBotプログラムを書く*/
     }
 }
