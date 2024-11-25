@@ -172,8 +172,9 @@ class DetectMobs:
         bboxes = [det[:4] for det in detections[0] if det[4] > self.confidence]
         classes = [np.argmax(det[5:]) for det in detections[0] if det[4] > self.confidence]
 
-        # Draw the detection result on the image
-        self.draw_result(bboxes, classes)
+        if self.is_save_result:
+            # Draw the detection result on the image for debugging
+            self.draw_result(bboxes, classes)
 
         # Write detection result to text file
         self.write_result_to_text(bboxes, classes)
@@ -196,7 +197,7 @@ if __name__ == "__main__":
         capture_path="yoloFiles/capture.png",
         txt_path="yoloFiles/labels/capture.txt",
         input_img_size=640,
-        is_save_result=True,
+        is_save_result=False,
         vertical_split_num=v,
         horizontal_split_num=h,
         confidence=0.6,
