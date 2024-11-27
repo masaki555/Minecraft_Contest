@@ -47,9 +47,13 @@ void killPython(void);
 
 int detectZombie1(void);
 long detectZombie2(void);
-int detectZombie3(void);
+int detectHuman(void);
+int detectHuman2(void);
 int detectSkeleton(void);
 int detectMobsArray(int mode , int ibuf[]);
 int detectMobs(void);
 void exePython(void);
 
+void create_python_thread(void);
+void close_python_thread(void);
+void* respawn(void* arg);

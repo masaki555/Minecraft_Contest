@@ -453,19 +453,47 @@ long detectZombie2(void) {
     return ibuf;
 }
 
-int detectZombie3(void) {
+int detectHuman(void) {
     FILE *fp;
     char fname[] = "python/minecraft/yoloFiles/labels/capture.txt";
     int i, t = 1;
     int zbuf = 0;
 
     if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectZombie3\n");
+        printf("error:detectHuman\n");
         killPython();
         exit(1);
     }
     char buf[256];
     fgets(buf, sizeof(buf), fp);
+    (void)fclose(fp);
+
+    for (i = 0; i < 6; i++) {
+        zbuf = zbuf + ((buf[5 - i] - '0') * t);
+        t = t * 10;
+    }
+
+    if (zbuf < 0) {
+        return 0;
+    }
+
+    return zbuf;
+}
+
+int detectHuman2(void) {
+    FILE *fp;
+    char fname[] = "python/minecraft/yoloFiles/labels/capture.txt";
+    int i, t = 1;
+    int zbuf = 0;
+
+    if ((fp = fopen(fname, "r")) == NULL) {
+        printf("error:detectHuman2\n");
+        killPython();
+        exit(1);
+    }
+    char buf[256];
+    fgets(buf, sizeof(buf), fp); // 1行目を読み飛ばす
+    fgets(buf, sizeof(buf), fp); // 2行目を読み込む
     (void)fclose(fp);
 
     for (i = 0; i < 6; i++) {
@@ -596,6 +624,32 @@ void *isInterrupt(void *args) {
     }
     rk = 0;
     return args;
+}
+
+pthread_t python_thread;
+
+void create_python_thread() {
+    if (pthread_create(&python_thread, NULL, respawn, NULL) != 0) {
+        fprintf(stderr, "Error creating Python thread.\n");
+        exit(1);
+    }
+}
+
+void close_python_thread() {
+    pthread_join(python_thread, NULL);
+}
+
+void* respawn(void* arg){ 
+    char com[128] = "python/python.exe python/minecraft/ssim.py";
+    while(rk){
+        int f = system(com);
+        if (f != 0 && WEXITSTATUS(f) != 0) {
+            printf("error:ssim\n");
+            exit(1);
+        }
+        sleep(1);
+    }
+    return arg;
 }
 
 void exePython(void) {
