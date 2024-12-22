@@ -57,6 +57,6 @@ int main(int argc, char *argv[]){
             upKey("w");
         }
 
-        sleep_time(1.5);
+        sleep_time(1);
     }
 }
