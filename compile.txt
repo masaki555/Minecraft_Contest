@@ -1,1 +1,0 @@
-gcc -o testbot.exe testbot.c control.c -Wall
