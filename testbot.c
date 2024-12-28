@@ -4,6 +4,7 @@
 
 int main(int argc, char *argv[]){
     int han1 , han2;
+    long han3;
     int flag = 0;
     int cnt = 0;
     init();
@@ -12,8 +13,10 @@ int main(int argc, char *argv[]){
         flag=0;
         han1 = detectPlayer1();
         han2 = detectPlayer2();
+        han3 = detectZombie2();
         printf("han1=%06d\n" , han1);
         printf("han2=%06d\n" , han2);
+        printf("han3=%015ld\n" , han3);
         if((han1/1000%10==1||han2/1000%10==1)&&(han1/100%10==1||han2/100%10==1)){
         }
         else if(han1/1000%10==1||han2/1000%10==1){
