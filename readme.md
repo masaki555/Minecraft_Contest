@@ -369,8 +369,8 @@ YOLOは学習させることにより、新しく物体を認識できるよう�
       python train.py --data data/data.yaml --cfg yolov5s.yaml --weights '' --batch-size 8 --epochs 300
       ```
 
-   9. 学習が完了すると、```runs/train/exp/weights```ディレクトリに```best.pt```ファイルが生成される.
-      このbest.ptファイルを```Minecraft_Contest/python/minecraft/yoloFiles/best.pt```ファイルと差し替えるとAIに使用される学習データが差し替えられる.
+   9. 学習が完了すると、```runs/train/exp/weights```ディレクトリに```best.onnx```ファイルが生成される.
+      このbest.onnxファイルを```Minecraft_Contest/python/minecraft/yoloFiles/best.onnx```ファイルと差し替えるとAIに使用される学習データが差し替えられる.
 
    (補足)上記の方法だとCPUしか使わないので遅い. 
    学習を早くするにはGPUを使うことをおすすめするが環境構築に手間がかかる.  
