@@ -9,7 +9,6 @@ int main(int argc, char *argv[]){
     int flag3 = 0;
     int flag4 = 0;
     int flag5 = 0;
-    int lived = 0;
     int count = 0;
     int count2 = 0;
     int cFlag = 0;
@@ -18,14 +17,13 @@ int main(int argc, char *argv[]){
     exePython();     //画像処理プログラムを実行する関数．
     while(rk){       //無限loopする．rkはF12キーを押すと0となり，プログラムが停止します．
         /*ここからBotプログラム を書く*/
-        head = detectHuman();
+        head = detectPlayer();
         printf("head=%d\n" , head);
 
-        boot = detectHuman2();
+        boot = detectPlayer2();
         printf("boot=%d\n" , boot);
-        /*ここまでBotプログラムを書く*/
 
-        if((head/100000==1 || boot/100000==1) && flag == 0){ //画面左端に存在する場合、左にカメラを向ける
+        if((head/100000==1 || boot/100000==1) && flag == 0){ 
            printf("左端\n");
            pushKey("left"); 
            downKey("w");
@@ -33,7 +31,7 @@ int main(int argc, char *argv[]){
            flag++;
         } else if ((head/10000==1 || boot/10000==1) && flag2 == 0){
             printf("真ん中左寄り\n");
-            cameraLeft(0.1); //検知してから動作するまでがかなり遅い
+            cameraLeft(0.1); 
             downKey("s");
             upKey("s");
             flag2++;
@@ -72,7 +70,7 @@ int main(int argc, char *argv[]){
                     count2++;
                 }
 
-                if(detectHuman() != 0){
+                if(detectPlayer() != 0 && detectPlayer2() != 0){
                     break;
                 }
 
@@ -118,5 +116,6 @@ int main(int argc, char *argv[]){
             flag5 = 0;
         }
         sleep(1);
-    }   
+    }
+    /*ここまでBotプログラムを書く*/
 }

@@ -453,14 +453,14 @@ long detectZombie2(void) {
     return ibuf;
 }
 
-int detectHuman(void) {
+int detectPlayer(void) {
     FILE *fp;
     char fname[] = "python/minecraft/yoloFiles/labels/capture.txt";
     int i, t = 1;
     int zbuf = 0;
 
     if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectHuman\n");
+        printf("error:detectPlayer\n");
         killPython();
         exit(1);
     }
@@ -480,14 +480,14 @@ int detectHuman(void) {
     return zbuf;
 }
 
-int detectHuman2(void) {
+int detectPlayer2(void) {
     FILE *fp;
     char fname[] = "python/minecraft/yoloFiles/labels/capture.txt";
     int i, t = 1;
     int zbuf = 0;
 
     if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectHuman2\n");
+        printf("error:detectPlayer2\n");
         killPython();
         exit(1);
     }
