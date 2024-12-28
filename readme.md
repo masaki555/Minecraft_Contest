@@ -46,10 +46,11 @@ chmod -R 755 python
   📁Minecraft_Contest       // 作成したMinecraft_Contestフォルダ
    ┗ 📁python               // Botを動かすために必要なpythonファイル関係
    ┗ 📁docker               // yoloをコンテナで動かす環境（試作）
-     📃 compile.txt         // 
+     📃 compile.txt         // コンパイル用の構文
      📃 control.c           // C言語からpythonを呼び出すために必要なライブラリ
      📃 control.h           // control.cファイルのヘッダファイル
      📃 testbot.c           // botプログラムのサンプル．このプログラムを参考にbotプログラムを書く
+     📃 minecraft.ipynb     // AIモデル改良用の説明
      📃 readme.md           // botプログラムの説明
      📃 requirements.txt    // setup.sh実行時に必要
      📃 setup.sh            // 初回セットアップ時に実行するshellプログラム
@@ -278,59 +279,7 @@ YOLOは**学習**させることにより、新しく物体を認識できるよ
 
 ---
 
-3. YOLOに学習させる  
-   1. c1-byodで適当なディレクトリ(`yolo`とか)を作成し、cdで移動します。  
-   2. 以下のコマンドを打ち、yolov5をダウンロードします。  
-
-      ```sh
-      git clone https://github.com/ultralytics/yolov5
-      ```
-
-   4. 以下のコマンドを打ち、必要なPythonライブラリをインストールします。  
-
-      ```sh
-      cd yolov5
-      pip install -r requirements.txt
-      ```
-
-   6. mkdirコマンド等を使用して、以下のようなディレクトリ構成にします。  
-
-      ```txt
-        yolov5
-          ┠ data          ← 元からある
-            ┠ train       ← 作る
-            ┃   ┠ images  ← 作る
-            ┃   ┗ labels  ← 作る
-            ┠ valid       ← 作る
-                ┗ images  ← 作る
-      ```
-
-   5. data/train/imagesディレクトリに学習させる画像を、labelsディレクトリにlabelImgで作ったアノテーションファイル(`Change Save Dir`で指定したフォルダに入ってる)を入れます。  
-   6. data/valid/imagesには学習結果をテストする画像(train/imagesと同じでいい)を入れます。  
-   7. dataディレクトリ内に```data.yaml```ファイルを作成し、以下の内容を記述します。  
-
-      ```yaml
-      train: data/train/images # 学習の画像のパス
-      val: data/valid/images # 検証用画像のパス
-
-      nc: 2 # (例)学習させるMobの数
-      names: [ 'diamondHead', 'diamondBoot' ] # (例)学習対象のMob名
-      ```
-
-      ※ 提供しているプログラムではダイヤのヘルメットとダイヤのブーツだけを認識の対象としているためdata.yamlの内容は[このようになっています](https://github.com/masaki555/Minecraft_Contest/blob/main/python/minecraft/yoloFiles/mobs.yaml)が、独自に認識するMobを増やしたり、減らしたりすると提供しているプログラムとの齟齬が発生し上手く動かない可能性があります。  
-      不具合が発生した場合は各自でプログラムを改修して下さい。  
-
-   8. 以下のコマンドを実行して学習を開始します。  
-      ただし、CPUで計算を行うと莫大な時間かかります。  
-      枚数やパソコンの性能にもよりますが数時間はかかります。  
-
-      ```sh
-      python train.py --data data/data.yaml --cfg yolov5s.yaml --weights '' --batch-size 8 --epochs 300
-      ```
-
-   9. 学習が完了すると、```runs/train/exp/weights```ディレクトリに```best.pt```ファイルが生成されます。  
-      このbest.ptファイルを```Minecraft_Contest/python/minecraft/yoloFiles/best.pt```ファイルと差し替えるとAIに使用される学習データが差し替えられます。  
-
-   (補足)上記の方法だとCPUしか使わないので遅いです(数時間かかる)。  
-   学習を早くするにはGPUを使うことをおすすめしますが環境構築に手間がかかります。  
-   Google Colabなどのサービスを利用すると環境構築なしでGPUを使えるようになるのでオススメです(無料で利用すると利用制限はありますが)。  
+3. 学習
+   minecraft.ipynbを参照してください
+　
+  
