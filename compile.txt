@@ -1,1 +1,1 @@
-gcc -02 -o minebot.exe testbot.c control.c 
+gcc -O2 -o minebot.exe testbot.c control.c 
