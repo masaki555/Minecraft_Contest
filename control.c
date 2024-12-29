@@ -21,6 +21,14 @@ pid_t Move_pid;
 pid_t Camera_pid;
 int rk = 1;
 
+void equipmentDev(void) {
+    char com[128] = "python/python.exe python/minecraft/equipment.py";
+    int f = system(com);
+    if (f != 0 && WEXITSTATUS(f) != 0) {
+        printf("error:equipmentDev\n");
+        exit(1);
+    }
+}
 
 void attackLeft(void) {
     char com[128] = "python/python.exe python/minecraft/clickLeft.py";
@@ -425,6 +433,7 @@ int detectZombie1(void) {
     int ibuf = 0;
     // int i,t=1;
 
+
     if ((fp = fopen(fname, "r")) == NULL) {
         printf("error:detectZombie\n");
         exit(1);
@@ -463,6 +472,7 @@ long detectZombie2(void) {
     return ibuf;
 }
 
+
 int detectPlayer1(void) {
     FILE *fp;
     char fname[] = "python/minecraft/yoloFiles/labels/capture.txt";
@@ -471,6 +481,7 @@ int detectPlayer1(void) {
 
     if ((fp = fopen(fname, "r")) == NULL) {
         printf("error:detectPlayer1\n");
+
         killPython();
         exit(1);
     }

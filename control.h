@@ -39,4 +39,3 @@ void setCreative(void);
 
 int detectZombie1(void);
 long detectZombie2(void);
-

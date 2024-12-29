@@ -46,9 +46,11 @@ chmod -R 755 python
   📁Minecraft_Contest       // 作成したMinecraft_Contestフォルダ
    ┗ 📁python               // Botを動かすために必要なpythonファイル関係
    ┗ 📁docker               // yoloをコンテナで動かす環境（試作）
+     📃 compile.txt         // コンパイル用の構文
      📃 control.c           // C言語からpythonを呼び出すために必要なライブラリ
      📃 control.h           // control.cファイルのヘッダファイル
      📃 testbot.c           // botプログラムのサンプル．このプログラムを参考にbotプログラムを書く
+     📃 minecraft.ipynb     // AIモデル改良用の説明
      📃 readme.md           // botプログラムの説明
      📃 requirements.txt    // setup.sh実行時に必要
      📃 setup.sh            // 初回セットアップ時に実行するshellプログラム
@@ -86,6 +88,7 @@ gcc -O2 -o minebot.exe testbot.c control.c
 3. botプログラムを実行する．
 
 *マップはご自身で作成して頂いても結構だが，コンテスト本番では．Teamsで合配布するマップを利用する．またマップを作成する際には【チート→「天候の変化」を「OFF」】に設定しておくこと．
+
 
 プログラムを実行すると自動でx20,y20の位置に横幅900，縦幅1080にMinecraftのゲーム画面が自動調整される．本ライブラリは画像処理を用いてゾンビを判定しているため，指定されたデスクトップの場所（x20,y20から横幅900，縦幅1080）でMinecraftを起動させる必要がある．
 
@@ -321,3 +324,4 @@ YOLOは学習させることにより、新しく物体を認識できるよう�
 
 3. YOLOに学習させる
    minecraft.ipynbを参照すること.
+
