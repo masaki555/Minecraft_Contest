@@ -409,11 +409,30 @@ int kbhit(void) {
     return 0;
 }
 
+void killPython(void) {
+    int ret1, ret2, ret3, ret4, ret5;
+    initMoveDataFile();
+    initCameraDataFile();
+
+    ret1 = kill(Detect1_pid, SIGKILL);
+    ret2 = kill(Detect2_pid, SIGKILL);
+    ret3 = kill(Detect3_pid, SIGKILL);
+    ret4 = kill(Move_pid, SIGKILL);
+    ret5 = kill(Camera_pid, SIGKILL);
+
+    if (ret1 == -1 || ret2 == -1 || ret3 == -1 || ret4 == -1 || ret5 == -1) {
+        perror("error:kill");
+        printf("error:kill");
+        exit(1);
+    }
+}
+
 int detectZombie1(void) {
     FILE *fp;
     char fname[] = "./python/tmp/detect_zombie1.txt";
     int ibuf = 0;
     // int i,t=1;
+
 
     if ((fp = fopen(fname, "r")) == NULL) {
         printf("error:detectZombie\n");
@@ -453,14 +472,16 @@ long detectZombie2(void) {
     return ibuf;
 }
 
-int detectPlayer(void) {
+
+int detectPlayer1(void) {
     FILE *fp;
     char fname[] = "python/minecraft/yoloFiles/labels/capture.txt";
     int i, t = 1;
     int zbuf = 0;
 
     if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectPlayer\n");
+        printf("error:detectPlayer1\n");
+
         killPython();
         exit(1);
     }
@@ -508,111 +529,6 @@ int detectPlayer2(void) {
     return zbuf;
 }
 
-int detectSkeleton(void) {
-    FILE *fp;
-    char fname[] = "python/minecraft/yoloFiles/labels/capture.txt";
-    int i, t = 1;
-    int zbuf = 0;
-
-    if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectSkeleton3\n");
-        killPython();
-        exit(1);
-    }
-    char buf[256];
-    char tmp[256];
-    fgets(tmp, sizeof(buf), fp);
-    fgets(buf, sizeof(buf), fp);
-    (void)fclose(fp);
-
-    for (i = 0; i < 6; i++) {
-        zbuf = zbuf + ((buf[5 - i] - '0') * t);
-        t = t * 10;
-    }
-
-    if (zbuf < 0) {
-        return 0;
-    }
-
-    return zbuf;
-}
-
-int detectMobsArray(int mode, int ibuf[]) {
-    FILE *fp;
-    char *fname;
-    int i;
-
-    if (mode == 1) {
-        fname = "./python/tmp/t_creeper.txt";
-    } else if (mode == 2) {
-        fname = "./python/tmp/t_zombie.txt";
-    } else {
-        printf("error:detectMobs\n");
-        printf("Non accepted mode value\n");
-        exit(1);
-    }
-
-    if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectMobs\n");
-        exit(1);
-    }
-
-    char buf[256];
-    fgets(buf, sizeof(buf), fp);
-    (void)fclose(fp);
-    int bufLength = strlen(buf);
-
-    for (i = 0; i < 256; i++) {
-        ibuf[i] = 0;
-    }
-
-    for (i = 0; i < bufLength; i++) {
-        ibuf[i] = buf[i] - '0';
-    }
-
-    return bufLength;
-}
-
-int detectMobs(void) {
-    FILE *fp;
-    char fname[] = "./python/tmp/detect_mobs.txt";
-    int i, t = 1;
-    int obuf = 0;
-
-    if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectMobs\n");
-        exit(1);
-    }
-    char buf[256];
-    fgets(buf, sizeof(buf), fp);
-    (void)fclose(fp);
-
-    for (i = 0; i < 6; i++) {
-        obuf = obuf + ((buf[5 - i] - '0') * t);
-        t = t * 10;
-    }
-
-    return obuf;
-}
-
-void killPython(void) {
-    int ret1, ret2, ret3, ret4, ret5;
-    initMoveDataFile();
-    initCameraDataFile();
-
-    ret1 = kill(Detect1_pid, SIGKILL);
-    ret2 = kill(Detect2_pid, SIGKILL);
-    ret3 = kill(Detect3_pid, SIGKILL);
-    ret4 = kill(Move_pid, SIGKILL);
-    ret5 = kill(Camera_pid, SIGKILL);
-
-    if (ret1 == -1 || ret2 == -1 || ret3 == -1 || ret4 == -1 || ret5 == -1) {
-        perror("error:kill");
-        printf("error:kill");
-        exit(1);
-    }
-}
-
 void *isInterrupt(void *args) {
     while (rk) {
         if (GetKeyState(VK_F12) < 0) {
@@ -628,17 +544,6 @@ void *isInterrupt(void *args) {
 
 pthread_t python_thread;
 
-void create_python_thread() {
-    if (pthread_create(&python_thread, NULL, respawn, NULL) != 0) {
-        fprintf(stderr, "Error creating Python thread.\n");
-        exit(1);
-    }
-}
-
-void close_python_thread() {
-    pthread_join(python_thread, NULL);
-}
-
 void* respawn(void* arg){ 
     char com[128] = "python/python.exe python/minecraft/ssim.py";
     while(rk){
@@ -651,6 +556,31 @@ void* respawn(void* arg){
     }
     return arg;
 }
+
+void* pushesc(void* arg){ 
+    char com[128] = "python/python.exe python/minecraft/ssim2.py";
+    while(rk){
+        int f = system(com);
+        if (f != 0 && WEXITSTATUS(f) != 0) {
+            printf("error:ssim2\n");
+            exit(1);
+        }
+        sleep(1);
+    }
+    return arg;
+}
+
+void create_python_thread() {
+    if (pthread_create(&python_thread, NULL, pushesc, NULL) != 0) {
+        fprintf(stderr, "Error creating Python thread.\n");
+        exit(1);
+    }
+}
+
+void close_python_thread() {
+    pthread_join(python_thread, NULL);
+}
+
 
 void exePython(void) {
     pthread_t key;
@@ -729,4 +659,13 @@ void exePython(void) {
     }
 
     Sleep(100);
+}
+
+void sleep_time(double time){
+    int t;
+    t = time * 1000;
+    if(t<0){
+        t=t*(-1);
+    }
+    Sleep(t);
 }

@@ -3,8 +3,9 @@ from skimage.metrics import structural_similarity as ssim
 import sys
 import os
 sys.path.append('.')
-from python.minecraft import getScreenshot
-from python.minecraft import equipment
+from python.minecraft import getScreenshot2
+import time
+import pydirectinput
 
 def calculate_image_similarity(image_path1, image_path2, threshold):
 
@@ -24,10 +25,12 @@ def calculate_image_similarity(image_path1, image_path2, threshold):
 
 
 if __name__ == "__main__":
-    if getScreenshot.take_screenshot("Minecraft Education")==0:
+    if getScreenshot2.take_screenshot("Minecraft Education")==0:
         # 比較したい画像のパスと閾値を渡す
-        result=calculate_image_similarity("./python/minecraft/picture/gameover.png", "./python/minecraft/picture/screenshot.png", 0.8)
-        print(result)
+        result=calculate_image_similarity("./python/minecraft/picture/esc.png", "./python/minecraft/picture/screenshot2.png", 0.8)
+        print("esc:",result)
         if result == True:
-            equipment.equipment()
-        os.remove("./python/minecraft/picture/screenshot.png")
+            pydirectinput.keyDown('esc')
+            time.sleep(0.05)
+            pydirectinput.keyUp('esc')
+        os.remove("./python/minecraft/picture/screenshot2.png")
