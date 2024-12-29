@@ -40,8 +40,3 @@ void setCreative(void);
 int detectZombie1(void);
 long detectZombie2(void);
 
-void create_python_thread(void);
-void close_python_thread(void);
-
-void create_python_thread2(void);
-void close_python_thread2(void);
