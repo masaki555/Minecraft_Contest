@@ -14,9 +14,7 @@
 #define PRINT_HERE \
     fprintf(stderr, "File:%s Line:%d\t", __FILE__, __LINE__)
 
-pid_t Detect1_pid;
-pid_t Detect2_pid;
-pid_t Detect3_pid;
+pid_t Detect_pid;
 pid_t Move_pid;
 pid_t Camera_pid;
 int rk = 1;
@@ -410,17 +408,15 @@ int kbhit(void) {
 }
 
 void killPython(void) {
-    int ret1, ret2, ret3, ret4, ret5;
+    int ret1, ret2, ret3;
     initMoveDataFile();
     initCameraDataFile();
 
-    ret1 = kill(Detect1_pid, SIGKILL);
-    ret2 = kill(Detect2_pid, SIGKILL);
-    ret3 = kill(Detect3_pid, SIGKILL);
-    ret4 = kill(Move_pid, SIGKILL);
-    ret5 = kill(Camera_pid, SIGKILL);
+    ret1 = kill(Detect_pid, SIGKILL);
+    ret2 = kill(Move_pid, SIGKILL);
+    ret3 = kill(Camera_pid, SIGKILL);
 
-    if (ret1 == -1 || ret2 == -1 || ret3 == -1 || ret4 == -1 || ret5 == -1) {
+    if (ret1 == -1 || ret2 == -1 || ret3 == -1) {
         perror("error:kill");
         printf("error:kill");
         exit(1);
@@ -586,37 +582,11 @@ void exePython(void) {
     pthread_t key;
     int kill_p;
 
-    Detect1_pid = fork();
-    if (-1 == Detect1_pid) {
+    Detect_pid = fork();
+    if (-1 == Detect_pid) {
         err(EXIT_FAILURE, "can not fork");
         exit(-1);
-    } else if (0 == Detect1_pid) {
-        int f = execl("python/python.exe", "python/python.exe", "python/minecraft/detectZombie1.py", NULL);
-        if (f != 0 && WEXITSTATUS(f) != 0) {
-            printf("error:detectZombie1.py\n");
-            exit(1);
-        }
-    }
-    Sleep(100);
-
-    Detect2_pid = fork();
-    if (-1 == Detect2_pid) {
-        err(EXIT_FAILURE, "can not fork");
-        exit(-1);
-    } else if (0 == Detect2_pid) {
-        int f = execl("python/python.exe", "python/python.exe", "python/minecraft/detectZombie2.py", NULL);
-        if (f != 0 && WEXITSTATUS(f) != 0) {
-            printf("error:detectZombie2.py\n");
-            exit(1);
-        }
-    }
-    Sleep(100);
-
-    Detect3_pid = fork();
-    if (-1 == Detect3_pid) {
-        err(EXIT_FAILURE, "can not fork");
-        exit(-1);
-    } else if (0 == Detect3_pid) {
+    } else if (0 == Detect_pid) {
         int f = execl("python/python.exe", "python/python.exe", "python/minecraft/detectMobs.py", NULL);
         if (f != 0 && WEXITSTATUS(f) != 0) {
             printf("error:detectMobs.py\n");
