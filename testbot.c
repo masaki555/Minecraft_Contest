@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
                     count2++;
                 }
 
-                if(detectPlayer() != 0 && detectPlayer2() != 0){
+                if(detectPlayer1() != 0 && detectPlayer2() != 0){
                     break;
                 }
 
