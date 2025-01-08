@@ -40,7 +40,7 @@ cd Minecraft_Contest/
 chmod -R 755 python
 ```
 
-上記のコマンドを実行すると```~/Minecraft_Contest/```というディレクトリが作成され，このディレクトリの中でプログラムをCプログラムを作成する事となる．また，```~/Minecraft_Contest/```の中にはtestbot.cというプログラムが置かれており，こちらを参考にプログラムを書くこと．ただし，かなり初心者が書いた出来の悪いサンプルプログラムなので，皆さんはこれを賢いBotプログラムに修正するようにすること．また，以下にMinecraft_Contestフォルダのフォルダ構造を記載しておく．
+上記のコマンドを実行すると```~/Minecraft_Contest/```というディレクトリが作成され，このディレクトリの中でCプログラムを作成する事となる．また，```~/Minecraft_Contest/```の中にはtestbot.cというプログラムが置かれており，こちらを参考にプログラムを書くこと．ただし，かなり初心者が書いた出来の悪いサンプルプログラムなので，皆さんはこれを賢いBotプログラムに修正するようにすること．また，以下にMinecraft_Contestフォルダのフォルダ構造を記載しておく．
 
 ``` file
   📁Minecraft_Contest       // 作成したMinecraft_Contestフォルダ
@@ -140,8 +140,6 @@ int main(int argc, char *argv[]){
 | void exePython(void) | Botプログラム初期設定関数．画像処理プログラムが実行される．|
 | int detectPlayer1(void) | 画面を6分割して左から順に検出した場所を1にする．戻り値はint型で，例えば100001だと左端と右端に検出された状態．詳細は後述． |
 | int detectPlayer2(void) | 画面を6分割して左から順に検出した場所を1にする．戻り値はint型で，例えば100001だと左端と右端に検出された状態．詳細は後述． |
-| int detectZombie1(void) | 画像処理の結果を取得する．戻り値はint型で，7bitの2進数をint型で返却される．詳細は後述． |
-| long detectZombie2(void) | 画像処理の結果を取得する．戻り値はlong型で，15bitの2進数結果をlong型で返却される．詳細は後述． |
 | void attackLeft(void) | 左クリック．0.01秒間隔で入力されるが，実際にはもう少し遅い． |
 | void attackLeft_long(void) | 左クリック．1.50秒間入力される. |
 | void attackLeft_continuous(int n) | 左クリックを指定した回数入力する．0.01秒間隔で入力される. |
