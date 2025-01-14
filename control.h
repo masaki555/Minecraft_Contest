@@ -5,8 +5,8 @@ void exePython(void);
 int detectPlayer1(void);
 int detectPlayer2(void);
 
+void sendCommand(const char* str);
 void attackLeft(void);
-void attackLeft_long(void);
 void attackLeft_continuous(int n);
 void eat(int n);
 void downKey(char* key);
@@ -36,6 +36,3 @@ void setTime(void);
 void setMorning(void);
 void setSurvival(void);
 void setCreative(void);
-
-int detectZombie1(void);
-long detectZombie2(void);

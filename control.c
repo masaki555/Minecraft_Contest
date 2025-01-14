@@ -1,4 +1,5 @@
 #include "control.h"
+
 #include <err.h>
 #include <fcntl.h>
 #include <pthread.h>
@@ -11,43 +12,100 @@
 #include <unistd.h>
 #include <windows.h>
 
-#define PRINT_HERE \
-    fprintf(stderr, "File:%s Line:%d\t", __FILE__, __LINE__)
+#define PRINT_HERE fprintf(stderr, "File:%s Line:%d\t", __FILE__, __LINE__)
 
 pid_t Detect_pid;
 pid_t Move_pid;
 pid_t Camera_pid;
 int rk = 1;
 
-void equipmentDev(void) {
-    char com[128] = "python/python.exe python/minecraft/equipment.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:equipmentDev\n");
-        exit(1);
-    }
+// キーを1つ遅延なしで入力する関数
+void sendChar(WORD vkKey) {
+    INPUT input = {0};
+
+    // キー押下
+    input.type = INPUT_KEYBOARD;
+    input.ki.wVk = vkKey;
+    SendInput(1, &input, sizeof(INPUT));
+
+    // キーリリース
+    input.ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(1, &input, sizeof(INPUT));
 }
 
-void attackLeft(void) {
-    char com[128] = "python/python.exe python/minecraft/clickLeft.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:attackLeft\n");
-        exit(1);
+// 文字列を入力する
+void sendCommand(const char *str) {
+    // コマンド入力欄を開く
+    sendChar(VK_RETURN);
+
+    for (size_t i = 0; i < strlen(str); i++) {
+        char ch = str[i];
+
+        // 大文字と小文字の処理
+        int shiftRequired = 0;
+        WORD vkKey = 0;
+
+        if (ch >= 'A' && ch <= 'Z') {
+            vkKey = ch;  // 大文字 (そのまま)
+            shiftRequired = 1;
+        } else if (ch >= 'a' && ch <= 'z') {
+            vkKey = ch - 32;  // 小文字 (大文字に変換)
+            shiftRequired = 0;
+        } else if (ch >= '0' && ch <= '9') {
+            vkKey = ch;  // 数字 (そのまま)
+        } else {
+            // 特殊文字の処理 (ここではスペースだけ対応)
+            if (ch == ' ') {
+                vkKey = VK_SPACE;
+            } else if (ch == '/') {
+                vkKey = VK_OEM_2;  // スラッシュ
+            } else {
+                printf("未対応の文字: %c\n", ch);
+                continue;  // 未対応の文字はスキップ
+            }
+        }
+
+        // Shiftキーの押下が必要な場合
+        if (shiftRequired) {
+            INPUT shiftDown = {0};
+            shiftDown.type = INPUT_KEYBOARD;
+            shiftDown.ki.wVk = VK_SHIFT;
+            SendInput(1, &shiftDown, sizeof(INPUT));
+        }
+
+        // キーを送信
+        sendChar(vkKey);
+
+        // Shiftキーをリリース
+        if (shiftRequired) {
+            INPUT shiftUp = {0};
+            shiftUp.type = INPUT_KEYBOARD;
+            shiftUp.ki.wVk = VK_SHIFT;
+            shiftUp.ki.dwFlags = KEYEVENTF_KEYUP;
+            SendInput(1, &shiftUp, sizeof(INPUT));
+        }
     }
+
+    // コマンドを実行して閉じる
+    sendChar(VK_RETURN);
+    sendChar(VK_ESCAPE);
 }
 
-void attackLeft_long(void) {
-    char com[128] = "python/python.exe python/minecraft/clickLeft_long.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:attackLeft_long\n");
-        exit(1);
-    }
+void equipment(void) {
+    sendChar(VK_SPACE);
+    Sleep(1000);
+    sendChar('2');
+    sendChar('E');
+    sendChar('3');
+    sendChar('E');
+    sendChar('1');
 }
+
+void attackLeft(void) { sendChar('Q'); }
 
 void attackLeft_continuous(int n) {
-    char com[128] = "python/python.exe python/minecraft/clickLeft_Continuous.py ";
+    char com[128] =
+        "python/python.exe python/minecraft/clickLeft_Continuous.py ";
     char buf[12];
     snprintf(buf, 12, "%d", n);
     strcat(com, buf);
@@ -109,7 +167,9 @@ void moveDataToFile(char *key) {
     // Share_Move_Data.txtの内容をbufに保存する
 
     if ((fp = fopen(pass, "r")) == NULL) {
-        printf("error：moveDataToFile\nShare_Move_Data.txtをrモードで開けませんでした．\n");
+        printf(
+            "error：moveDataToFile\nShare_Move_Data."
+            "txtをrモードで開けませんでした．\n");
         exit(1);
     } else {
         fgets(buf, 31, fp);
@@ -157,9 +217,7 @@ void cameraDataToFile(char *key, double sleep_time) {
     fclose(fp);
 }
 
-void initMoveDataFile(void) {
-    moveDataToFile("Wait");
-}
+void initMoveDataFile(void) { moveDataToFile("Wait"); }
 
 void moveForward(double sleep_time) {
     char key[32] = "F";
@@ -237,7 +295,8 @@ void moveJump(int times) {
 }
 
 void moveDash(int times) {
-    char str[128] = "python/python.exe python/minecraft/moveCharacterJumpDash.py";
+    char str[128] =
+        "python/python.exe python/minecraft/moveCharacterJumpDash.py";
     char com[256];
     sprintf(com, "%s %d", str, times);
     int f = system(com);
@@ -257,7 +316,9 @@ void setDashFlag(int flag) {
     // Share_Move_Data.txtの内容をbufに保存する
 
     if ((fp = fopen(pass, "r")) == NULL) {
-        printf("error：moveDataToFile\nShare_Move_Data.txtをrモードで開けませんでした．\n");
+        printf(
+            "error：moveDataToFile\nShare_Move_Data."
+            "txtをrモードで開けませんでした．\n");
         exit(1);
     } else {
         fgets(buf, 31, fp);
@@ -278,13 +339,9 @@ void setDashFlag(int flag) {
     fclose(fp);
 }
 
-void setDash(void) {
-    setDashFlag(1);
-}
+void setDash(void) { setDashFlag(1); }
 
-void resetDash(void) {
-    setDashFlag(0);
-}
+void resetDash(void) { setDashFlag(0); }
 
 void setTime(void) {
     char com[128] = "python/python.exe python/minecraft/setTime.py";
@@ -322,9 +379,7 @@ void setCreative(void) {
     }
 }
 
-void initCameraDataFile(void) {
-    cameraDataToFile("Wait", 0);
-}
+void initCameraDataFile(void) { cameraDataToFile("Wait", 0); }
 
 void cameraCenter(void) {
     char key[32] = "C";
@@ -423,52 +478,6 @@ void killPython(void) {
     }
 }
 
-int detectZombie1(void) {
-    FILE *fp;
-    char fname[] = "./python/tmp/detect_zombie1.txt";
-    int ibuf = 0;
-    // int i,t=1;
-
-
-    if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectZombie\n");
-        exit(1);
-    }
-    char buf[256];
-    fgets(buf, sizeof(buf), fp);
-    (void)fclose(fp);
-
-    ibuf = atoi(buf);
-    /*
-    for(i=0;i<7;i++){
-        ibuf = ibuf + ((buf[6-i] - '0') * t );
-        t = t * 10;
-    }
-    */
-
-    return ibuf;
-}
-
-long detectZombie2(void) {
-    FILE *fp;
-    char fname[] = "./python/tmp/detect_zombie2.txt";
-    // int i,t=1;
-    long ibuf = 0;
-
-    if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectZombie\n");
-        exit(1);
-    }
-    char buf[256];
-    fgets(buf, sizeof(buf), fp);
-    (void)fclose(fp);
-
-    ibuf = atol(buf);
-
-    return ibuf;
-}
-
-
 int detectPlayer1(void) {
     FILE *fp;
     char fname[] = "python/minecraft/yoloFiles/labels/capture.txt";
@@ -509,8 +518,8 @@ int detectPlayer2(void) {
         exit(1);
     }
     char buf[256];
-    fgets(buf, sizeof(buf), fp); // 1行目を読み飛ばす
-    fgets(buf, sizeof(buf), fp); // 2行目を読み込む
+    fgets(buf, sizeof(buf), fp);  // 1行目を読み飛ばす
+    fgets(buf, sizeof(buf), fp);  // 2行目を読み込む
     (void)fclose(fp);
 
     for (i = 0; i < 6; i++) {
@@ -540,9 +549,9 @@ void *isInterrupt(void *args) {
 
 pthread_t python_thread;
 
-void* respawn(void* arg){ 
+void *respawn(void *arg) {
     char com[128] = "python/python.exe python/minecraft/ssim.py";
-    while(rk){
+    while (rk) {
         int f = system(com);
         if (f != 0 && WEXITSTATUS(f) != 0) {
             printf("error:ssim\n");
@@ -553,9 +562,9 @@ void* respawn(void* arg){
     return arg;
 }
 
-void* pushesc(void* arg){ 
+void *pushesc(void *arg) {
     char com[128] = "python/python.exe python/minecraft/ssim2.py";
-    while(rk){
+    while (rk) {
         int f = system(com);
         if (f != 0 && WEXITSTATUS(f) != 0) {
             printf("error:ssim2\n");
@@ -573,10 +582,7 @@ void create_python_thread() {
     }
 }
 
-void close_python_thread() {
-    pthread_join(python_thread, NULL);
-}
-
+void close_python_thread() { pthread_join(python_thread, NULL); }
 
 void exePython(void) {
     pthread_t key;
@@ -587,7 +593,8 @@ void exePython(void) {
         err(EXIT_FAILURE, "can not fork");
         exit(-1);
     } else if (0 == Detect_pid) {
-        int f = execl("python/python.exe", "python/python.exe", "python/minecraft/detectMobs.py", NULL);
+        int f = execl("python/python.exe", "python/python.exe",
+                      "python/minecraft/detectMobs.py", NULL);
         if (f != 0 && WEXITSTATUS(f) != 0) {
             printf("error:detectMobs.py\n");
             exit(1);
@@ -600,7 +607,8 @@ void exePython(void) {
         err(EXIT_FAILURE, "can not fork");
         exit(-1);
     } else if (0 == Move_pid) {
-        int f = execl("python/python.exe", "python/python.exe", "python/minecraft/monitorPlayerMove.py", NULL);
+        int f = execl("python/python.exe", "python/python.exe",
+                      "python/minecraft/monitorPlayerMove.py", NULL);
         if (f != 0 && WEXITSTATUS(f) != 0) {
             printf("error:monitorPlayerMove.py\n");
             exit(1);
@@ -614,7 +622,8 @@ void exePython(void) {
         err(EXIT_FAILURE, "can not fork");
         exit(-1);
     } else if (0 == Camera_pid) {
-        int f = execl("python/python.exe", "python/python.exe", "python/minecraft/monitorPlayerCamera.py", NULL);
+        int f = execl("python/python.exe", "python/python.exe",
+                      "python/minecraft/monitorPlayerCamera.py", NULL);
         if (f != 0 && WEXITSTATUS(f) != 0) {
             printf("error:monitorPlayerCamera.py\n");
             exit(1);
@@ -631,11 +640,11 @@ void exePython(void) {
     Sleep(100);
 }
 
-void sleep_time(double time){
+void sleep_time(double time) {
     int t;
     t = time * 1000;
-    if(t<0){
-        t=t*(-1);
+    if (t < 0) {
+        t = t * (-1);
     }
     Sleep(t);
 }
