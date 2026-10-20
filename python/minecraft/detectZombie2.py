@@ -1,4 +1,3 @@
-from asyncore import write
 import sys
 sys.path.append('.')
 sys.path.append('./python/minecraft/')

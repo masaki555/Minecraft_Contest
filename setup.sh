@@ -1,10 +1,10 @@
-curl -o python.zip https://www.python.org/ftp/python/3.9.10/python-3.9.10-embed-amd64.zip
+curl -o python.zip https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip
 unzip python.zip -d python
 rm -f python.zip
 chmod -R 755 python
 
 cd python
-echo "import site" >> python39._pth
+echo "import site" >> python312._pth
 
 curl -o get-pip.py https://bootstrap.pypa.io/get-pip.py
 echo "import sys; sys.path.append('')" >> setting.pth
