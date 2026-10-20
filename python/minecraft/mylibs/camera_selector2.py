@@ -9,7 +9,6 @@ import numpy as np
 from numpy.core.numeric import NaN
 from numpy.lib.function_base import average
 import pyrealsense2 as rs
-from scipy.io.matlab.miobase import read_dtype
 
 class CameraSelector:
   __device:int
