@@ -1,671 +1,190 @@
 #include "control.h"
-#include <err.h>
-#include <fcntl.h>
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <termios.h>
-#include <unistd.h>
+#include <winsock2.h>
 #include <windows.h>
+#include <pthread.h>
 
-#define PRINT_HERE \
-    fprintf(stderr, "File:%s Line:%d\t", __FILE__, __LINE__)
-
-pid_t Detect1_pid;
-pid_t Detect2_pid;
-pid_t Detect3_pid;
-pid_t Move_pid;
-pid_t Camera_pid;
+// --------------------------------------------------
+// グローバル変数 (control.h に対応)
+// --------------------------------------------------
 int rk = 1;
 
-void equipmentDev(void) {
-    char com[128] = "python/python.exe python/minecraft/equipment.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:equipmentDev\n");
-        exit(1);
+// --------------------------------------------------
+// 内部ヘルパー関数 (UDP通信用)
+// --------------------------------------------------
+static void send_udp(const char *msg) {
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) return;
+
+    SOCKET sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock != INVALID_SOCKET) {
+        struct sockaddr_in addr;
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(8888); // 操作コマンド用ポート
+        addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+        sendto(sock, msg, (int)strlen(msg), 0, (struct sockaddr *)&addr, sizeof(addr));
+        closesocket(sock);
     }
+    WSACleanup();
 }
 
-void attackLeft(void) {
-    char com[128] = "python/python.exe python/minecraft/clickLeft.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:attackLeft\n");
-        exit(1);
-    }
-}
+static int query_udp_int(const char *req) {
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) return 0;
 
-void attackLeft_long(void) {
-    char com[128] = "python/python.exe python/minecraft/clickLeft_long.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:attackLeft_long\n");
-        exit(1);
-    }
-}
+    SOCKET sock = socket(AF_INET, SOCK_DGRAM, 0);
+    int result = 0;
 
-void attackLeft_continuous(int n) {
-    char com[128] = "python/python.exe python/minecraft/clickLeft_Continuous.py ";
-    char buf[12];
-    snprintf(buf, 12, "%d", n);
-    strcat(com, buf);
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:attackLeft_continuous\n");
-        exit(1);
-    }
-}
+    if (sock != INVALID_SOCKET) {
+        struct sockaddr_in addr;
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(8889); // 認識結果問い合わせ用ポート
+        addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-void eat(int n) {
-    char com[128] = "python/python.exe python/minecraft/eat.py ";
-    char buf[12];
-    snprintf(buf, 12, "%d", n);
-    strcat(com, buf);
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:eat\n");
-        exit(1);
-    }
-}
+        // 1秒の受信タイムアウト設定
+        DWORD timeout = 1000;
+        setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
 
-void center(void) {
-    char com[128] = "python/python.exe python/minecraft/center.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:center\n");
-        exit(1);
-    }
-}
+        sendto(sock, req, (int)strlen(req), 0, (struct sockaddr *)&addr, sizeof(addr));
 
-void upKey(char *key) {
-    char com[128] = "python/python.exe python/minecraft/upKey.py ";
-    strcat(com, key);
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:upKey\n");
-        exit(1);
-    }
-}
-
-void downKey(char *key) {
-    char com[128] = "python/python.exe python/minecraft/downKey.py ";
-    strcat(com, key);
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:downKey\n");
-        exit(1);
-    }
-}
-
-void moveDataToFile(char *key) {
-    FILE *fp;
-    char pass[64] = "python/tmp/Share_Move_Data.txt";
-    char buf[32] = "";
-    const char *const sep = ",";
-    char *data;
-
-    // Share_Move_Data.txtの内容をbufに保存する
-
-    if ((fp = fopen(pass, "r")) == NULL) {
-        printf("error：moveDataToFile\nShare_Move_Data.txtをrモードで開けませんでした．\n");
-        exit(1);
-    } else {
-        fgets(buf, 31, fp);
-    }
-    fclose(fp);
-
-    // bufの内容に変更を加えてShare_Move_Data.txtを上書きする
-
-    if ((fp = fopen(pass, "w")) == NULL) {
-        printf("error：Share_Move_Data.txtをwモードで開けませんでした．\n");
-        exit(1);
-    } else {
-        data = strtok(buf, sep);
-        data = strtok(NULL, sep);
-        if (data != NULL) {
-            fprintf(fp, "%s,%s", key, data);
-        } else {
-            fprintf(fp, "%s,%s", key, "0");
-            // printf("error:moveDataToFile\n");
+        char buf[32] = {0};
+        int addr_len = sizeof(addr);
+        if (recvfrom(sock, buf, sizeof(buf) - 1, 0, (struct sockaddr *)&addr, &addr_len) > 0) {
+            result = atoi(buf);
         }
+        closesocket(sock);
     }
-    fclose(fp);
+    WSACleanup();
+    return result;
 }
 
-void cameraDataToFile(char *key, double sleep_time) {
-    FILE *fp;
-    char pass[64] = "python/tmp/Share_Camera_Data.txt";
-    char buf[32] = "";
-    // char *data;
-
-    if ((fp = fopen(pass, "r")) == NULL) {
-        printf("error：Share_Camera_Data.txtをrモードで開けませんでした．\n");
-        exit(1);
-    } else {
-        fgets(buf, 31, fp);
-    }
-    fclose(fp);
-
-    if ((fp = fopen(pass, "w")) == NULL) {
-        printf("error：Share_Camera_Data.txtをwモードで開けませんでした．\n");
-        exit(1);
-    } else {
-        fprintf(fp, "%s,%f", key, (float)sleep_time);
-    }
-    fclose(fp);
-}
-
-void initMoveDataFile(void) {
-    moveDataToFile("Wait");
-}
-
-void moveForward(double sleep_time) {
-    char key[32] = "F";
-    moveDataToFile(key);
-    Sleep(sleep_time * 1000);
-    initMoveDataFile();
-    // usleep(0.15*1000000);
-}
-
-void moveLeft(double sleep_time) {
-    char key[32] = "L";
-    moveDataToFile(key);
-    Sleep(sleep_time * 1000);
-    initMoveDataFile();
-    // usleep(0.15*1000000);
-}
-
-void moveRight(double sleep_time) {
-    char key[32] = "R";
-    moveDataToFile(key);
-    Sleep(sleep_time * 1000);
-    initMoveDataFile();
-    // usleep(0.15*1000000);
-}
-
-void moveBack(double sleep_time) {
-    char key[32] = "B";
-    moveDataToFile(key);
-    Sleep(sleep_time * 1000);
-    initMoveDataFile();
-    // usleep(0.15*1000000);
-}
-
-void moveForwardLeft(double sleep_time) {
-    char key[32] = "FL";
-    moveDataToFile(key);
-    Sleep(sleep_time * 1000);
-    initMoveDataFile();
-    // usleep(0.37*1000000);
-}
-
-void moveForwardRight(double sleep_time) {
-    char key[32] = "FR";
-    moveDataToFile(key);
-    Sleep(sleep_time * 1000);
-    initMoveDataFile();
-    // usleep(0.37*1000000);
-}
-
-void moveBackLeft(double sleep_time) {
-    char key[32] = "BL";
-    moveDataToFile(key);
-    Sleep(sleep_time * 1000);
-    initMoveDataFile();
-    // usleep(0.37*1000000);
-}
-
-void moveBackRight(double sleep_time) {
-    char key[32] = "BR";
-    moveDataToFile(key);
-    Sleep(sleep_time * 1000);
-    initMoveDataFile();
-    // usleep(0.37*1000000);
-}
-
-void moveJump(int times) {
-    char str[128] = "python/python.exe python/minecraft/moveCharacterJump.py";
-    char com[256];
-    sprintf(com, "%s %d", str, times);
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:moveJump\n");
-        exit(1);
-    }
-}
-
-void moveDash(int times) {
-    char str[128] = "python/python.exe python/minecraft/moveCharacterJumpDash.py";
-    char com[256];
-    sprintf(com, "%s %d", str, times);
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:moveJump\n");
-        exit(1);
-    }
-}
-
-void setDashFlag(int flag) {
-    FILE *fp;
-    char pass[64] = "python/tmp/Share_Move_Data.txt";
-    char buf[32] = "";
-    const char *const sep = ",";
-    char *data;
-
-    // Share_Move_Data.txtの内容をbufに保存する
-
-    if ((fp = fopen(pass, "r")) == NULL) {
-        printf("error：moveDataToFile\nShare_Move_Data.txtをrモードで開けませんでした．\n");
-        exit(1);
-    } else {
-        fgets(buf, 31, fp);
-    }
-    fclose(fp);
-
-    // bufの内容に変更を加えてShare_Move_Data.txtを上書きする
-
-    if ((fp = fopen(pass, "w")) == NULL) {
-        printf("error：Share_Move_Data.txtをwモードで開けませんでした．\n");
-        exit(1);
-    } else {
-        data = strtok(buf, sep);
-
-        fprintf(fp, "%s,", data);
-        fprintf(fp, "%d", flag);
-    }
-    fclose(fp);
-}
-
-void setDash(void) {
-    setDashFlag(1);
-}
-
-void resetDash(void) {
-    setDashFlag(0);
-}
-
-void setTime(void) {
-    char com[128] = "python/python.exe python/minecraft/setTime.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:init\n");
-        exit(1);
-    }
-}
-
-void setMorning(void) {
-    char com[128] = "python/python.exe python/minecraft/setMorning.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:init\n");
-        exit(1);
-    }
-}
-
-void setSurvival(void) {
-    char com[128] = "python/python.exe python/minecraft/setSurvival.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:init\n");
-        exit(1);
-    }
-}
-
-void setCreative(void) {
-    char com[128] = "python/python.exe python/minecraft/setCreative.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:init\n");
-        exit(1);
-    }
-}
-
-void initCameraDataFile(void) {
-    cameraDataToFile("Wait", 0);
-}
-
-void cameraCenter(void) {
-    char key[32] = "C";
-    cameraDataToFile(key, 0);
-    Sleep(100);
-    initCameraDataFile();
-}
-
-void cameraDown(double time) {
-    char key[32] = "D";
-    cameraDataToFile(key, time);
-    Sleep(time * 1000);
-    initCameraDataFile();
-}
-
-void cameraLeft(double time) {
-    char key[32] = "L";
-    cameraDataToFile(key, time);
-    Sleep(time * 1000);
-    initCameraDataFile();
-}
-
-void cameraRight(double time) {
-    char key[32] = "R";
-    cameraDataToFile(key, time);
-    Sleep(time * 1000);
-    initCameraDataFile();
-}
-
-void cameraUp(double time) {
-    char key[32] = "U";
-    cameraDataToFile(key, time);
-    Sleep(time * 1000);
-    initCameraDataFile();
-}
-
-void init(void) {
-    char com[128] = "python/python.exe python/minecraft/init.py";
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:init\n");
-        exit(1);
-    }
-    initMoveDataFile();
-    initCameraDataFile();
-}
-
-void pushKey(char *key) {
-    char com[128] = "python/python.exe python/minecraft/pushKey.py ";
-    strcat(com, key);
-    int f = system(com);
-    if (f != 0 && WEXITSTATUS(f) != 0) {
-        printf("error:pushKey\n");
-        exit(1);
-    }
-}
-
-int kbhit(void) {
-    struct termios oldt, newt;
-    int ch;
-    int oldf;
-
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
-    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
-
-    ch = getchar();
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-    fcntl(STDIN_FILENO, F_SETFL, oldf);
-
-    if (ch != EOF) {
-        ungetc(ch, stdin);
-        return 1;
-    }
-
-    return 0;
-}
-
-void killPython(void) {
-    int ret1, ret2, ret3, ret4, ret5;
-    initMoveDataFile();
-    initCameraDataFile();
-
-    ret1 = kill(Detect1_pid, SIGKILL);
-    ret2 = kill(Detect2_pid, SIGKILL);
-    ret3 = kill(Detect3_pid, SIGKILL);
-    ret4 = kill(Move_pid, SIGKILL);
-    ret5 = kill(Camera_pid, SIGKILL);
-
-    if (ret1 == -1 || ret2 == -1 || ret3 == -1 || ret4 == -1 || ret5 == -1) {
-        perror("error:kill");
-        printf("error:kill");
-        exit(1);
-    }
-}
-
-int detectZombie1(void) {
-    FILE *fp;
-    char fname[] = "./python/tmp/detect_zombie1.txt";
-    int ibuf = 0;
-    // int i,t=1;
-
-
-    if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectZombie\n");
-        exit(1);
-    }
-    char buf[256];
-    fgets(buf, sizeof(buf), fp);
-    (void)fclose(fp);
-
-    ibuf = atoi(buf);
-    /*
-    for(i=0;i<7;i++){
-        ibuf = ibuf + ((buf[6-i] - '0') * t );
-        t = t * 10;
-    }
-    */
-
-    return ibuf;
-}
-
-long detectZombie2(void) {
-    FILE *fp;
-    char fname[] = "./python/tmp/detect_zombie2.txt";
-    // int i,t=1;
-    long ibuf = 0;
-
-    if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectZombie\n");
-        exit(1);
-    }
-    char buf[256];
-    fgets(buf, sizeof(buf), fp);
-    (void)fclose(fp);
-
-    ibuf = atol(buf);
-
-    return ibuf;
-}
-
-
-int detectPlayer1(void) {
-    FILE *fp;
-    char fname[] = "python/minecraft/yoloFiles/labels/capture.txt";
-    int i, t = 1;
-    int zbuf = 0;
-
-    if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectPlayer1\n");
-
-        killPython();
-        exit(1);
-    }
-    char buf[256];
-    fgets(buf, sizeof(buf), fp);
-    (void)fclose(fp);
-
-    for (i = 0; i < 6; i++) {
-        zbuf = zbuf + ((buf[5 - i] - '0') * t);
-        t = t * 10;
-    }
-
-    if (zbuf < 0) {
-        return 0;
-    }
-
-    return zbuf;
-}
-
-int detectPlayer2(void) {
-    FILE *fp;
-    char fname[] = "python/minecraft/yoloFiles/labels/capture.txt";
-    int i, t = 1;
-    int zbuf = 0;
-
-    if ((fp = fopen(fname, "r")) == NULL) {
-        printf("error:detectPlayer2\n");
-        killPython();
-        exit(1);
-    }
-    char buf[256];
-    fgets(buf, sizeof(buf), fp); // 1行目を読み飛ばす
-    fgets(buf, sizeof(buf), fp); // 2行目を読み込む
-    (void)fclose(fp);
-
-    for (i = 0; i < 6; i++) {
-        zbuf = zbuf + ((buf[5 - i] - '0') * t);
-        t = t * 10;
-    }
-
-    if (zbuf < 0) {
-        return 0;
-    }
-
-    return zbuf;
-}
-
-void *isInterrupt(void *args) {
+// F12キーによる緊急停止監視スレッド
+static void *isInterrupt(void *args) {
     while (rk) {
         if (GetKeyState(VK_F12) < 0) {
-            fprintf(stderr, "終了コード送信\n");
-            killPython();
+            fprintf(stderr, "F12検知: 終了コード送信\n");
             rk = 0;
         }
         Sleep(100);
     }
-    rk = 0;
     return args;
 }
 
-pthread_t python_thread;
+// --------------------------------------------------
+// control.h 宣言関数の全実装
+// --------------------------------------------------
 
-void* respawn(void* arg){ 
-    char com[128] = "python/python.exe python/minecraft/ssim.py";
-    while(rk){
-        int f = system(com);
-        if (f != 0 && WEXITSTATUS(f) != 0) {
-            printf("error:ssim\n");
-            exit(1);
+// --------------------------------------------------
+// control2.c の init() 実装（MSYS2 ポータブル環境用）
+// --------------------------------------------------
+void init(void) {
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
+    // MSYS2のパス変換を回避し、相対パスでPythonデーモンを直接起動
+    // CREATE_NO_WINDOW により黒いコンソール画面を出さずにバックグラウンド実行
+    char cmd[] = "python .\\python\\minecraft\\server_daemon.py";
+
+    if (CreateProcessA(NULL, cmd, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+    } else {
+        // 'python' コマンドで起動できない場合は 'py' ランチャーで試行
+        char cmd_py[] = "py .\\python\\minecraft\\server_daemon.py";
+        if (CreateProcessA(NULL, cmd_py, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
         }
-        sleep(1);
     }
-    return arg;
-}
 
-void* pushesc(void* arg){ 
-    char com[128] = "python/python.exe python/minecraft/ssim2.py";
-    while(rk){
-        int f = system(com);
-        if (f != 0 && WEXITSTATUS(f) != 0) {
-            printf("error:ssim2\n");
-            exit(1);
-        }
-        sleep(1);
-    }
-    return arg;
-}
+    // Python デーモンの UDP ソケット受信用スレッド立ち上がりを待機 (1.5秒)
+    Sleep(1000);
 
-void create_python_thread() {
-    if (pthread_create(&python_thread, NULL, pushesc, NULL) != 0) {
-        fprintf(stderr, "Error creating Python thread.\n");
-        exit(1);
-    }
+    // マイクラウィンドウのアクティブ化・画面初期化要求を送信
+    send_udp("init");
 }
-
-void close_python_thread() {
-    pthread_join(python_thread, NULL);
-}
-
 
 void exePython(void) {
     pthread_t key;
-    int kill_p;
-
-    Detect1_pid = fork();
-    if (-1 == Detect1_pid) {
-        err(EXIT_FAILURE, "can not fork");
-        exit(-1);
-    } else if (0 == Detect1_pid) {
-        int f = execl("python/python.exe", "python/python.exe", "python/minecraft/detectZombie1.py", NULL);
-        if (f != 0 && WEXITSTATUS(f) != 0) {
-            printf("error:detectZombie1.py\n");
-            exit(1);
-        }
-    }
-    Sleep(100);
-
-    Detect2_pid = fork();
-    if (-1 == Detect2_pid) {
-        err(EXIT_FAILURE, "can not fork");
-        exit(-1);
-    } else if (0 == Detect2_pid) {
-        int f = execl("python/python.exe", "python/python.exe", "python/minecraft/detectZombie2.py", NULL);
-        if (f != 0 && WEXITSTATUS(f) != 0) {
-            printf("error:detectZombie2.py\n");
-            exit(1);
-        }
-    }
-    Sleep(100);
-
-    Detect3_pid = fork();
-    if (-1 == Detect3_pid) {
-        err(EXIT_FAILURE, "can not fork");
-        exit(-1);
-    } else if (0 == Detect3_pid) {
-        int f = execl("python/python.exe", "python/python.exe", "python/minecraft/detectMobs.py", NULL);
-        if (f != 0 && WEXITSTATUS(f) != 0) {
-            printf("error:detectMobs.py\n");
-            exit(1);
-        }
-    }
-    Sleep(100);
-
-    Move_pid = fork();
-    if (-1 == Move_pid) {
-        err(EXIT_FAILURE, "can not fork");
-        exit(-1);
-    } else if (0 == Move_pid) {
-        int f = execl("python/python.exe", "python/python.exe", "python/minecraft/monitorPlayerMove.py", NULL);
-        if (f != 0 && WEXITSTATUS(f) != 0) {
-            printf("error:monitorPlayerMove.py\n");
-            exit(1);
-        }
-    }
-
-    Sleep(100);
-
-    Camera_pid = fork();
-    if (-1 == Camera_pid) {
-        err(EXIT_FAILURE, "can not fork");
-        exit(-1);
-    } else if (0 == Camera_pid) {
-        int f = execl("python/python.exe", "python/python.exe", "python/minecraft/monitorPlayerCamera.py", NULL);
-        if (f != 0 && WEXITSTATUS(f) != 0) {
-            printf("error:monitorPlayerCamera.py\n");
-            exit(1);
-        }
-    }
-
-    Sleep(100);
-
-    if ((kill_p = pthread_create(&key, NULL, &isInterrupt, NULL)) != 0) {
-        fprintf(stderr, "終了監視スレッド作成失敗");
+    if (pthread_create(&key, NULL, &isInterrupt, NULL) != 0) {
+        fprintf(stderr, "終了監視スレッド作成失敗\n");
         exit(1);
     }
-
-    Sleep(100);
 }
 
-void sleep_time(double time){
-    int t;
-    t = time * 1000;
-    if(t<0){
-        t=t*(-1);
-    }
-    Sleep(t);
+// --- 認識系関数 ---
+int detectPlayer1(void) { return query_udp_int("detectPlayer1"); }
+int detectPlayer2(void) { return query_udp_int("detectPlayer2"); }
+int detectZombie1(void) { return query_udp_int("detectZombie1"); }
+long detectZombie2(void) { return (long)query_udp_int("detectZombie2"); }
+
+// --- 攻撃・操作系関数 ---
+void attackLeft(void) { send_udp("attackLeft"); }
+void attackLeft_long(void) { send_udp("attackLeft_long"); }
+
+void attackLeft_continuous(int n) {
+    char buf[64];
+    snprintf(buf, sizeof(buf), "attackLeft_continuous:%d", n);
+    send_udp(buf);
 }
+
+void eat(int n) {
+    char buf[64];
+    snprintf(buf, sizeof(buf), "eat:%d", n);
+    send_udp(buf);
+}
+
+void downKey(char* key) {
+    char buf[64];
+    snprintf(buf, sizeof(buf), "downKey:%s", key);
+    send_udp(buf);
+}
+
+void upKey(char* key) {
+    char buf[64];
+    snprintf(buf, sizeof(buf), "upKey:%s", key);
+    send_udp(buf);
+}
+
+void pushKey(char* key) {
+    char buf[64];
+    snprintf(buf, sizeof(buf), "pushKey:%s", key);
+    send_udp(buf);
+}
+
+void sleep_time(double time) {
+    if (time < 0) time = -time;
+    Sleep((DWORD)(time * 1000));
+}
+
+// --- 移動系関数 ---
+void moveForward(double time) { char buf[64]; snprintf(buf, sizeof(buf), "moveForward:%f", time); send_udp(buf); sleep_time(time); }
+void moveLeft(double time) { char buf[64]; snprintf(buf, sizeof(buf), "moveLeft:%f", time); send_udp(buf); sleep_time(time); }
+void moveRight(double time) { char buf[64]; snprintf(buf, sizeof(buf), "moveRight:%f", time); send_udp(buf); sleep_time(time); }
+void moveBack(double time) { char buf[64]; snprintf(buf, sizeof(buf), "moveBack:%f", time); send_udp(buf); sleep_time(time); }
+void moveForwardLeft(double time) { char buf[64]; snprintf(buf, sizeof(buf), "moveForwardLeft:%f", time); send_udp(buf); sleep_time(time); }
+void moveForwardRight(double time) { char buf[64]; snprintf(buf, sizeof(buf), "moveForwardRight:%f", time); send_udp(buf); sleep_time(time); }
+void moveBackLeft(double time) { char buf[64]; snprintf(buf, sizeof(buf), "moveBackLeft:%f", time); send_udp(buf); sleep_time(time); }
+void moveBackRight(double time) { char buf[64]; snprintf(buf, sizeof(buf), "moveBackRight:%f", time); send_udp(buf); sleep_time(time); }
+void moveJump(int times) { char buf[64]; snprintf(buf, sizeof(buf), "moveJump:%d", times); send_udp(buf); }
+void moveDash(int times) { char buf[64]; snprintf(buf, sizeof(buf), "moveDash:%d", times); send_udp(buf); }
+void setDash(void) { send_udp("setDash"); }
+void resetDash(void) { send_udp("resetDash"); }
+
+// --- カメラ系関数 ---
+void cameraDown(double time) { char buf[64]; snprintf(buf, sizeof(buf), "cameraDown:%f", time); send_udp(buf); sleep_time(time); }
+void cameraLeft(double time) { char buf[64]; snprintf(buf, sizeof(buf), "cameraLeft:%f", time); send_udp(buf); sleep_time(time); }
+void cameraRight(double time) { char buf[64]; snprintf(buf, sizeof(buf), "cameraRight:%f", time); send_udp(buf); sleep_time(time); }
+void cameraUp(double time) { char buf[64]; snprintf(buf, sizeof(buf), "cameraUp:%f", time); send_udp(buf); sleep_time(time); }
+
+// --- 環境・ゲームモード設定系関数 ---
+void setTime(void) { send_udp("setTime"); }
+void setMorning(void) { send_udp("setMorning"); }
+void setSurvival(void) { send_udp("setSurvival"); }
+void setCreative(void) { send_udp("setCreative"); }
