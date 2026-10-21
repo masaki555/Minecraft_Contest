@@ -11,6 +11,7 @@ echo "import sys; sys.path.append('')" >> setting.pth
 
 ./python.exe get-pip.py
 ./python.exe -m pip install update
+./python -m pip install --upgrade pip setuptools wheel​
 
 ./python.exe -m pip install -r ../requirements.txt
 
