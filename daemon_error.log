@@ -1,0 +1,29 @@
+Traceback (most recent call last):
+  File "C:\oit\Minecraft_Contest\python\Lib\site-packages\win32com\client\gencache.py", line 71, in __init__
+    _LoadDicts()
+  File "C:\oit\Minecraft_Contest\python\Lib\site-packages\win32com\client\gencache.py", line 128, in _LoadDicts
+    f = open(os.path.join(win32com.__gen_path__, "dicts.dat"), "rb")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Windows\\gen_py\\3.12\\dicts.dat'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\oit\Minecraft_Contest\python\minecraft\server_daemon.py", line 9, in <module>
+    import win32com.client
+  File "C:\oit\Minecraft_Contest\python\Lib\site-packages\win32com\client\__init__.py", line 16, in <module>
+    from . import dynamic, gencache
+  File "C:\oit\Minecraft_Contest\python\Lib\site-packages\win32com\client\gencache.py", line 783, in <module>
+    __init__()
+  File "C:\oit\Minecraft_Contest\python\Lib\site-packages\win32com\client\gencache.py", line 73, in __init__
+    Rebuild()
+  File "C:\oit\Minecraft_Contest\python\Lib\site-packages\win32com\client\gencache.py", line 770, in Rebuild
+    _SaveDicts()
+  File "C:\oit\Minecraft_Contest\python\Lib\site-packages\win32com\client\gencache.py", line 84, in _SaveDicts
+    f = open(os.path.join(GetGeneratePath(), "dicts.dat"), "wb")
+                          ^^^^^^^^^^^^^^^^^
+  File "C:\oit\Minecraft_Contest\python\Lib\site-packages\win32com\client\gencache.py", line 172, in GetGeneratePath
+    os.makedirs(win32com.__gen_path__, exist_ok=True)
+  File "<frozen os>", line 215, in makedirs
+  File "<frozen os>", line 225, in makedirs
+PermissionError: [WinError 5] アクセスが拒否されました。: 'C:\\Windows\\gen_py'

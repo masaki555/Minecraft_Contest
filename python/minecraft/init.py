@@ -36,4 +36,8 @@ def init():
     time.sleep(sleep_time)
 
 if __name__ == '__main__':
+    from python.minecraft import downKey, upKey
     init()
+    downKey.downKey("w")
+    time.sleep(3.0)
+    upKey.upKey("w")
