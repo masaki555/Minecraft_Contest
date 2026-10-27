@@ -74,7 +74,7 @@ git pull
 ```sh
 cd ~/
 cd Minecraft_Contest
-gcc -O2 -o minebot.exe testbot.c control.c
+gcc -O2 -o testbot.exe testbot.c control.c -lws2_32 -lpthread
 ```
 
 コンパイルするとminebot.exeという実行ファイルが作成される．またC演習ではccというコマンドで実行していたが，本botライブラリではgccコマンドを利用する事に注意が必要である．

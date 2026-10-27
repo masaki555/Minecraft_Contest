@@ -1,19 +1,53 @@
-import time
-import socket
-import threading
-import win32gui
-import win32con
-import win32com.client
-import pythoncom  # COM初期化用に追加
-import pydirectinput
+import traceback
+
+try:
+    import os
+
+    # server_daemon.py の場所
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+    # ポータブル環境内に作る
+    PORTABLE_TMP = os.path.join(BASE_DIR, "tmp")
+    GEN_PY_DIR = os.path.join(PORTABLE_TMP, "gen_py")
+
+    os.makedirs(GEN_PY_DIR, exist_ok=True)
+
+    # TEMP/TMP をポータブル環境へ
+    os.environ["TEMP"] = PORTABLE_TMP
+    os.environ["TMP"] = PORTABLE_TMP
+
+    import win32com
+
+    # COMキャッシュ保存先
+    win32com.__gen_path__ = GEN_PY_DIR
+
+    import time
+    import socket
+    import threading
+    import win32gui
+    import win32con
+    import win32com.client
+    import pythoncom
+    import pydirectinput
+
+except Exception:
+    traceback.print_exc()
+
+    with open("daemon_error.log", "w", encoding="utf-8") as f:
+        traceback.print_exc(file=f)
+
+    input("ERROR>")
+    raise
 
 SLEEP_TIME = 0.05
 pydirectinput.FAILSAFE = False
 
+
+
 # --------------------------------------------------
 # 1. ウィンドウ検索関数（部分一致）
 # --------------------------------------------------
-def find_minecraft_hwnd(search_name="Minecraft"):
+def find_minecraft_hwnd(search_name="Minecraft Education"):
     found_hwnd = []
     
     def enum_windows_callback(hwnd, extra):
@@ -34,7 +68,7 @@ def setup_minecraft_window():
     
     try:
         print("[init] ウィンドウ検索中...")
-        hwnd, title = find_minecraft_hwnd("Minecraft")
+        hwnd, title = find_minecraft_hwnd("Minecraft Education")
         
         if not hwnd:
             print("[エラー] 'Minecraft' を含むウィンドウが見つかりませんでした。")

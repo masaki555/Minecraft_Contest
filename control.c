@@ -83,30 +83,31 @@ static void *isInterrupt(void *args) {
 void init(void) {
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
+
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
+
     ZeroMemory(&pi, sizeof(pi));
 
-    // MSYS2のパス変換を回避し、相対パスでPythonデーモンを直接起動
-    // CREATE_NO_WINDOW により黒いコンソール画面を出さずにバックグラウンド実行
-    char cmd[] = "python .\\python\\minecraft\\server_daemon.py";
+    char cmd[] =
+        ".\\python\\python.exe "
+        ".\\python\\minecraft\\server_daemon.py";
 
-    if (CreateProcessA(NULL, cmd, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
-    } else {
-        // 'python' コマンドで起動できない場合は 'py' ランチャーで試行
-        char cmd_py[] = "py .\\python\\minecraft\\server_daemon.py";
-        if (CreateProcessA(NULL, cmd_py, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-        }
+    BOOL rc = CreateProcessA(NULL, cmd, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+
+    if (!rc) {
+        fprintf(stderr,
+                "Python daemon start failed. Error=%lu\n",
+                GetLastError());
+        return;
     }
 
-    // Python デーモンの UDP ソケット受信用スレッド立ち上がりを待機 (1.5秒)
-    Sleep(1000);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
 
-    // マイクラウィンドウのアクティブ化・画面初期化要求を送信
+    // UDPサーバ起動待ち
+    Sleep(1500);
+
     send_udp("init");
 }
 
